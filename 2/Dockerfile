@@ -12,7 +12,7 @@ RUN curl -SL https://www.python.org/ftp/python/2.7.7/Python-2.7.7.tar.xz \
 		| tar -xJ --strip-components=1 \
 	&& ./configure \
 	&& make -j$(nproc) \
-	&& make -j$(nproc) EXTRATESTOPTS='--exclude test_file2k' test \
+	&& make EXTRATESTOPTS='--exclude test_file2k' test \
 	&& make install \
 	&& make clean
 
