@@ -7,7 +7,10 @@ RUN apt-get purge -y python python-minimal python2.7-minimal
 
 RUN mkdir /usr/src/python
 WORKDIR /usr/src/python
-RUN curl -SL https://www.python.org/ftp/python/3.4.1/Python-3.4.1.tar.xz \
+
+ENV PYTHON_VERSION 3.4.1
+
+RUN curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" \
 		| tar -xJ --strip-components=1
 # skip "test_shutil" thanks to "PermissionError: [Errno 1] Operation not permitted" trying to set xattrs
 RUN ./configure \
