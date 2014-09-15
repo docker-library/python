@@ -20,7 +20,8 @@ RUN ./configure \
 	&& make install \
 	&& make clean
 
-# install "pip", since the vast majority of users of this image will want it
+# install "pip" and "virtualenv", since the vast majority of users of this image will want it
 RUN curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2
+RUN pip install virtualenv
 
 CMD ["python2"]
