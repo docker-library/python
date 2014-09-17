@@ -3,7 +3,8 @@ set -e
 
 declare -A aliases
 aliases=(
-	[3]='latest'
+	[3.4]='3 latest'
+	[2.7]='2'
 )
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
@@ -17,8 +18,7 @@ echo '# maintainer: InfoSiftr <github@infosiftr.com> (@infosiftr)'
 for version in "${versions[@]}"; do
 	commit="$(git log -1 --format='format:%H' "$version")"
 	fullVersion="$(grep -m1 'ENV PYTHON_VERSION ' "$version/Dockerfile" | cut -d' ' -f3)"
-	majorVersion="$(echo "$fullVersion" | cut -d. -f1-2)"
-	versionAliases=( $fullVersion $majorVersion $version ${aliases[$version]} )
+	versionAliases=( $fullVersion $version ${aliases[$version]} )
 	
 	echo
 	for va in "${versionAliases[@]}"; do
