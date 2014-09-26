@@ -30,4 +30,6 @@ RUN cd /usr/local/bin \
 	&& ln -s python3 python \
 	&& ln -s python-config3 python-config
 
+RUN curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python3
+
 CMD ["python3"]
