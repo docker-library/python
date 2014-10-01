@@ -25,7 +25,6 @@ RUN ./configure \
 RUN cd /usr/local/bin \
 	&& ln -s easy_install-3.4 easy_install \
 	&& ln -s idle3 idle \
-	&& ln -s pip3 pip \
 	&& ln -s pydoc3 pydoc \
 	&& ln -s python3 python \
 	&& ln -s python-config3 python-config
