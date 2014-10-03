@@ -12,7 +12,7 @@ WORKDIR /usr/src/python
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
-ENV PYTHON_VERSION 3.4.2
+ENV PYTHON_VERSION 3.4.1
 
 RUN curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" \
 		| tar -xJ --strip-components=1
