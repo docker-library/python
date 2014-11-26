@@ -16,7 +16,7 @@ url='git://github.com/docker-library/python'
 echo '# maintainer: InfoSiftr <github@infosiftr.com> (@infosiftr)'
 
 for version in "${versions[@]}"; do
-	commit="$(git log -1 --format='format:%H' "$version")"
+	commit="$(git log -1 --format='format:%H' -- "$version")"
 	fullVersion="$(grep -m1 'ENV PYTHON_VERSION ' "$version/Dockerfile" | cut -d' ' -f3)"
 	versionAliases=( $fullVersion $version ${aliases[$version]} )
 	
@@ -26,7 +26,7 @@ for version in "${versions[@]}"; do
 	done
 	
 	for variant in onbuild; do
-		commit="$(git log -1 --format='format:%H' "$version/$variant")"
+		commit="$(git log -1 --format='format:%H' -- "$version/$variant")"
 		echo
 		for va in "${versionAliases[@]}"; do
 			if [ "$va" = 'latest' ]; then
