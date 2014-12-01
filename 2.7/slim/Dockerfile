@@ -7,12 +7,16 @@ RUN apt-get purge -y python.*
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
-RUN apt-get update && apt-get install -y ca-certificates libssl1.0.0 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		ca-certificates \
+		libssl1.0.0 \
+		sqlite3 \
+	&& rm -rf /var/lib/apt/lists/*
 
 ENV PYTHON_VERSION 2.7.8
 
 RUN set -x \
-	&& buildDeps='curl gcc libc6-dev libssl-dev make xz-utils zlib1g-dev' \
+	&& buildDeps='curl gcc libc6-dev libsqlite3-dev libssl-dev make xz-utils zlib1g-dev' \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	&& mkdir -p /usr/src/python \
 	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" \
