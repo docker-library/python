@@ -9,8 +9,8 @@ ENV LANG C.UTF-8
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
+		libsqlite3-0 \
 		libssl1.0.0 \
-		sqlite3 \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV PYTHON_VERSION 3.4.2
