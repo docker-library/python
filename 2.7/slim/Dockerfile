@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libssl1.0.0 \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV PYTHON_VERSION 2.7.8
+ENV PYTHON_VERSION 2.7.9
 
 RUN set -x \
 	&& buildDeps='curl gcc libc6-dev libsqlite3-dev libssl-dev make xz-utils zlib1g-dev' \

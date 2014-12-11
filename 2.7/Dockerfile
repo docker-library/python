@@ -7,7 +7,7 @@ RUN apt-get purge -y python.*
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
-ENV PYTHON_VERSION 2.7.8
+ENV PYTHON_VERSION 2.7.9
 
 RUN set -x \
 	&& mkdir -p /usr/src/python \
