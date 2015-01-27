@@ -22,8 +22,8 @@ RUN gpg --keyserver pool.sks-keyservers.net --recv-keys \
 	C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF \
 	CBC547978A3964D14B9AB36A6AF053F07D9DC8D2 \
 	DBBF2EEBF925FAADCF1F3FFFD9866941EA5BBD71 \
-	7123BC13ED9D77D5
 #Short version of the key, due to the fact that HKP keyservers do not support v3 fingerprints
+	7123BC13ED9D77D5
 
 RUN set -x \
 	&& mkdir -p /usr/src/python \
