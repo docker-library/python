@@ -9,9 +9,8 @@ ENV LANG C.UTF-8
 
 ENV PYTHON_VERSION 3.3.6
 
-#Keys from https://www.python.org/downloads/
-RUN gpg --keyserver pool.sks-keyservers.net --recv-keys \
-	26DEA9D4613391EF3E25C9FF0A5B101836580288
+# gpg: key 36580288: public key "Georg Brandl (Python release signing key) <georg@python.org>" imported
+RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 26DEA9D4613391EF3E25C9FF0A5B101836580288
 
 RUN set -x \
 	&& mkdir -p /usr/src/python \
