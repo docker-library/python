@@ -9,10 +9,16 @@ ENV LANG C.UTF-8
 
 ENV PYTHON_VERSION 3.3.6
 
+# gpg: key 36580288: public key "Georg Brandl (Python release signing key) <georg@python.org>" imported
+RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 26DEA9D4613391EF3E25C9FF0A5B101836580288
+
 RUN set -x \
 	&& mkdir -p /usr/src/python \
-	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" \
-		| tar -xJC /usr/src/python --strip-components=1 \
+	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
+	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
+	&& gpg --verify python.tar.xz.asc \
+	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
+	&& rm python.tar.xz* \
 	&& cd /usr/src/python \
 	&& ./configure --enable-shared \
 	&& make -j$(nproc) \
