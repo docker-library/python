@@ -9,10 +9,16 @@ ENV LANG C.UTF-8
 
 ENV PYTHON_VERSION 3.4.2
 
+# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
+RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
+
 RUN set -x \
 	&& mkdir -p /usr/src/python \
-	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" \
-		| tar -xJC /usr/src/python --strip-components=1 \
+	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
+	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
+	&& gpg --verify python.tar.xz.asc \
+	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
+	&& rm python.tar.xz* \
 	&& cd /usr/src/python \
 	&& ./configure --enable-shared \
 	&& make -j$(nproc) \
