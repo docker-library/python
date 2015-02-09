@@ -15,7 +15,7 @@ for version in "${versions[@]}"; do
 	fullVersion="$(curl -sSL 'https://www.python.org/downloads/' | awk -F 'Python |</a>' '/<span class="release-number"><a[^>]+>Python '"$version"'./ { print $2 }' | sort -V | tail -1)"
 	(
 		set -x
-		sed -ri 's/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/' "$version/Dockerfile" "$version/slim/Dockerfile"
+		sed -ri 's/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/' "$version"/{,slim/,wheezy/}Dockerfile
 		sed -ri 's/^(FROM python):.*/\1:'"$fullVersion"'/' "$version/onbuild/Dockerfile"
 	)
 done
