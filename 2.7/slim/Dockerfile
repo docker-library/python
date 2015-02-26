@@ -28,7 +28,7 @@ RUN set -x \
 	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
 	&& rm python.tar.xz* \
 	&& cd /usr/src/python \
-	&& ./configure --enable-shared \
+	&& ./configure --enable-shared --enable-unicode=ucs4 \
 	&& make -j$(nproc) \
 	&& make install \
 	&& ldconfig \
