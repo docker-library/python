@@ -7,7 +7,7 @@ RUN apt-get purge -y python.*
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
-ENV PYTHON_VERSION 3.4.2
+ENV PYTHON_VERSION 3.4.3
 
 # gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
 RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
