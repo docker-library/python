@@ -19,7 +19,7 @@ ENV PYTHON_VERSION 3.4.3
 RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
 
 RUN set -x \
-	&& buildDeps='curl gcc libc6-dev libsqlite3-dev libssl-dev make xz-utils zlib1g-dev' \
+	&& buildDeps='curl gcc libbz2-dev libc6-dev libsqlite3-dev libssl-dev make xz-utils zlib1g-dev' \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	&& mkdir -p /usr/src/python \
 	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
