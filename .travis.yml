@@ -5,14 +5,14 @@ dist: trusty
 
 env:
   - VERSION=3.4 VARIANT=
-#  - VERSION=3.4 VARIANT=slim
-#  - VERSION=3.4 VARIANT=wheezy
+  - VERSION=3.4 VARIANT=slim
+  - VERSION=3.4 VARIANT=wheezy
   - VERSION=3.3 VARIANT=
-#  - VERSION=3.3 VARIANT=slim
-#  - VERSION=3.3 VARIANT=wheey
+  - VERSION=3.3 VARIANT=slim
+  - VERSION=3.3 VARIANT=wheezy
   - VERSION=2.7 VARIANT=
-#  - VERSION=2.7 VARIANT=slim
-#  - VERSION=2.7 VARIANT=wheezy
+  - VERSION=2.7 VARIANT=slim
+  - VERSION=2.7 VARIANT=wheezy
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
