@@ -10,7 +10,7 @@ ENV LANG C.UTF-8
 ENV PYTHON_VERSION 2.7.9
 
 # gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
-RUN gpg --keyserver pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
 
 RUN set -x \
 	&& mkdir -p /usr/src/python \
