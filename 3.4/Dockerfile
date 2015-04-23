@@ -10,7 +10,7 @@ ENV LANG C.UTF-8
 ENV PYTHON_VERSION 3.4.3
 
 # gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
-RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
 
 RUN set -x \
 	&& mkdir -p /usr/src/python \
