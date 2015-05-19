@@ -12,6 +12,9 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 97FC712E4C024BBEA48A6
 
 ENV PYTHON_VERSION 3.4.3
 
+# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+ENV PYTHON_PIP_VERSION 6.1.1
+
 RUN set -x \
 	&& mkdir -p /usr/src/python \
 	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
@@ -24,6 +27,7 @@ RUN set -x \
 	&& make -j$(nproc) \
 	&& make install \
 	&& ldconfig \
+	&& pip3 install --upgrade pip==$PYTHON_PIP_VERSION \
 	&& find /usr/local \
 		\( -type d -a -name test -o -name tests \) \
 		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
@@ -34,7 +38,6 @@ RUN set -x \
 RUN cd /usr/local/bin \
 	&& ln -s easy_install-3.4 easy_install \
 	&& ln -s idle3 idle \
-	&& ln -s pip3 pip \
 	&& ln -s pydoc3 pydoc \
 	&& ln -s python3 python \
 	&& ln -s python-config3 python-config
