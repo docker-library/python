@@ -13,10 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libssl1.0.0 \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV PYTHON_VERSION 3.4.3
-
 # gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
+
+ENV PYTHON_VERSION 3.4.3
 
 RUN set -x \
 	&& buildDeps='curl gcc libbz2-dev libc6-dev libsqlite3-dev libssl-dev make xz-utils zlib1g-dev' \

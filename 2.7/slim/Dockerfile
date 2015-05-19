@@ -13,10 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libssl1.0.0 \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV PYTHON_VERSION 2.7.9
-
 # gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
+
+ENV PYTHON_VERSION 2.7.9
 
 RUN set -x \
 	&& buildDeps='curl gcc libbz2-dev libc6-dev libsqlite3-dev libssl-dev make xz-utils zlib1g-dev' \

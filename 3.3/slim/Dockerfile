@@ -13,10 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libssl1.0.0 \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV PYTHON_VERSION 3.3.6
-
 # gpg: key 36580288: public key "Georg Brandl (Python release signing key) <georg@python.org>" imported
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 26DEA9D4613391EF3E25C9FF0A5B101836580288
+
+ENV PYTHON_VERSION 3.3.6
 
 RUN set -x \
 	&& buildDeps='curl gcc libbz2-dev libc6-dev libsqlite3-dev libssl-dev make xz-utils zlib1g-dev' \
