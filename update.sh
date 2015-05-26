@@ -22,6 +22,6 @@ for version in "${versions[@]}"; do
 			s/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/;
 			s/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/;
 		' "$version"/{,slim/,wheezy/}Dockerfile
-		sed -ri 's/^(FROM python):.*/\1:'"$fullVersion"'/' "$version/onbuild/Dockerfile"
+		sed -ri 's/^(FROM python):.*/\1:'"$version"'/' "$version/onbuild/Dockerfile"
 	)
 done
