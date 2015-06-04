@@ -35,7 +35,7 @@ RUN set -x \
 	&& make -j$(nproc) \
 	&& make install \
 	&& ldconfig \
-	&& pip3 install --upgrade pip==$PYTHON_PIP_VERSION \
+	&& pip3 install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
 	&& find /usr/local \
 		\( -type d -a -name test -o -name tests \) \
 		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
