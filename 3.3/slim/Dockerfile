@@ -27,6 +27,7 @@ RUN set -x \
 		gcc \
 		libbz2-dev \
 		libc6-dev \
+		libncurses-dev \
 		libsqlite3-dev \
 		libssl-dev \
 		make \
