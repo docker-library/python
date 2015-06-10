@@ -29,10 +29,11 @@ RUN set -x \
 	&& ldconfig \
 	&& curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
 	&& pip install --upgrade pip==$PYTHON_PIP_VERSION \
-	&& find /usr/local \
-		\( -type d -a -name test -o -name tests \) \
-		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-		-exec rm -rf '{}' + \
+	&& find /usr/local \( \
+			\( -type d -a -name test -o -name tests \) \
+			-o \
+			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+		\) -prune -exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python
 
 # install "virtualenv", since the vast majority of users of this image will want it

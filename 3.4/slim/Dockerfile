@@ -47,10 +47,11 @@ RUN set -x \
 	&& make install \
 	&& ldconfig \
 	&& pip3 install --upgrade pip==$PYTHON_PIP_VERSION \
-	&& find /usr/local \
-		\( -type d -a -name test -o -name tests \) \
-		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-		-exec rm -rf '{}' + \
+	&& find /usr/local \( \
+			\( -type d -a -name test -o -name tests \) \
+			-o \
+			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+		\) -prune -exec rm -rf '{}' + \
 	&& apt-get purge -y --auto-remove $buildDeps \
 	&& rm -rf /usr/src/python
 
