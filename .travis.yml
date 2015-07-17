@@ -4,6 +4,8 @@ language: bash
 dist: trusty
 
 env:
+  - VERSION=3.5 VARIANT=
+  - VERSION=3.5 VARIANT=slim
   - VERSION=3.4 VARIANT=
   - VERSION=3.4 VARIANT=slim
   - VERSION=3.4 VARIANT=wheezy
