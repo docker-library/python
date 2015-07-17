@@ -18,7 +18,13 @@ echo '# maintainer: InfoSiftr <github@infosiftr.com> (@infosiftr)'
 for version in "${versions[@]}"; do
 	commit="$(git log -1 --format='format:%H' -- "$version")"
 	fullVersion="$(grep -m1 'ENV PYTHON_VERSION ' "$version/Dockerfile" | cut -d' ' -f3)"
-	versionAliases=( $fullVersion $version ${aliases[$version]} )
+	
+	versionAliases=()
+	while [ "$fullVersion" != "$version" -a "${fullVersion%[.a-z-]*}" != "$fullVersion" ]; do
+		versionAliases+=( $fullVersion )
+		fullVersion="${fullVersion%[.a-z-]*}"
+	done
+	versionAliases+=( $version ${aliases[$version]} )
 	
 	echo
 	for va in "${versionAliases[@]}"; do
@@ -26,6 +32,7 @@ for version in "${versions[@]}"; do
 	done
 	
 	for variant in onbuild slim wheezy; do
+		[ -f "$version/$variant/Dockerfile" ] || continue
 		commit="$(git log -1 --format='format:%H' -- "$version/$variant")"
 		echo
 		for va in "${versionAliases[@]}"; do

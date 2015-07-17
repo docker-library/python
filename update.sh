@@ -16,6 +16,10 @@ for version in "${versions[@]}"; do
 	# <span class="release-number"><a href="/downloads/release/python-341/">Python 3.4.1</a></span>
 	fullVersion="$(curl -sSL 'https://www.python.org/downloads/' | awk -F 'Python |</a>' '/<span class="release-number"><a[^>]+>Python '"$version"'./ { print $2 }' | grep -v 'rc' | sort -V | tail -1)"
 	# TODO figure out a better want to handle RCs than just filtering them out wholesale
+	if [ -z "$fullVersion" ]; then
+		echo >&2 "warning: cannot find $version"
+		continue
+	fi
 	(
 		set -x
 		sed -ri '
