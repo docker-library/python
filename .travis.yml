@@ -33,4 +33,7 @@ script:
 # the "onbuild" variant has to happen with the base variant because it's FROM it
   - true && [ "$VARIANT" ] || docker build -t "${image}-onbuild" onbuild
 
+after_script:
+  - docker images
+
 # vim:set et ts=2 sw=2:
