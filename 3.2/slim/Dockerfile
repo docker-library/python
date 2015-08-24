@@ -19,7 +19,7 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 26DEA9D4613391EF3E25C
 ENV PYTHON_VERSION 3.2.6
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 7.1.1
+ENV PYTHON_PIP_VERSION 7.1.2
 
 RUN set -x \
 	&& buildDeps=' \
