@@ -16,10 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
 
-ENV PYTHON_VERSION 3.5.0b3
+ENV PYTHON_VERSION 3.5.0
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 7.1.0
+ENV PYTHON_PIP_VERSION 7.1.2
 
 RUN set -x \
 	&& buildDeps=' \
@@ -57,7 +57,7 @@ RUN set -x \
 
 # make some useful symlinks that are expected to exist
 RUN cd /usr/local/bin \
-	&& ln -s easy_install-3.4 easy_install \
+	&& ln -s easy_install-3.5 easy_install \
 	&& ln -s idle3 idle \
 	&& ln -s pydoc3 pydoc \
 	&& ln -s python3 python \
