@@ -1,39 +1,36 @@
-FROM alpine:edge
-
-RUN apk add -u --no-cache gnupg
-
-# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
-RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
+FROM alpine:3.3
 
 ENV PYTHON_VERSION 3.5.1
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 7.1.2
 
-RUN set -x -e ;\
-	build_deps=' \
+# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
+ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
+
+RUN apk add --no-cache --virtual .fetch-deps curl gnupg \
+	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $GPG_KEY \
+	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
+	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
+	&& gpg --verify python.tar.xz.asc \
+	&& mkdir -p /usr/src/ \
+	&& tar -xJC /usr/src -f python.tar.xz \
+	&& mv /usr/src/Python-${PYTHON_VERSION} /usr/src/python \
+	&& rm python.tar.xz* \
+	&& apk del .fetch-deps
+
+RUN apk add --no-cache --virtual .build-deps  \
 		bzip2-dev \
-		curl \
 		gcc \
 		libc-dev \
 		libedit-dev \
 		linux-headers \
-		make \
 		make \
 		ncurses-dev \
 		openssl-dev \
 		sqlite-dev \
 		zlib-dev \
 		pax-utils \
-	' \
-	&& apk add --no-cache --virtual .build-deps  $build_deps \
-	&& mkdir -p /usr/src/ \
-	&& curl -SL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
-	&& curl -SL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
-	&& gpg --verify python.tar.xz.asc \
-	&& tar -xJC /usr/src -f python.tar.xz \
-	&& mv /usr/src/Python-${PYTHON_VERSION} /usr/src/python \
-	&& rm python.tar.xz* \
 	&& cd /usr/src/python \
 	&& ./configure --enable-shared --enable-unicode=ucs4 \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
