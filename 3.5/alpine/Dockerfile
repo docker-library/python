@@ -46,7 +46,7 @@ RUN apk add --no-cache --virtual .build-deps  \
 			apk info --installed -q $dep && echo $dep; \
 		done | sort -u) \
 	&& apk add --virtual .python-rundeps $rundeps \
-	&& apk del .build-deps gnupg \
+	&& apk del .build-deps \
 	&& rm -rf /usr/src/python
 
 # make some useful symlinks that are expected to exist
