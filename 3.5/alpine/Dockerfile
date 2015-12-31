@@ -1,25 +1,27 @@
 FROM alpine:3.3
 
+# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
+ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
+
 ENV PYTHON_VERSION 3.5.1
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 7.1.2
 
-# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
-ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
-
-RUN apk add --no-cache --virtual .fetch-deps curl gnupg \
-	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $GPG_KEY \
+RUN set -ex \
+	&& apk add --no-cache --virtual .fetch-deps curl gnupg \
+	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY" \
 	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
 	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
 	&& gpg --verify python.tar.xz.asc \
-	&& mkdir -p /usr/src/ \
+	&& mkdir -p /usr/src \
 	&& tar -xJC /usr/src -f python.tar.xz \
-	&& mv /usr/src/Python-${PYTHON_VERSION} /usr/src/python \
+	&& mv "/usr/src/Python-$PYTHON_VERSION" /usr/src/python \
 	&& rm python.tar.xz* \
-	&& apk del .fetch-deps
-
-RUN apk add --no-cache --virtual .build-deps  \
+	&& apk del .fetch-deps \
+	&& rm -r ~/.gnupg \
+	\
+	&& apk add --no-cache --virtual .build-deps  \
 		bzip2-dev \
 		gcc \
 		libc-dev \
@@ -28,9 +30,9 @@ RUN apk add --no-cache --virtual .build-deps  \
 		make \
 		ncurses-dev \
 		openssl-dev \
+		pax-utils \
 		sqlite-dev \
 		zlib-dev \
-		pax-utils \
 	&& cd /usr/src/python \
 	&& ./configure --enable-shared --enable-unicode=ucs4 \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
@@ -40,12 +42,14 @@ RUN apk add --no-cache --virtual .build-deps  \
 		\( -type d -a -name test -o -name tests \) \
 		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
 		-exec rm -rf '{}' + \
-	&& rundeps=$(scanelf -R -n --nobanner /usr/local/  \
-		| awk '{gsub(/,/,"\n",$2); print $2}' \
-		| sort -u | sed 's/^/so:/' | while read dep; do \
-			apk info --installed -q $dep && echo $dep; \
-		done | sort -u) \
-	&& apk add --virtual .python-rundeps $rundeps \
+	&& runDeps="$( \
+		scanelf --needed --nobanner --recursive /usr/local \
+			| awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
+			| sort -u \
+			| xargs -r apk info --installed \
+			| sort -u \
+	)" \
+	&& apk add --virtual .python-rundeps $runDeps \
 	&& apk del .build-deps \
 	&& rm -rf /usr/src/python
 
