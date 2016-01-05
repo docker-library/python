@@ -25,12 +25,12 @@ RUN set -ex \
 		bzip2-dev \
 		gcc \
 		libc-dev \
-		libedit-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
 		openssl-dev \
 		pax-utils \
+		readline-dev \
 		sqlite-dev \
 		zlib-dev \
 	&& cd /usr/src/python \
