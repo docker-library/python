@@ -16,6 +16,7 @@ env:
   - VERSION=3.2 VARIANT=wheezy
   - VERSION=2.7 VARIANT=
   - VERSION=2.7 VARIANT=slim
+  - VERSION=2.7 VARIANT=alpine
   - VERSION=2.7 VARIANT=wheezy
 
 install:
