@@ -14,14 +14,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 # gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
-RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
+ENV GPG_KEY C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
 
 ENV PYTHON_VERSION 2.7.11
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 7.1.2
 
-RUN set -x \
+RUN set -ex \
 	&& buildDeps=' \
 		curl \
 		gcc \
@@ -36,12 +36,15 @@ RUN set -x \
 		zlib1g-dev \
 	' \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
-	&& mkdir -p /usr/src/python \
+	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY" \
 	&& curl -fSL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
 	&& curl -fSL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
 	&& gpg --verify python.tar.xz.asc \
+	&& mkdir -p /usr/src/python \
 	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
 	&& rm python.tar.xz* \
+	&& rm -r ~/.gnupg \
+	\
 	&& cd /usr/src/python \
 	&& ./configure --enable-shared --enable-unicode=ucs4 \
 	&& make -j$(nproc) \
@@ -55,8 +58,5 @@ RUN set -x \
 		-exec rm -rf '{}' + \
 	&& apt-get purge -y --auto-remove $buildDeps \
 	&& rm -rf /usr/src/python
-
-# install "virtualenv", since the vast majority of users of this image will want it
-RUN pip install --no-cache-dir virtualenv
 
 CMD ["python2"]

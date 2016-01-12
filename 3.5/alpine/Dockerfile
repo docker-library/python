@@ -1,5 +1,9 @@
 FROM alpine:3.3
 
+# http://bugs.python.org/issue19846
+# > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
+ENV LANG C.UTF-8
+
 # gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
 ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
 
@@ -18,8 +22,8 @@ RUN set -ex \
 	&& tar -xJC /usr/src -f python.tar.xz \
 	&& mv "/usr/src/Python-$PYTHON_VERSION" /usr/src/python \
 	&& rm python.tar.xz* \
-	&& apk del .fetch-deps \
 	&& rm -r ~/.gnupg \
+	&& apk del .fetch-deps \
 	\
 	&& apk add --no-cache --virtual .build-deps  \
 		bzip2-dev \
