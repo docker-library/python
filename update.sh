@@ -11,6 +11,7 @@ versions=( "${versions[@]%/}" )
 
 pipVersion="$(curl -fsSL 'https://pypi.python.org/pypi/pip/json' | awk -F '"' '$2 == "version" { print $4 }')"
 
+travisEnv=
 for version in "${versions[@]}"; do
 	# <span class="release-number"><a href="/downloads/release/python-278/">Python 2.7.8</a></span>
 	# <span class="release-number"><a href="/downloads/release/python-341/">Python 3.4.1</a></span>
@@ -28,4 +29,12 @@ for version in "${versions[@]}"; do
 		' "$version"/{,*/}Dockerfile
 		sed -ri 's/^(FROM python):.*/\1:'"$version"'/' "$version/onbuild/Dockerfile"
 	)
+	for variant in wheezy alpine slim; do
+		[ -d "$version/$variant" ] || continue
+		travisEnv='\n  - VERSION='"$version VARIANT=$variant$travisEnv"
+	done
+	travisEnv='\n  - VERSION='"$version VARIANT=$travisEnv"
 done
+
+travis="$(awk -v 'RS=\n\n' '$1 == "env:" { $0 = "env:'"$travisEnv"'" } { printf "%s%s", $0, RS }' .travis.yml)"
+echo "$travis" > .travis.yml

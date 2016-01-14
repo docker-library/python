@@ -54,8 +54,7 @@ RUN set -ex \
 			| sort -u \
 	)" \
 	&& apk add --virtual .python-rundeps $runDeps \
-	&& apk del .fetch-deps \
-	&& apk del .build-deps \
+	&& apk del .build-deps .fetch-deps \
 	&& rm -rf /usr/src/python
 
 CMD ["python2"]
