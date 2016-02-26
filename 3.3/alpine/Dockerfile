@@ -10,7 +10,7 @@ ENV GPG_KEY 26DEA9D4613391EF3E25C9FF0A5B101836580288
 ENV PYTHON_VERSION 3.3.6
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 7.1.2
+ENV PYTHON_PIP_VERSION 8.0.3
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps curl gnupg \
