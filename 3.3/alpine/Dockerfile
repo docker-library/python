@@ -35,6 +35,7 @@ RUN set -ex \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
+		xz-dev \
 		zlib-dev \
 	&& cd /usr/src/python \
 	&& ./configure --enable-shared --enable-unicode=ucs4 \
