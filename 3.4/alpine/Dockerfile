@@ -14,15 +14,16 @@ ENV PYTHON_PIP_VERSION 8.0.3
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps curl gnupg \
-	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY" \
 	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
 	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
-	&& gpg --verify python.tar.xz.asc \
+	&& export GNUPGHOME="$(mktemp -d)" \
+	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY" \
+	&& gpg --batch --verify python.tar.xz.asc python.tar.xz \
+	&& rm -r "$GNUPGHOME" python.tar.xz.asc \
 	&& mkdir -p /usr/src \
 	&& tar -xJC /usr/src -f python.tar.xz \
 	&& mv "/usr/src/Python-$PYTHON_VERSION" /usr/src/python \
-	&& rm python.tar.xz* \
-	&& rm -r ~/.gnupg \
+	&& rm python.tar.xz \
 	&& apk del .fetch-deps \
 	\
 	&& apk add --no-cache --virtual .build-deps  \
