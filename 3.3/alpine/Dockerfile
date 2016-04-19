@@ -56,7 +56,7 @@ RUN set -ex \
 	)" \
 	&& apk add --virtual .python-rundeps $runDeps \
 	&& apk del .build-deps .fetch-deps \
-	&& rm -rf /usr/src/python
+	&& rm -rf /usr/src/python ~/.cache
 
 # make some useful symlinks that are expected to exist
 RUN cd /usr/local/bin \
