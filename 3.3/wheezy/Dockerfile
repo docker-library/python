@@ -37,7 +37,7 @@ RUN set -ex \
 		\( -type d -a -name test -o -name tests \) \
 		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
 		-exec rm -rf '{}' + \
-	&& rm -rf /usr/src/python
+	&& rm -rf /usr/src/python ~/.cache
 
 # make some useful symlinks that are expected to exist
 RUN cd /usr/local/bin \
