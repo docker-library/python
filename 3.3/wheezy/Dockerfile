@@ -33,10 +33,12 @@ RUN set -ex \
 	&& ldconfig \
 	&& curl -fSL 'https://bootstrap.pypa.io/get-pip.py' | python3 \
 	&& pip install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
-	&& find /usr/local \
-		\( -type d -a -name test -o -name tests \) \
-		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-		-exec rm -rf '{}' + \
+	&& find /usr/local -depth \
+		\( \
+		    \( -type d -a -name test -o -name tests \) \
+		    -o \
+		    \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+		\) -exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python ~/.cache
 
 # make some useful symlinks that are expected to exist

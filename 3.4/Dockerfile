@@ -32,10 +32,12 @@ RUN set -ex \
 	&& make install \
 	&& ldconfig \
 	&& pip3 install --no-cache-dir --upgrade --ignore-installed pip==$PYTHON_PIP_VERSION \
-	&& find /usr/local \
-		\( -type d -a -name test -o -name tests \) \
-		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-		-exec rm -rf '{}' + \
+	&& find /usr/local -depth \
+		\( \
+		    \( -type d -a -name test -o -name tests \) \
+		    -o \
+		    \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+		\) -exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python ~/.cache
 
 # make some useful symlinks that are expected to exist
