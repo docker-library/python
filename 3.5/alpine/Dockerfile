@@ -30,6 +30,7 @@ RUN set -ex \
 		bzip2-dev \
 		gcc \
 		libc-dev \
+		libpq \
 		linux-headers \
 		make \
 		ncurses-dev \
