@@ -13,7 +13,7 @@ ENV GPG_KEY 26DEA9D4613391EF3E25C9FF0A5B101836580288
 ENV PYTHON_VERSION 3.3.6
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 8.1.1
+ENV PYTHON_PIP_VERSION 8.1.2
 
 RUN set -ex \
 	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
