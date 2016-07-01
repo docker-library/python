@@ -18,17 +18,23 @@ for version in "${versions[@]}"; do
 	fullVersion="$(curl -fsSL 'https://www.python.org/downloads/' | awk -F 'Python |</a>' '/<span class="release-number"><a[^>]+>Python '"$version"'./ { print $2 }' | grep -v 'rc' | sort -V | tail -1)"
 	# TODO figure out a better way to handle RCs than just filtering them out
 	if [ -z "$fullVersion" ]; then
-		echo >&2 "warning: cannot find $version"
-		continue
+		{
+			echo
+			echo
+			echo "  warning: cannot find $version (alpha/beta/rc?)"
+			echo
+			echo
+		} >&2
+	else
+		(
+			set -x
+			sed -ri '
+				s/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/;
+				s/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/;
+			' "$version"/{,*/}Dockerfile
+			sed -ri 's/^(FROM python):.*/\1:'"$version"'/' "$version/onbuild/Dockerfile"
+		)
 	fi
-	(
-		set -x
-		sed -ri '
-			s/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/;
-			s/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/;
-		' "$version"/{,*/}Dockerfile
-		sed -ri 's/^(FROM python):.*/\1:'"$version"'/' "$version/onbuild/Dockerfile"
-	)
 	for variant in wheezy alpine slim; do
 		[ -d "$version/$variant" ] || continue
 		travisEnv='\n  - VERSION='"$version VARIANT=$variant$travisEnv"
