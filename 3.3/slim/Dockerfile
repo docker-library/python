@@ -49,6 +49,7 @@ RUN set -ex \
 	\
 	&& cd /usr/src/python \
 	&& ./configure \
+		--enable-loadable-sqlite-extensions \
 		--enable-shared \
 		--enable-unicode=ucs4 \
 	&& make -j$(nproc) \
