@@ -30,7 +30,6 @@ RUN set -ex \
 	&& ./configure \
 		--enable-loadable-sqlite-extensions \
 		--enable-shared \
-		--enable-unicode=ucs4 \
 	&& make -j$(nproc) \
 	&& make install \
 	&& ldconfig \

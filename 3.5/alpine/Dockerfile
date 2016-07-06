@@ -42,7 +42,6 @@ RUN set -ex \
 	&& ./configure \
 		--enable-loadable-sqlite-extensions \
 		--enable-shared \
-		--enable-unicode=ucs4 \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& make install \
 	&& pip3 install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
