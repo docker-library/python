@@ -40,7 +40,7 @@ RUN set -ex \
 		xz-dev \
 		zlib-dev \
 	&& cd /usr/src/python \
-	&& ./configure --enable-shared --enable-unicode=ucs4 \
+	&& ./configure --enable-shared --enable-unicode=ucs4 --enable-loadable-sqlite-extensions \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& make install \
 	&& pip3 install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
