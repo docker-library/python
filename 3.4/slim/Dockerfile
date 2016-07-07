@@ -48,7 +48,9 @@ RUN set -ex \
 	&& rm python.tar.xz \
 	\
 	&& cd /usr/src/python \
-	&& ./configure --enable-shared --enable-unicode=ucs4 \
+	&& ./configure \
+		--enable-loadable-sqlite-extensions \
+		--enable-shared \
 	&& make -j$(nproc) \
 	&& make install \
 	&& ldconfig \
