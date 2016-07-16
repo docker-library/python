@@ -32,6 +32,8 @@ RUN set -ex \
 		libsqlite3-dev \
 		libssl-dev \
 		make \
+		tcl-dev \
+		tk-dev \
 		xz-utils \
 		zlib1g-dev \
 	' \
