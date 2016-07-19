@@ -16,6 +16,15 @@ ENV PYTHON_VERSION 2.7.12
 ENV PYTHON_PIP_VERSION 8.1.2
 
 RUN set -ex \
+	&& buildDeps=' \
+		tcl-dev \
+		tk-dev \
+	' \
+	&& runDeps=' \
+		tcl \
+		tk \
+	' \
+	&& apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
 	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
 	&& export GNUPGHOME="$(mktemp -d)" \
@@ -42,6 +51,7 @@ RUN set -ex \
 		    -o \
 		    \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
 		\) -exec rm -rf '{}' + \
+	&& apt-get purge -y --auto-remove $buildDeps \
 	&& rm -rf /usr/src/python ~/.cache
 
 # install "virtualenv", since the vast majority of users of this image will want it

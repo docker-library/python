@@ -35,6 +35,8 @@ RUN set -ex \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
+		tcl-dev \
+		tk-dev \
 		xz-dev \
 		zlib-dev \
 	&& cd /usr/src/python \
