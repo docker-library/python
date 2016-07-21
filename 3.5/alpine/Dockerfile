@@ -37,6 +37,7 @@ RUN set -ex \
 		readline-dev \
 		sqlite-dev \
 		tcl-dev \
+		tk \
 		tk-dev \
 		xz-dev \
 		zlib-dev \

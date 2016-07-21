@@ -36,6 +36,7 @@ RUN set -ex \
 		readline-dev \
 		sqlite-dev \
 		tcl-dev \
+		tk \
 		tk-dev \
 		zlib-dev \
 	&& cd /usr/src/python \
