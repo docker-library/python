@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
 
-ENV PYTHON_VERSION 3.6.0a2
+ENV PYTHON_VERSION 3.6.0a3
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 8.1.2
