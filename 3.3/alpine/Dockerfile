@@ -4,6 +4,10 @@ FROM alpine:3.4
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
+# install ca-certificates so that HTTPS works consistently
+# the other runtime dependencies for Python are installed later
+RUN apk add --no-cache ca-certificates
+
 # gpg: key 36580288: public key "Georg Brandl (Python release signing key) <georg@python.org>" imported
 ENV GPG_KEY 26DEA9D4613391EF3E25C9FF0A5B101836580288
 
