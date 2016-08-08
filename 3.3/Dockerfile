@@ -1,15 +1,25 @@
+#
+# NOTE: THIS DOCKERFILE IS GENERATED VIA "update.sh"
+#
+# PLEASE DO NOT EDIT IT DIRECTLY.
+#
+
 FROM buildpack-deps:jessie
 
-# ensure local python is used over debian python
+# ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
 
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
-# gpg: key 36580288: public key "Georg Brandl (Python release signing key) <georg@python.org>" imported
-ENV GPG_KEY 26DEA9D4613391EF3E25C9FF0A5B101836580288
+# runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		tcl \
+		tk \
+	&& rm -rf /var/lib/apt/lists/*
 
+ENV GPG_KEY 26DEA9D4613391EF3E25C9FF0A5B101836580288
 ENV PYTHON_VERSION 3.3.6
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
@@ -20,13 +30,10 @@ RUN set -ex \
 		tcl-dev \
 		tk-dev \
 	' \
-	&& runDeps=' \
-		tcl \
-		tk \
-	' \
-	&& apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
-	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
-	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
+	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
+	\
+	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
+	&& wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY" \
 	&& gpg --batch --verify python.tar.xz.asc python.tar.xz \
@@ -42,9 +49,16 @@ RUN set -ex \
 	&& make -j$(nproc) \
 	&& make install \
 	&& ldconfig \
-	&& curl -fSL 'https://bootstrap.pypa.io/get-pip.py' | python3 \
-	&& pip install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
-	&& [ "$(pip list | awk -F '[ ()]+' '$1 == "pip" { print $2; exit }')" = "$PYTHON_PIP_VERSION" ] \
+	\
+# explicit path to "pip3" to ensure distribution-provided "pip3" cannot interfere
+	&& if [ ! -e /usr/local/bin/pip3 ]; then : \
+		&& wget -O /tmp/get-pip.py 'https://bootstrap.pypa.io/get-pip.py' \
+		&& python3 /tmp/get-pip.py "pip==$PYTHON_PIP_VERSION" \
+		&& rm /tmp/get-pip.py \
+	; fi \
+	&& pip3 install --no-cache-dir --upgrade "pip==$PYTHON_PIP_VERSION" \
+	&& [ "$(pip list |tac|tac| awk -F '[ ()]+' '$1 == "pip" { print $2; exit }')" = "$PYTHON_PIP_VERSION" ] \
+	\
 	&& find /usr/local -depth \
 		\( \
 			\( -type d -a -name test -o -name tests \) \
@@ -56,6 +70,7 @@ RUN set -ex \
 
 # make some useful symlinks that are expected to exist
 RUN cd /usr/local/bin \
+	&& { [ -e easy_install ] || ln -s easy_install-* easy_install; } \
 	&& ln -s idle3 idle \
 	&& ln -s pydoc3 pydoc \
 	&& ln -s python3 python \
