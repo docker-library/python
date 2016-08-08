@@ -1,19 +1,7 @@
 FROM buildpack-deps:jessie
 
-# divert many traces of Debian Python (so that they are not used by mistake)
-# https://bugs.debian.org/33263 :(
-RUN set -ex \
-	&& for bits in \
-#		/etc/python* \
-		/usr/bin/*2to3* \
-		/usr/bin/*python* \
-		/usr/bin/pdb* \
-		/usr/bin/py* \
-#		/usr/lib/python* \
-#		/usr/share/python \
-	; do \
-		dpkg-divert --rename "$bits"; \
-	done
+# ensure local python is used over debian python
+ENV PATH /usr/local/bin:$PATH
 
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
@@ -58,9 +46,9 @@ RUN set -ex \
 	&& [ "$(pip list | awk -F '[ ()]+' '$1 == "pip" { print $2; exit }')" = "$PYTHON_PIP_VERSION" ] \
 	&& find /usr/local -depth \
 		\( \
-		    \( -type d -a -name test -o -name tests \) \
-		    -o \
-		    \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+			\( -type d -a -name test -o -name tests \) \
+			-o \
+			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
 		\) -exec rm -rf '{}' + \
 	&& apt-get purge -y --auto-remove $buildDeps \
 	&& rm -rf /usr/src/python ~/.cache

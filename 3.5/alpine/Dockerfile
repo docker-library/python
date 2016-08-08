@@ -51,9 +51,9 @@ RUN set -ex \
 	&& [ "$(pip list | awk -F '[ ()]+' '$1 == "pip" { print $2; exit }')" = "$PYTHON_PIP_VERSION" ] \
 	&& find /usr/local -depth \
 		\( \
-		    \( -type d -a -name test -o -name tests \) \
-		    -o \
-		    \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+			\( -type d -a -name test -o -name tests \) \
+			-o \
+			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
 		\) -exec rm -rf '{}' + \
 	&& runDeps="$( \
 		scanelf --needed --nobanner --recursive /usr/local \
