@@ -37,6 +37,7 @@ RUN set -ex \
 	&& apk add --no-cache --virtual .build-deps  \
 		bzip2-dev \
 		gcc \
+		gdbm-dev \
 		libc-dev \
 		linux-headers \
 		make \
