@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+shopt -s nullglob
 
 declare -A gpgKeys=(
 	# gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
@@ -65,12 +66,15 @@ for version in "${versions[@]}"; do
 				alpine \
 				slim \
 				onbuild \
+				windows/windowsservercore \
 			; do
 				if [ "$variant" = 'debian' ]; then
 					dir="$version"
 				else
 					dir="$version/$variant"
+					variant="$(basename "$variant")"
 				fi
+				[ -d "$dir" ] || continue
 				template="Dockerfile-$variant.template"
 				{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
 			done
@@ -84,9 +88,10 @@ for version in "${versions[@]}"; do
 			sed -ri \
 				-e 's/^(ENV GPG_KEY) .*/\1 '"${gpgKeys[$version]}"'/' \
 				-e 's/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/' \
+				-e 's/^(ENV PYTHON_RELEASE) .*/\1 '"${fullVersion%%[a-z]*}"'/' \
 				-e 's/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/' \
 				-e 's/^(FROM python):.*/\1:'"$version"'/' \
-				"$version"/{,*/}Dockerfile
+				"$version"/{,*/,*/*/}Dockerfile
 		)
 	fi
 	for variant in wheezy alpine slim; do
