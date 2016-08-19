@@ -36,7 +36,10 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env
 	\
 	$pipInstall = ('pip=={0}' -f $env:PYTHON_PIP_VERSION); \
 	Write-Host ('Installing {0} ...' -f $pipInstall); \
-	pip install --no-cache-dir --upgrade $pipInstall; \
+# we use "--force-reinstall" for the case where the version of pip we're trying to install is the same as the version bundled with Python
+# ("Requirement already up-to-date: pip==8.1.2 in /usr/local/lib/python3.6/site-packages")
+# https://github.com/docker-library/python/pull/143#issuecomment-241032683
+	pip install --no-cache-dir --upgrade --force-reinstall $pipInstall; \
 	\
 	Write-Host 'Verifying pip install ...'; \
 	pip --version; \
