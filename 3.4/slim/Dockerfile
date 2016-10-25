@@ -31,6 +31,7 @@ RUN set -ex \
 		gcc \
 		libbz2-dev \
 		libc6-dev \
+		libgdbm-dev \
 		liblzma-dev \
 		libncurses-dev \
 		libreadline-dev \
