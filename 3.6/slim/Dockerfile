@@ -10,6 +10,7 @@ ENV LANG C.UTF-8
 # runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
+		libgdbm3 \
 		libsqlite3-0 \
 		libssl1.0.0 \
 	&& rm -rf /var/lib/apt/lists/*
@@ -25,6 +26,7 @@ RUN set -ex \
 		gcc \
 		libbz2-dev \
 		libc6-dev \
+		libgdbm-dev \
 		liblzma-dev \
 		libncurses-dev \
 		libreadline-dev \
