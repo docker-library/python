@@ -17,6 +17,7 @@ ENV LANG C.UTF-8
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		tcl \
 		tk \
+		libgdbm \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
@@ -29,6 +30,7 @@ RUN set -ex \
 	&& buildDeps=' \
 		tcl-dev \
 		tk-dev \
+		libgdbm-dev \
 	' \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	\
