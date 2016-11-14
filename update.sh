@@ -47,18 +47,31 @@ generated_warning() {
 
 travisEnv=
 for version in "${versions[@]}"; do
-	# <span class="release-number"><a href="/downloads/release/python-278/">Python 2.7.8</a></span>
-	# <span class="release-number"><a href="/downloads/release/python-341/">Python 3.4.1</a></span>
-	fullVersion="$(curl -fsSL 'https://www.python.org/downloads/' | awk -F 'Python |</a>' '/<span class="release-number"><a[^>]+>Python '"$version"'./ { print $2 }' | grep -v 'rc' | sort -V | tail -1)"
-	# TODO figure out a better way to handle RCs than just filtering them out
+	rcGrepV='-v'
+	rcVersion="${version%-rc}"
+	if [ "$rcVersion" != "$version" ]; then
+		rcGrepV=
+	fi
+
+	possibles=( $(curl -fsSL 'https://www.python.org/ftp/python/' | grep '<a href="'"$rcVersion." | sed -r 's!.*<a href="([^"/]+)/?".*!\1!' | sort -rV) )
+	fullVersion=
+	for possible in "${possibles[@]}"; do
+		possibleVersions=( $(curl -fsSL "https://www.python.org/ftp/python/$possible/" | grep '<a href="Python-'"$rcVersion"'.*\.tar\.xz"' | sed -r 's!.*<a href="Python-([^"/]+)\.tar\.xz".*!\1!' | grep $rcGrepV -E -- '[a-zA-Z]+' | sort -rV) )
+		if [ "${#possibleVersions[@]}" -gt 0 ]; then
+			fullVersion="${possibleVersions[0]}"
+			break
+		fi
+	done
+
 	if [ -z "$fullVersion" ]; then
 		{
 			echo
 			echo
-			echo "  warning: cannot find $version (alpha/beta/rc?)"
+			echo "  error: cannot find $version (alpha/beta/rc?)"
 			echo
 			echo
 		} >&2
+		exit 1
 	else
 		if [[ "$version" != 2.* ]]; then
 			for variant in \
@@ -86,7 +99,7 @@ for version in "${versions[@]}"; do
 		(
 			set -x
 			sed -ri \
-				-e 's/^(ENV GPG_KEY) .*/\1 '"${gpgKeys[$version]}"'/' \
+				-e 's/^(ENV GPG_KEY) .*/\1 '"${gpgKeys[$rcVersion]}"'/' \
 				-e 's/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/' \
 				-e 's/^(ENV PYTHON_RELEASE) .*/\1 '"${fullVersion%%[a-z]*}"'/' \
 				-e 's/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/' \
