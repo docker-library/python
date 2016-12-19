@@ -2,8 +2,8 @@ FROM microsoft/windowsservercore
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
 
-ENV PYTHON_VERSION 2.7.12
-ENV PYTHON_RELEASE 2.7.12
+ENV PYTHON_VERSION 2.7.13
+ENV PYTHON_RELEASE 2.7.13
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 9.0.1
