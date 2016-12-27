@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:jessie
+FROM buildpack-deps:jessie
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -15,35 +15,20 @@ ENV LANG C.UTF-8
 
 # runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-		ca-certificates \
-		libgdbm3 \
-		libsqlite3-0 \
-		libssl1.0.0 \
+		tcl \
+		tk \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.6.0rc2
+ENV PYTHON_VERSION 3.6.0
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 9.0.1
 
 RUN set -ex \
 	&& buildDeps=' \
-		gcc \
-		libbz2-dev \
-		libc6-dev \
-		libgdbm-dev \
-		liblzma-dev \
-		libncurses-dev \
-		libreadline-dev \
-		libsqlite3-dev \
-		libssl-dev \
-		make \
 		tcl-dev \
 		tk-dev \
-		wget \
-		xz-utils \
-		zlib1g-dev \
 	' \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	\
