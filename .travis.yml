@@ -30,10 +30,10 @@ before_script:
   - image="$(awk '$1 == "FROM" { print $2; exit }' onbuild/Dockerfile)${VARIANT:+-$VARIANT}"
 
 script:
-  - docker build -t "$image" "${VARIANT:-.}"
+  - travis_retry docker build -t "$image" "${VARIANT:-.}"
   - ~/official-images/test/run.sh "$image"
 # the "onbuild" variant has to happen with the base variant because it's FROM it
-  - true && [ "$VARIANT" ] || docker build -t "${image}-onbuild" onbuild
+  - true && [ "$VARIANT" ] || travis_retry docker build -t "${image}-onbuild" onbuild
 
 after_script:
   - docker images
