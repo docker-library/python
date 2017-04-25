@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -Eeuo pipefail
 shopt -s nullglob
 
 declare -A gpgKeys=(
@@ -48,9 +48,10 @@ generated_warning() {
 }
 
 travisEnv=
+appveyorEnv=
 for version in "${versions[@]}"; do
-	rcGrepV='-v'
 	rcVersion="${version%-rc}"
+	rcGrepV='-v'
 	if [ "$rcVersion" != "$version" ]; then
 		rcGrepV=
 	fi
@@ -111,12 +112,19 @@ for version in "${versions[@]}"; do
 				"$version"/{,*/,*/*/}Dockerfile
 		)
 	fi
-	for variant in wheezy alpine slim; do
+	for variant in wheezy alpine slim ''; do
 		[ -d "$version/$variant" ] || continue
 		travisEnv='\n  - VERSION='"$version VARIANT=$variant$travisEnv"
 	done
-	travisEnv='\n  - VERSION='"$version VARIANT=$travisEnv"
+	for winVariant in windowsservercore nanoserver; do
+		if [ -d "$version/windows/$winVariant" ]; then
+			appveyorEnv='\n    - version: '"$version"'\n      variant: '"$winVariant$appveyorEnv"
+		fi
+	done
 done
 
 travis="$(awk -v 'RS=\n\n' '$1 == "env:" { $0 = "env:'"$travisEnv"'" } { printf "%s%s", $0, RS }' .travis.yml)"
 echo "$travis" > .travis.yml
+
+appveyor="$(awk -v 'RS=\n\n' '$1 == "environment:" { $0 = "environment:\n  matrix:'"$appveyorEnv"'" } { printf "%s%s", $0, RS }' .appveyor.yml)"
+echo "$appveyor" > .appveyor.yml
