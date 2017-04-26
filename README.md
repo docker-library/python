@@ -10,6 +10,8 @@ See a change merged here that doesn't show up on the Docker Hub yet? Check [the 
 
 -	[Travis CI:  
 	![build status badge](https://img.shields.io/travis/docker-library/python/master.svg)](https://travis-ci.org/docker-library/python/branches)
+-	[AppVeyor (Windows):  
+	![build status badge](https://ci.appveyor.com/api/projects/status/github/docker-library/python?branch=master&svg=true)](https://ci.appveyor.com/project/docker-library/python)
 -	[Automated `update.sh`:  
 	![build status badge](https://doi-janky.infosiftr.net/job/update.sh/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/update.sh/job/python)
 
