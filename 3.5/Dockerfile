@@ -22,11 +22,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
 ENV PYTHON_VERSION 3.5.3
 
-# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 9.0.1
-ENV PYTHON_SETUPTOOLS_VERSION 35.0.2
-ENV PYTHON_WHEEL_VERSION 0.29.0
-
 RUN set -ex \
 	&& buildDeps=' \
 		tcl-dev \
@@ -48,23 +43,12 @@ RUN set -ex \
 	&& ./configure \
 		--enable-loadable-sqlite-extensions \
 		--enable-shared \
-	&& make -j$(nproc) \
+		--without-ensurepip \
+	&& make -j "$(nproc)" \
 	&& make install \
 	&& ldconfig \
 	\
-# explicit path to "pip3" to ensure distribution-provided "pip3" cannot interfere
-	&& if [ ! -e /usr/local/bin/pip3 ]; then : \
-		&& wget -O /tmp/get-pip.py 'https://bootstrap.pypa.io/get-pip.py' \
-		&& python3 /tmp/get-pip.py "pip==$PYTHON_PIP_VERSION" \
-		&& rm /tmp/get-pip.py \
-	; fi \
-# we use "--force-reinstall" for the case where the version of pip we're trying to install is the same as the version bundled with Python
-# ("Requirement already up-to-date: pip==8.1.2 in /usr/local/lib/python3.6/site-packages")
-# https://github.com/docker-library/python/pull/143#issuecomment-241032683
-	&& pip3 install --no-cache-dir --upgrade --force-reinstall \
-		"pip==$PYTHON_PIP_VERSION" \
-		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
-		"wheel==$PYTHON_WHEEL_VERSION" \
+	&& apt-get purge -y --auto-remove $buildDeps \
 	\
 	&& find /usr/local -depth \
 		\( \
@@ -72,15 +56,35 @@ RUN set -ex \
 			-o \
 			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
 		\) -exec rm -rf '{}' + \
-	&& apt-get purge -y --auto-remove $buildDeps \
-	&& rm -rf /usr/src/python ~/.cache
+	&& rm -rf /usr/src/python
 
 # make some useful symlinks that are expected to exist
 RUN cd /usr/local/bin \
-	&& { [ -e easy_install ] || ln -s easy_install-* easy_install; } \
 	&& ln -s idle3 idle \
 	&& ln -s pydoc3 pydoc \
 	&& ln -s python3 python \
 	&& ln -s python3-config python-config
+
+# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+ENV PYTHON_PIP_VERSION 9.0.1
+
+RUN set -ex; \
+	\
+	wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
+	\
+	python get-pip.py \
+		--disable-pip-version-check \
+		--no-cache-dir \
+		"pip==$PYTHON_PIP_VERSION" \
+	; \
+	pip --version; \
+	\
+	find /usr/local -depth \
+		\( \
+			\( -type d -a -name test -o -name tests \) \
+			-o \
+			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+		\) -exec rm -rf '{}' +; \
+	rm -f get-pip.py
 
 CMD ["python3"]
