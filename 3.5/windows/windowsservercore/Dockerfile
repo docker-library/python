@@ -13,7 +13,7 @@ ENV PYTHON_RELEASE 3.5.3
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 9.0.1
-ENV PYTHON_SETUPTOOLS_VERSION 35.0.1
+ENV PYTHON_SETUPTOOLS_VERSION 35.0.2
 ENV PYTHON_WHEEL_VERSION 0.29.0
 
 RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env:PYTHON_RELEASE, $env:PYTHON_VERSION); \
