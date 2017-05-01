@@ -33,8 +33,6 @@ fi
 versions=( "${versions[@]%/}" )
 
 pipVersion="$(curl -fsSL 'https://pypi.org/pypi/pip/json' | jq -r .info.version)"
-setuptoolsVersion="$(curl -fsSL 'https://pypi.org/pypi/setuptools/json' | jq -r .info.version)"
-wheelVersion="$(curl -fsSL 'https://pypi.org/pypi/wheel/json' | jq -r .info.version)"
 
 generated_warning() {
 	cat <<-EOH
@@ -106,8 +104,6 @@ for version in "${versions[@]}"; do
 				-e 's/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/' \
 				-e 's/^(ENV PYTHON_RELEASE) .*/\1 '"${fullVersion%%[a-z]*}"'/' \
 				-e 's/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/' \
-				-e 's/^(ENV PYTHON_SETUPTOOLS_VERSION) .*/\1 '"$setuptoolsVersion"'/' \
-				-e 's/^(ENV PYTHON_WHEEL_VERSION) .*/\1 '"$wheelVersion"'/' \
 				-e 's/^(FROM python):.*/\1:'"$version"'/' \
 				"$version"/{,*/,*/*/}Dockerfile
 		)
