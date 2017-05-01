@@ -49,11 +49,19 @@ RUN set -ex \
 		tk-dev \
 		xz-dev \
 		zlib-dev \
+		libffi-dev \
+		expat-dev \
 # add build deps before removing fetch deps in case there's overlap
 	&& apk del .fetch-deps \
 	\
 	&& cd /usr/src/python \
+	&& rm -r Modules/expat \
+		Modules/zlib \
+		Modules/_ctypes/darwin* \
+		Modules/_ctypes/libffi* \
 	&& ./configure \
+		--with-system-ffi \
+		--with-system-expat \
 		--enable-loadable-sqlite-extensions \
 		--enable-shared \
 		--without-ensurepip \
