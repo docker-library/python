@@ -33,6 +33,8 @@ RUN set -ex \
 	\
 	&& apk add --no-cache --virtual .build-deps  \
 		bzip2-dev \
+		coreutils \
+		dpkg-dev dpkg \
 		gcc \
 		gdbm-dev \
 		libc-dev \
@@ -52,10 +54,12 @@ RUN set -ex \
 	&& apk del .fetch-deps \
 	\
 	&& cd /usr/src/python \
+	&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
 	&& ./configure \
+		--build="$gnuArch" \
 		--enable-shared \
 		--enable-unicode=ucs4 \
-	&& make -j "$(getconf _NPROCESSORS_ONLN)" \
+	&& make -j "$(nproc)" \
 	&& make install \
 	\
 	&& runDeps="$( \

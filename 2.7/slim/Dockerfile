@@ -20,6 +20,7 @@ ENV PYTHON_VERSION 2.7.13
 
 RUN set -ex \
 	&& buildDeps=' \
+		dpkg-dev \
 		gcc \
 		libbz2-dev \
 		libc6-dev \
@@ -49,7 +50,9 @@ RUN set -ex \
 	&& rm python.tar.xz \
 	\
 	&& cd /usr/src/python \
+	&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
 	&& ./configure \
+		--build="$gnuArch" \
 		--enable-shared \
 		--enable-unicode=ucs4 \
 	&& make -j "$(nproc)" \
