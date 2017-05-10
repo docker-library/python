@@ -24,6 +24,7 @@ ENV PYTHON_VERSION 3.3.6
 
 RUN set -ex \
 	&& buildDeps=' \
+		dpkg-dev \
 		tcl-dev \
 		tk-dev \
 	' \
@@ -40,7 +41,9 @@ RUN set -ex \
 	&& rm python.tar.xz \
 	\
 	&& cd /usr/src/python \
+	&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
 	&& ./configure \
+		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
 		--enable-shared \
 		--without-ensurepip \

@@ -94,7 +94,11 @@ for version in "${versions[@]}"; do
 			done
 			if [ -d "$version/wheezy" ]; then
 				cp "$version/Dockerfile" "$version/wheezy/Dockerfile"
-				sed -ri 's/:jessie/:wheezy/g' "$version/wheezy/Dockerfile"
+				# wheezy-only: dpkg-architecture: unknown option `--query'
+				sed -ri \
+					-e 's/:jessie/:wheezy/g' \
+					-e 's/dpkg-architecture --query /dpkg-architecture -q/g' \
+					"$version/wheezy/Dockerfile"
 			fi
 		fi
 		(
