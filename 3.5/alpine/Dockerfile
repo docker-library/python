@@ -44,6 +44,7 @@ RUN set -ex \
 		gcc \
 		gdbm-dev \
 		libc-dev \
+		libpq \
 		linux-headers \
 		make \
 		ncurses-dev \
