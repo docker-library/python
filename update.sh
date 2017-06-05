@@ -112,7 +112,13 @@ for version in "${versions[@]}"; do
 				"$version"/{,*/,*/*/}Dockerfile
 		)
 	fi
-	for variant in wheezy alpine slim ''; do
+	if [ -d "$version/alpine3.6" ]; then
+		cp "$version/alpine/Dockerfile" "$version/alpine3.6/Dockerfile"
+		sed -ri \
+			-e 's/(alpine):3.4/\1:3.6/g' \
+			"$version/alpine3.6/Dockerfile"
+	fi
+	for variant in wheezy alpine3.6 alpine slim ''; do
 		[ -d "$version/$variant" ] || continue
 		travisEnv='\n  - VERSION='"$version VARIANT=$variant$travisEnv"
 	done
