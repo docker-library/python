@@ -23,7 +23,7 @@ ENV PYTHON_VERSION 3.6.1
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
 		gnupg \
-		openssl \
+		libressl \
 		tar \
 		xz \
 	\
@@ -47,8 +47,8 @@ RUN set -ex \
 		linux-headers \
 		make \
 		ncurses-dev \
-		openssl \
-		openssl-dev \
+		libressl \
+		libressl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
@@ -100,7 +100,7 @@ ENV PYTHON_PIP_VERSION 9.0.1
 
 RUN set -ex; \
 	\
-	apk add --no-cache --virtual .fetch-deps openssl; \
+	apk add --no-cache --virtual .fetch-deps libressl; \
 	\
 	wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
 	\

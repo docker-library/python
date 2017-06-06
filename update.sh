@@ -116,6 +116,7 @@ for version in "${versions[@]}"; do
 		cp "$version/alpine/Dockerfile" "$version/alpine3.6/Dockerfile"
 		sed -ri \
 			-e 's/(alpine):3.4/\1:3.6/g' \
+			-e 's/openssl/libressl/g' \
 			"$version/alpine3.6/Dockerfile"
 	fi
 	for variant in wheezy alpine3.6 alpine slim ''; do
