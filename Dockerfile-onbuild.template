@@ -3,7 +3,8 @@ FROM python:%%PLACEHOLDER%%
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-ONBUILD COPY requirements.txt /usr/src/app/
-ONBUILD RUN pip install --no-cache-dir -r requirements.txt
+ARG REQUIREMENTS_FILE=requirements.txt
+ONBUILD COPY $REQUIREMENTS_FILE /usr/src/app/
+ONBUILD RUN pip install --no-cache-dir -r $REQUIREMENTS_FILE
 
 ONBUILD COPY . /usr/src/app
