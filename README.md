@@ -4,7 +4,7 @@ This is the Git repo of the Docker [official image](https://docs.docker.com/dock
 
 The full readme is generated over in [docker-library/docs](https://github.com/docker-library/docs), specifically in [docker-library/docs/python](https://github.com/docker-library/docs/tree/master/python).
 
-See a change merged here that doesn't show up on the Docker Hub yet? Check [the "library/python" manifest file in the docker-library/official-images repo](https://github.com/docker-library/official-images/blob/master/library/python), especially [PRs with the "library/python" label on that repo](https://github.com/docker-library/official-images/labels/library%2Fpython). For more information about the official images process, see the [docker-library/official-images readme](https://github.com/docker-library/official-images/blob/master/README.md).
+See a change merged here that doesn't show up on the Docker Hub yet? Check [the "library/python" manifest file in the docker-library/official-images repo](https://github.com/docker-library/official-images/blob/master/library/python), especially [PRs with the "library/python" label on that repo](https://github.com/docker-library/official-images/labels/library%2Fpython). For more information about the official images process, see the [docker-library/official-images readme](https://github.com/docker-library/official-images/blob/master/README.md).  If you would like to try out such a build on an *experimental* basis before it lands in DockerHub, you can try using the syntax: `docker build https://github.com/docker-library/python.git#:3.6/alpine`.
 
 ---
 
