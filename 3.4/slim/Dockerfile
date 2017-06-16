@@ -16,6 +16,8 @@ ENV LANG C.UTF-8
 # runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
+		libexpat1 \
+		libffi6 \
 		libgdbm3 \
 		libsqlite3-0 \
 		libssl1.0.0 \
@@ -30,6 +32,8 @@ RUN set -ex \
 		gcc \
 		libbz2-dev \
 		libc6-dev \
+		libexpat1-dev \
+		libffi-dev \
 		libgdbm-dev \
 		liblzma-dev \
 		libncurses-dev \
@@ -61,6 +65,8 @@ RUN set -ex \
 		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
 		--enable-shared \
+		--with-system-expat \
+		--with-system-ffi \
 		--without-ensurepip \
 	&& make -j "$(nproc)" \
 	&& make install \

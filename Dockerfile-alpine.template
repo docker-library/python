@@ -35,9 +35,11 @@ RUN set -ex \
 		bzip2-dev \
 		coreutils \
 		dpkg-dev dpkg \
+		expat-dev \
 		gcc \
 		gdbm-dev \
 		libc-dev \
+		libffi-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
@@ -60,6 +62,8 @@ RUN set -ex \
 		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
 		--enable-shared \
+		--with-system-expat \
+		--with-system-ffi \
 		--without-ensurepip \
 	&& make -j "$(nproc)" \
 	&& make install \
