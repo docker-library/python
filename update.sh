@@ -57,7 +57,14 @@ for version in "${versions[@]}"; do
 	possibles=( $(curl -fsSL 'https://www.python.org/ftp/python/' | grep '<a href="'"$rcVersion." | sed -r 's!.*<a href="([^"/]+)/?".*!\1!' | sort -rV) )
 	fullVersion=
 	for possible in "${possibles[@]}"; do
-		possibleVersions=( $(curl -fsSL "https://www.python.org/ftp/python/$possible/" | grep '<a href="Python-'"$rcVersion"'.*\.tar\.xz"' | sed -r 's!.*<a href="Python-([^"/]+)\.tar\.xz".*!\1!' | grep $rcGrepV -E -- '[a-zA-Z]+' | sort -rV) )
+		possibleVersions=( $(
+			curl -fsSL "https://www.python.org/ftp/python/$possible/" \
+				| grep '<a href="Python-'"$rcVersion"'.*\.tar\.xz"' \
+				| sed -r 's!.*<a href="Python-([^"/]+)\.tar\.xz".*!\1!' \
+				| grep $rcGrepV -E -- '[a-zA-Z]+' \
+				| sort -rV \
+				|| true
+		) )
 		if [ "${#possibleVersions[@]}" -gt 0 ]; then
 			fullVersion="${possibleVersions[0]}"
 			break
