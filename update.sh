@@ -132,7 +132,7 @@ for version in "${versions[@]}"; do
 			-e 's/:jessie/:stretch/g' \
 			"$version/stretch/Dockerfile"
 	fi
-	for variant in wheezy alpine3.6 alpine slim ''; do
+	for variant in wheezy stretch alpine3.6 alpine slim ''; do
 		[ -d "$version/$variant" ] || continue
 		travisEnv='\n  - VERSION='"$version VARIANT=$variant$travisEnv"
 	done
