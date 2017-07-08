@@ -8,7 +8,7 @@ FROM microsoft/windowsservercore
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
 
-ENV PYTHON_VERSION 3.6.2rc1
+ENV PYTHON_VERSION 3.6.2rc2
 ENV PYTHON_RELEASE 3.6.2
 
 RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env:PYTHON_RELEASE, $env:PYTHON_VERSION); \

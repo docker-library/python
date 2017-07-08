@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.6.2rc1
+ENV PYTHON_VERSION 3.6.2rc2
 
 RUN set -ex \
 	&& buildDeps=' \
