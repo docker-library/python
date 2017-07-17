@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:%%PLACEHOLDER%%
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH

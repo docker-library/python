@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -Eeuo pipefail
 shopt -s nullglob
 
@@ -80,64 +80,56 @@ for version in "${versions[@]}"; do
 			echo
 		} >&2
 		exit 1
-	else
-		if [[ "$version" != 2.* ]]; then
-			for variant in \
-				debian \
-				alpine \
-				slim \
-				onbuild \
-				windows/windowsservercore \
-			; do
-				if [ "$variant" = 'debian' ]; then
-					dir="$version"
-				else
-					dir="$version/$variant"
-					variant="$(basename "$variant")"
-				fi
-				[ -d "$dir" ] || continue
-				template="Dockerfile-$variant.template"
-				{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
-			done
-		fi
-		(
-			set -x
-			sed -ri \
-				-e 's/^(ENV GPG_KEY) .*/\1 '"${gpgKeys[$rcVersion]}"'/' \
-				-e 's/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/' \
-				-e 's/^(ENV PYTHON_RELEASE) .*/\1 '"${fullVersion%%[a-z]*}"'/' \
-				-e 's/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/' \
-				-e 's/^(FROM python):.*/\1:'"$version"'/' \
-				"$version"/{,*/,*/*/}Dockerfile
-		)
 	fi
-	for variant in wheezy stretch alpine3.6 alpine slim ''; do
-		[ -d "$version/$variant" ] || continue
+
+	echo "$version: $fullVersion"
+
+	for v in \
+		alpine{3.4,3.6} \
+		{wheezy,jessie,stretch}{/slim,/onbuild,} \
+		windows/{windowsservercore,nanoserver} \
+	; do
+		dir="$version/$v"
+		variant="$(basename "$v")"
+
+		[ -d "$dir" ] || continue
 
 		case "$variant" in
-			alpine3.6)
-				sed -r \
-					-e 's!(alpine):3.4!\1:3.6!g' \
-					-e 's!openssl!libressl!g' \
-					"$version/alpine/Dockerfile" > "$version/$variant/Dockerfile"
-				;;
+			slim|onbuild|windowsservercore) template="$variant"; tag="$(basename "$(dirname "$dir")")" ;;
+			alpine*) template='alpine'; tag="${variant#alpine}" ;;
+			*) template='debian'; tag="$variant" ;;
+		esac
+		template="Dockerfile-${template}.template"
 
-			wheezy|stretch)
-				sed -r \
-					-e "s!(buildpack-deps|debian):jessie!\1:${variant}!g" \
-					"$version/Dockerfile" > "$version/$variant/Dockerfile"
-				if [ "$variant" = 'wheezy' ]; then
-					sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$version/$variant/Dockerfile"
-				fi
-				;;
+		if [[ "$version" == 2.* ]]; then
+			echo "  TODO: vimdiff ${versions[-1]}/$v/Dockerfile $version/$v/Dockerfile"
+		else
+			{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
+		fi
+
+		sed -ri \
+			-e 's/^(ENV GPG_KEY) .*/\1 '"${gpgKeys[$rcVersion]}"'/' \
+			-e 's/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/' \
+			-e 's/^(ENV PYTHON_RELEASE) .*/\1 '"${fullVersion%%[a-z]*}"'/' \
+			-e 's/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/' \
+			-e 's/^(FROM python):.*/\1:'"$version"'/' \
+			-e 's/^(FROM (debian|buildpack-deps|alpine)):.*/\1:'"$tag"'/' \
+			"$dir/Dockerfile"
+
+		case "$variant" in
+			alpine3.4) sed -ri -e 's/libressl/openssl/g' "$dir/Dockerfile" ;;
+			wheezy) sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$dir/Dockerfile" ;;
 		esac
 
-		travisEnv='\n  - VERSION='"$version VARIANT=$variant$travisEnv"
-	done
-	for winVariant in windowsservercore nanoserver; do
-		if [ -d "$version/windows/$winVariant" ]; then
-			appveyorEnv='\n    - version: '"$version"'\n      variant: '"$winVariant$appveyorEnv"
-		fi
+		case "$v" in
+			*/onbuild) ;;
+			windows/*)
+				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant$appveyorEnv"
+				;;
+			*)
+				travisEnv='\n  - VERSION='"$version VARIANT=$v$travisEnv"
+				;;
+		esac
 	done
 done
 
