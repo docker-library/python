@@ -99,14 +99,6 @@ for version in "${versions[@]}"; do
 				template="Dockerfile-$variant.template"
 				{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
 			done
-			if [ -d "$version/wheezy" ]; then
-				cp "$version/Dockerfile" "$version/wheezy/Dockerfile"
-				# wheezy-only: dpkg-architecture: unknown option `--query'
-				sed -ri \
-					-e 's/:jessie/:wheezy/g' \
-					-e 's/dpkg-architecture --query /dpkg-architecture -q/g' \
-					"$version/wheezy/Dockerfile"
-			fi
 		fi
 		(
 			set -x
@@ -119,21 +111,27 @@ for version in "${versions[@]}"; do
 				"$version"/{,*/,*/*/}Dockerfile
 		)
 	fi
-	if [ -d "$version/alpine3.6" ]; then
-		cp "$version/alpine/Dockerfile" "$version/alpine3.6/Dockerfile"
-		sed -ri \
-			-e 's/(alpine):3.4/\1:3.6/g' \
-			-e 's/openssl/libressl/g' \
-			"$version/alpine3.6/Dockerfile"
-	fi
-	if [ -d "$version/stretch" ]; then
-		cp "$version/Dockerfile" "$version/stretch/Dockerfile"
-		sed -ri \
-			-e 's/:jessie/:stretch/g' \
-			"$version/stretch/Dockerfile"
-	fi
 	for variant in wheezy stretch alpine3.6 alpine slim ''; do
 		[ -d "$version/$variant" ] || continue
+
+		case "$variant" in
+			alpine3.6)
+				sed -r \
+					-e 's!(alpine):3.4!\1:3.6!g' \
+					-e 's!openssl!libressl!g' \
+					"$version/alpine/Dockerfile" > "$version/$variant/Dockerfile"
+				;;
+
+			wheezy|stretch)
+				sed -r \
+					-e "s!(buildpack-deps|debian):jessie!\1:${variant}!g" \
+					"$version/Dockerfile" > "$version/$variant/Dockerfile"
+				if [ "$variant" = 'wheezy' ]; then
+					sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$version/$variant/Dockerfile"
+				fi
+				;;
+		esac
+
 		travisEnv='\n  - VERSION='"$version VARIANT=$variant$travisEnv"
 	done
 	for winVariant in windowsservercore nanoserver; do

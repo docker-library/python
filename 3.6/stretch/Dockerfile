@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.6.1
+ENV PYTHON_VERSION 3.6.2
 
 RUN set -ex \
 	&& buildDeps=' \
@@ -57,9 +57,9 @@ RUN set -ex \
 	\
 	&& find /usr/local -depth \
 		\( \
-			\( -type d -a -name test -o -name tests \) \
+			\( -type d -a \( -name test -o -name tests \) \) \
 			-o \
-			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
 		\) -exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python
 
@@ -86,9 +86,9 @@ RUN set -ex; \
 	\
 	find /usr/local -depth \
 		\( \
-			\( -type d -a -name test -o -name tests \) \
+			\( -type d -a \( -name test -o -name tests \) \) \
 			-o \
-			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
