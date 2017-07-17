@@ -6,6 +6,7 @@ env:
   - VERSION=3.6 VARIANT=slim
   - VERSION=3.6 VARIANT=alpine
   - VERSION=3.6 VARIANT=alpine3.6
+  - VERSION=3.6 VARIANT=stretch
   - VERSION=3.5 VARIANT=
   - VERSION=3.5 VARIANT=slim
   - VERSION=3.5 VARIANT=alpine
@@ -21,6 +22,7 @@ env:
   - VERSION=2.7 VARIANT=slim
   - VERSION=2.7 VARIANT=alpine
   - VERSION=2.7 VARIANT=alpine3.6
+  - VERSION=2.7 VARIANT=stretch
   - VERSION=2.7 VARIANT=wheezy
 
 install:
