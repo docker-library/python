@@ -48,9 +48,9 @@ RUN set -ex \
 	\
 	&& find /usr/local -depth \
 		\( \
-			\( -type d -a -name test -o -name tests \) \
+			\( -type d -a \( -name test -o -name tests \) \) \
 			-o \
-			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
 		\) -exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python
 
@@ -70,9 +70,9 @@ RUN set -ex; \
 	\
 	find /usr/local -depth \
 		\( \
-			\( -type d -a -name test -o -name tests \) \
+			\( -type d -a \( -name test -o -name tests \) \) \
 			-o \
-			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
