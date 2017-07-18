@@ -2,42 +2,51 @@ language: bash
 services: docker
 
 env:
-  - VERSION=3.6 VARIANT=
-  - VERSION=3.6 VARIANT=slim
-  - VERSION=3.6 VARIANT=alpine
-  - VERSION=3.6 VARIANT=alpine3.6
   - VERSION=3.6 VARIANT=stretch
-  - VERSION=3.5 VARIANT=
-  - VERSION=3.5 VARIANT=slim
-  - VERSION=3.5 VARIANT=alpine
-  - VERSION=3.4 VARIANT=
-  - VERSION=3.4 VARIANT=slim
-  - VERSION=3.4 VARIANT=alpine
+  - VERSION=3.6 VARIANT=jessie
+  - VERSION=3.6 VARIANT=jessie/slim
+  - VERSION=3.6 VARIANT=alpine3.6
+  - VERSION=3.6 VARIANT=alpine3.4
+  - VERSION=3.5 VARIANT=jessie
+  - VERSION=3.5 VARIANT=jessie/slim
+  - VERSION=3.5 VARIANT=alpine3.4
+  - VERSION=3.4 VARIANT=jessie
+  - VERSION=3.4 VARIANT=jessie/slim
   - VERSION=3.4 VARIANT=wheezy
-  - VERSION=3.3 VARIANT=
-  - VERSION=3.3 VARIANT=slim
-  - VERSION=3.3 VARIANT=alpine
+  - VERSION=3.4 VARIANT=alpine3.4
+  - VERSION=3.3 VARIANT=jessie
+  - VERSION=3.3 VARIANT=jessie/slim
   - VERSION=3.3 VARIANT=wheezy
-  - VERSION=2.7 VARIANT=
-  - VERSION=2.7 VARIANT=slim
-  - VERSION=2.7 VARIANT=alpine
-  - VERSION=2.7 VARIANT=alpine3.6
+  - VERSION=3.3 VARIANT=alpine3.4
   - VERSION=2.7 VARIANT=stretch
+  - VERSION=2.7 VARIANT=jessie
+  - VERSION=2.7 VARIANT=jessie/slim
   - VERSION=2.7 VARIANT=wheezy
+  - VERSION=2.7 VARIANT=alpine3.6
+  - VERSION=2.7 VARIANT=alpine3.4
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
 
 before_script:
   - env | sort
-  - cd "$VERSION"
-  - image="$(awk '$1 == "FROM" { print $2; exit }' onbuild/Dockerfile)${VARIANT:+-$VARIANT}"
+  - cd "$VERSION/$VARIANT"
+  - slash='/'; image="python:${VERSION}-${VARIANT//$slash/-}"
 
 script:
-  - travis_retry docker build -t "$image" "${VARIANT:-.}"
-  - ~/official-images/test/run.sh "$image"
-# the "onbuild" variant has to happen with the base variant because it's FROM it
-  - true && [ "$VARIANT" ] || travis_retry docker build -t "${image}-onbuild" onbuild
+  - |
+    (
+      set -Eeuo pipefail
+      set -x
+      travis_retry docker build -t "$image" .
+      ~/official-images/test/run.sh "$image"
+      if [ -d onbuild ]; then
+        onbuildFrom="$(awk 'toupper($1) == "FROM" { print $2; exit }' onbuild/Dockerfile)"
+        docker tag "$image" "$onbuildFrom"
+        docker build -t "$image-onbuild" onbuild
+        ~/official-images/test/run.sh "$image-onbuild"
+      fi
+    )
 
 after_script:
   - docker images

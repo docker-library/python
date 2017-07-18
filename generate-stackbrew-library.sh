@@ -1,5 +1,5 @@
-#!/bin/bash
-set -eu
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
 declare -A aliases=(
 	[3.6-rc]='rc'
@@ -7,11 +7,31 @@ declare -A aliases=(
 	[2.7]='2'
 )
 
+defaultDebianSuite='stretch'
+declare -A debianSuites=(
+	[2.7]='jessie'
+	[3.3]='jessie'
+	[3.4]='jessie'
+	[3.5]='jessie'
+	[3.6]='jessie'
+)
+defaultAlpineVersion='3.6'
+declare -A alpineVersions=(
+	[2.7]='3.4'
+	[3.3]='3.4'
+	[3.4]='3.4'
+	[3.5]='3.4'
+	[3.6]='3.4'
+)
+
 self="$(basename "$BASH_SOURCE")"
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
 versions=( */ )
 versions=( "${versions[@]%/}" )
+
+# sort version numbers with highest first
+IFS=$'\n'; versions=( $(echo "${versions[*]}" | sort -rV) ); unset IFS
 
 # get the most recent commit which modified any of "$@"
 fileCommit() {
@@ -39,7 +59,7 @@ getArches() {
 	local repo="$1"; shift
 	local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/'
 
-	eval "declare -A -g parentRepoToArches=( $(
+	eval "declare -g -A parentRepoToArches=( $(
 		find -name 'Dockerfile' -exec awk '
 				toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|microsoft\/[^:]+)(:|$)/ {
 					print "'"$officialImagesUrl"'" $2
@@ -67,29 +87,12 @@ join() {
 }
 
 for version in "${versions[@]}"; do
-	commit="$(dirCommit "$version")"
-
-	parent="$(awk 'toupper($1) == "FROM" { print $2 }' "$version/Dockerfile")"
-	arches="${parentRepoToArches[$parent]}"
-
-	fullVersion="$(git show "$commit":"$version/Dockerfile" | awk '$1 == "ENV" && $2 == "PYTHON_VERSION" { print $3; exit }')"
-
-	versionAliases=(
-		$fullVersion
-		$version
-		${aliases[$version]:-}
-	)
-
-	echo
-	cat <<-EOE
-		Tags: $(join ', ' "${versionAliases[@]}")
-		Architectures: $(join ', ' $arches)
-		GitCommit: $commit
-		Directory: $version
-	EOE
+	debianSuite="${debianSuites[$version]:-$defaultDebianSuite}"
+	alpineVersion="${alpineVersions[$version]:-$defaultAlpineVersion}"
 
 	for v in \
-		slim alpine alpine3.6 wheezy onbuild \
+		{stretch,jessie,wheezy}{,/slim,/onbuild} \
+		alpine{3.6,3.4} \
 		windows/windowsservercore windows/nanoserver \
 	; do
 		dir="$version/$v"
@@ -99,14 +102,34 @@ for version in "${versions[@]}"; do
 
 		commit="$(dirCommit "$dir")"
 
+		versionDockerfile="$dir/Dockerfile"
+		if [ "$variant" = 'onbuild' ]; then
+			versionDockerfile="$(dirname "$dir")/Dockerfile"
+		fi
+		fullVersion="$(git show "$commit":"$versionDockerfile" | awk '$1 == "ENV" && $2 == "PYTHON_VERSION" { print $3; exit }')"
+
+		versionAliases=(
+			$fullVersion
+			$version
+			${aliases[$version]:-}
+		)
+
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
+		if [ "$variant" = "$debianSuite" ]; then
+			variantAliases+=( "${versionAliases[@]}" )
+		elif [ "$variant" = "alpine${alpineVersion}" ]; then
+			variantAliases+=( "${versionAliases[@]/%/-alpine}" )
+		fi
 		variantAliases=( "${variantAliases[@]//latest-/}" )
 
 		case "$v" in
 			windows/*) variantArches='windows-amd64' ;;
-			onbuild)   variantArches="$arches" ;;
+			*/onbuild)
+				variantParent="$(awk 'toupper($1) == "FROM" { print $2 }' "$(dirname "$dir")/Dockerfile")"
+				variantArches="${parentRepoToArches[$variantParent]}"
+				;;
 			*)
-				variantParent="$(awk 'toupper($1) == "FROM" { print $2 }' "$version/$v/Dockerfile")"
+				variantParent="$(awk 'toupper($1) == "FROM" { print $2 }' "$dir/Dockerfile")"
 				variantArches="${parentRepoToArches[$variantParent]}"
 				;;
 		esac
@@ -118,6 +141,6 @@ for version in "${versions[@]}"; do
 			GitCommit: $commit
 			Directory: $dir
 		EOE
-		[ "$variant" = "$v" ] || echo "Constraints: $variant"
+		[[ "$v" == windows/* ]] && echo "Constraints: $variant"
 	done
 done
