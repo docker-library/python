@@ -15,7 +15,7 @@ declare -A debianSuites=(
 	[3.5]='jessie'
 	[3.6]='jessie'
 )
-defaultAlpineVersion='3.4'
+defaultAlpineVersion='3.6'
 declare -A alpineVersions=(
 	[2.7]='3.4'
 	[3.3]='3.4'
@@ -94,7 +94,6 @@ for version in "${versions[@]}"; do
 		{stretch,jessie,wheezy}{,/slim,/onbuild} \
 		alpine{3.6,3.4} \
 		windows/windowsservercore windows/nanoserver \
-		onbuild \
 	; do
 		dir="$version/$v"
 		variant="$(basename "$v")"
@@ -142,6 +141,6 @@ for version in "${versions[@]}"; do
 			GitCommit: $commit
 			Directory: $dir
 		EOE
-		[ "$variant" = "$v" ] || echo "Constraints: $variant"
+		[[ "$v" == windows/* ]] && echo "Constraints: $variant"
 	done
 done
