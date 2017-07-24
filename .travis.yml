@@ -7,9 +7,11 @@ env:
   - VERSION=3.6 VARIANT=jessie/slim
   - VERSION=3.6 VARIANT=alpine3.6
   - VERSION=3.6 VARIANT=alpine3.4
+  - VERSION=3.5 VARIANT=stretch
   - VERSION=3.5 VARIANT=jessie
   - VERSION=3.5 VARIANT=jessie/slim
   - VERSION=3.5 VARIANT=alpine3.4
+  - VERSION=3.4 VARIANT=stretch
   - VERSION=3.4 VARIANT=jessie
   - VERSION=3.4 VARIANT=jessie/slim
   - VERSION=3.4 VARIANT=wheezy
