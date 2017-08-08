@@ -8,8 +8,8 @@ FROM microsoft/windowsservercore
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
 
-ENV PYTHON_VERSION 3.5.3
-ENV PYTHON_RELEASE 3.5.3
+ENV PYTHON_VERSION 3.5.4
+ENV PYTHON_RELEASE 3.5.4
 
 RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env:PYTHON_RELEASE, $env:PYTHON_VERSION); \
 	Write-Host ('Downloading {0} ...' -f $url); \
