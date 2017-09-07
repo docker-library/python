@@ -14,6 +14,10 @@ env:
   - VERSION=3.4 VARIANT=jessie/slim
   - VERSION=3.4 VARIANT=wheezy
   - VERSION=3.4 VARIANT=alpine3.4
+  - VERSION=3.3-rc VARIANT=jessie
+  - VERSION=3.3-rc VARIANT=jessie/slim
+  - VERSION=3.3-rc VARIANT=wheezy
+  - VERSION=3.3-rc VARIANT=alpine3.4
   - VERSION=3.3 VARIANT=jessie
   - VERSION=3.3 VARIANT=jessie/slim
   - VERSION=3.3 VARIANT=wheezy
