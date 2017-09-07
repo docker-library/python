@@ -87,8 +87,9 @@ join() {
 }
 
 for version in "${versions[@]}"; do
-	debianSuite="${debianSuites[$version]:-$defaultDebianSuite}"
-	alpineVersion="${alpineVersions[$version]:-$defaultAlpineVersion}"
+	rcVersion="${version%-rc}"
+	debianSuite="${debianSuites[$rcVersion]:-$defaultDebianSuite}"
+	alpineVersion="${alpineVersions[$rcVersion]:-$defaultAlpineVersion}"
 
 	for v in \
 		{stretch,jessie,wheezy}{,/slim,/onbuild} \
