@@ -23,8 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libssl1.0.0 \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GPG_KEY 26DEA9D4613391EF3E25C9FF0A5B101836580288
-ENV PYTHON_VERSION 3.3.6
+ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
+ENV PYTHON_VERSION 3.3.7
 
 RUN set -ex \
 	&& buildDeps=' \
