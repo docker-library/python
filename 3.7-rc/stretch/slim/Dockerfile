@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:jessie
+FROM debian:stretch
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -20,11 +20,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libffi6 \
 		libgdbm3 \
 		libsqlite3-0 \
-		libssl1.0.0 \
+		libssl1.1 \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
-ENV PYTHON_VERSION 3.4.7
+ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
+ENV PYTHON_VERSION 3.7.0a1
 
 RUN set -ex \
 	&& buildDeps=" \
