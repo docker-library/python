@@ -22,6 +22,10 @@ declare -A gpgKeys=(
 	# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
 	[3.6]='0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'
 	# https://www.python.org/dev/peps/pep-0494/#release-manager-and-crew
+
+	# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
+	[3.7]='0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'
+	# https://www.python.org/dev/peps/pep-0494/#release-manager-and-crew
 )
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
@@ -54,7 +58,19 @@ for version in "${versions[@]}"; do
 		rcGrepV=
 	fi
 
-	possibles=( $(curl -fsSL 'https://www.python.org/ftp/python/' | grep '<a href="'"$rcVersion." | sed -r 's!.*<a href="([^"/]+)/?".*!\1!' | sort -rV) )
+	possibles=( $(
+		{
+			git ls-remote --tags https://github.com/python/cpython.git "refs/tags/v${rcVersion}.*" \
+				| sed -r 's!^.*refs/tags/v([0-9.]+).*$!\1!' \
+				|| :
+
+			# this page has a very aggressive varnish cache in front of it, which is why we also scrape tags from GitHub
+			curl -fsSL 'https://www.python.org/ftp/python/' \
+				| grep '<a href="'"$rcVersion." \
+				| sed -r 's!.*<a href="([^"/]+)/?".*!\1!' \
+				|| :
+		} | sort -ruV
+	) )
 	fullVersion=
 	for possible in "${possibles[@]}"; do
 		possibleVersions=( $(
@@ -119,6 +135,12 @@ for version in "${versions[@]}"; do
 		case "$variant" in
 			alpine3.4) sed -ri -e 's/libressl/openssl/g' "$dir/Dockerfile" ;;
 			wheezy) sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$dir/Dockerfile" ;;
+		esac
+
+		case "$v" in
+			wheezy/slim|jessie/slim)
+				sed -ri -e 's/libssl1.1/libssl1.0.0/g' "$dir/Dockerfile"
+				;;
 		esac
 
 		case "$v" in

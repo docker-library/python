@@ -27,7 +27,7 @@ ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
 ENV PYTHON_VERSION 3.6.2
 
 RUN set -ex \
-	&& buildDeps=' \
+	&& buildDeps=" \
 		dpkg-dev \
 		gcc \
 		libbz2-dev \
@@ -46,7 +46,9 @@ RUN set -ex \
 		wget \
 		xz-utils \
 		zlib1g-dev \
-	' \
+# as of Stretch, "gpg" is no longer included by default
+		$(command -v gpg > /dev/null || echo 'gnupg2 dirmngr') \
+	" \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	\
 	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \

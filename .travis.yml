@@ -2,6 +2,9 @@ language: bash
 services: docker
 
 env:
+  - VERSION=3.7-rc VARIANT=stretch
+  - VERSION=3.7-rc VARIANT=stretch/slim
+  - VERSION=3.7-rc VARIANT=alpine3.6
   - VERSION=3.6 VARIANT=stretch
   - VERSION=3.6 VARIANT=jessie
   - VERSION=3.6 VARIANT=jessie/slim
