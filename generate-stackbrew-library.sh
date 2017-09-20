@@ -116,9 +116,7 @@ for version in "${versions[@]}"; do
 		)
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
-		if [ "$variant" = "$debianSuite" ]; then
-			variantAliases+=( "${versionAliases[@]}" )
-		elif [ "$variant" = "alpine${alpineVersion}" ]; then
+		if [ "$variant" = "alpine${alpineVersion}" ]; then
 			variantAliases+=( "${versionAliases[@]/%/-alpine}" )
 		fi
 		variantAliases=( "${variantAliases[@]//latest-/}" )
@@ -139,8 +137,11 @@ for version in "${versions[@]}"; do
 		variantArches="$(echo " $variantArches " | sed -r -e 's/ arm32v5//g')"
 
 		echo
+		echo "Tags: $(join ', ' "${variantAliases[@]}")"
+		if [ "$variant" = "$debianSuite" ] || [ "$variant" = 'windowsservercore' ]; then
+			echo "SharedTags: $(join ', ' "${versionAliases[@]}")"
+		fi
 		cat <<-EOE
-			Tags: $(join ', ' "${variantAliases[@]}")
 			Architectures: $(join ', ' $variantArches)
 			GitCommit: $commit
 			Directory: $dir
