@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM python:3.3
+FROM python:3.3-jessie
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
