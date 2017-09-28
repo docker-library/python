@@ -133,9 +133,6 @@ for version in "${versions[@]}"; do
 				;;
 		esac
 
-		# arm32v5 takes _way_ too long to build (on the order of days)
-		variantArches="$(echo " $variantArches " | sed -r -e 's/ arm32v5//g')"
-
 		echo
 		echo "Tags: $(join ', ' "${variantAliases[@]}")"
 		if [ "$variant" = "$debianSuite" ] || [ "$variant" = 'windowsservercore' ]; then
