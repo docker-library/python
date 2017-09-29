@@ -7,10 +7,6 @@ declare -A gpgKeys=(
 	[2.7]='C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF'
 	# https://www.python.org/dev/peps/pep-0373/#release-manager-and-crew
 
-	# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@python.org>" imported
-	[3.3]='0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'
-	# https://www.python.org/dev/peps/pep-0398/#release-manager-and-crew
-
 	# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
 	[3.4]='97FC712E4C024BBEA48A61ED3A5CA953F73C700D'
 	# https://www.python.org/dev/peps/pep-0429/#release-manager-and-crew
