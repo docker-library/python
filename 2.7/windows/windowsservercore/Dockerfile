@@ -1,13 +1,13 @@
 FROM microsoft/windowsservercore
 
-SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 ENV PYTHON_VERSION 2.7.14
 ENV PYTHON_RELEASE 2.7.14
 
 RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}.amd64.msi' -f $env:PYTHON_RELEASE, $env:PYTHON_VERSION); \
 	Write-Host ('Downloading {0} ...' -f $url); \
-	(New-Object System.Net.WebClient).DownloadFile($url, 'python.msi'); \
+	Invoke-WebRequest -Uri $url -OutFile 'python.msi'; \
 	\
 	Write-Host 'Installing ...'; \
 # https://www.python.org/download/releases/2.4/msi/
@@ -37,7 +37,8 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}.amd64.msi' -f $env
 ENV PYTHON_PIP_VERSION 9.0.1
 
 RUN Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
-	(New-Object System.Net.WebClient).DownloadFile('https://bootstrap.pypa.io/get-pip.py', 'get-pip.py'); \
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+	Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile 'get-pip.py'; \
 	python get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
