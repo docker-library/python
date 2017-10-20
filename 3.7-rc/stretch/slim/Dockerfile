@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:stretch
+FROM debian:stretch-slim
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH

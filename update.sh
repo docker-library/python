@@ -111,6 +111,10 @@ for version in "${versions[@]}"; do
 			alpine*) template='alpine'; tag="${variant#alpine}" ;;
 			*) template='debian'; tag="$variant" ;;
 		esac
+		if [ "$variant" = 'slim' ]; then
+			# use "debian:*-slim" variants for "python:*-slim" variants
+			tag+='-slim'
+		fi
 		template="Dockerfile-${template}.template"
 
 		if [[ "$version" == 2.* ]]; then
