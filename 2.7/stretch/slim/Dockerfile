@@ -1,4 +1,4 @@
-FROM debian:jessie-slim
+FROM debian:stretch-slim
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
 		libgdbm3 \
 		libsqlite3-0 \
-		libssl1.0.0 \
+		libssl1.1 \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF

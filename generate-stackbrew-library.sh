@@ -97,15 +97,23 @@ for version in "${versions[@]}"; do
 		dir="$version/$v"
 		variant="$(basename "$v")"
 
+		if [ "$variant" = 'slim' ]; then
+			# convert "slim" into "slim-jessie"
+			# https://github.com/docker-library/ruby/pull/142#issuecomment-320012893
+			variant="$variant-$(basename "$(dirname "$v")")"
+		fi
+
 		[ -f "$dir/Dockerfile" ] || continue
 
 		commit="$(dirCommit "$dir")"
 
 		versionDockerfile="$dir/Dockerfile"
+		versionCommit="$commit"
 		if [ "$variant" = 'onbuild' ]; then
 			versionDockerfile="$(dirname "$dir")/Dockerfile"
+			versionCommit="$(dirCommit "$(dirname "$versionDockerfile")")"
 		fi
-		fullVersion="$(git show "$commit":"$versionDockerfile" | awk '$1 == "ENV" && $2 == "PYTHON_VERSION" { print $3; exit }')"
+		fullVersion="$(git show "$versionCommit":"$versionDockerfile" | awk '$1 == "ENV" && $2 == "PYTHON_VERSION" { print $3; exit }')"
 
 		versionAliases=(
 			$fullVersion
@@ -114,9 +122,14 @@ for version in "${versions[@]}"; do
 		)
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
-		if [ "$variant" = "alpine${alpineVersion}" ]; then
-			variantAliases+=( "${versionAliases[@]/%/-alpine}" )
-		fi
+		case "$variant" in
+			*-"$debianSuite") # "slim-stretch", etc need "slim"
+				variantAliases+=( "${versionAliases[@]/%/-${variant%-$debianSuite}}" )
+				;;
+			"alpine${alpineVersion}")
+				variantAliases+=( "${versionAliases[@]/%/-alpine}" )
+				;;
+		esac
 		variantAliases=( "${variantAliases[@]//latest-/}" )
 
 		case "$v" in
