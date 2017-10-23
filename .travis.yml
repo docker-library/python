@@ -6,6 +6,7 @@ env:
   - VERSION=3.7-rc VARIANT=stretch/slim
   - VERSION=3.7-rc VARIANT=alpine3.6
   - VERSION=3.6 VARIANT=stretch
+  - VERSION=3.6 VARIANT=stretch/slim
   - VERSION=3.6 VARIANT=jessie
   - VERSION=3.6 VARIANT=jessie/slim
   - VERSION=3.6 VARIANT=alpine3.6
@@ -18,6 +19,7 @@ env:
   - VERSION=3.4 VARIANT=wheezy
   - VERSION=3.4 VARIANT=alpine3.4
   - VERSION=2.7 VARIANT=stretch
+  - VERSION=2.7 VARIANT=stretch/slim
   - VERSION=2.7 VARIANT=jessie
   - VERSION=2.7 VARIANT=jessie/slim
   - VERSION=2.7 VARIANT=wheezy
