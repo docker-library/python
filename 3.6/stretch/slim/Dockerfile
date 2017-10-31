@@ -36,7 +36,7 @@ RUN set -ex \
 		libffi-dev \
 		libgdbm-dev \
 		liblzma-dev \
-		libncurses-dev \
+		libncursesw5-dev \
 		libreadline-dev \
 		libsqlite3-dev \
 		libssl-dev \

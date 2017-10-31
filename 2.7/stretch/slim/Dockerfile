@@ -26,7 +26,7 @@ RUN set -ex \
 		libc6-dev \
 		libdb-dev \
 		libgdbm-dev \
-		libncurses-dev \
+		libncursesw5-dev \
 		libreadline-dev \
 		libsqlite3-dev \
 		libssl-dev \
