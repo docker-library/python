@@ -11,6 +11,7 @@ ENV LANG C.UTF-8
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
 		libgdbm3 \
+		libreadline6 \
 		libsqlite3-0 \
 		libssl1.0.0 \
 	&& rm -rf /var/lib/apt/lists/*
@@ -37,7 +38,7 @@ RUN set -ex \
 		xz-utils \
 		zlib1g-dev \
 # as of Stretch, "gpg" is no longer included by default
-		$(command -v gpg > /dev/null || echo 'gnupg2 dirmngr') \
+		$(command -v gpg > /dev/null || echo 'gnupg dirmngr') \
 	" \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	\
