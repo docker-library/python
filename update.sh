@@ -118,7 +118,7 @@ for version in "${versions[@]}"; do
 		template="Dockerfile-${template}.template"
 
 		if [[ "$version" == 2.* ]]; then
-			echo "  TODO: vimdiff ${versions[-1]}/$v/Dockerfile $version/$v/Dockerfile"
+			echo "  TODO: vimdiff 3.6/$v/Dockerfile $version/$v/Dockerfile"
 		else
 			{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
 		fi
@@ -139,7 +139,10 @@ for version in "${versions[@]}"; do
 
 		case "$v" in
 			wheezy/slim|jessie/slim)
-				sed -ri -e 's/libssl1.1/libssl1.0.0/g' "$dir/Dockerfile"
+				sed -ri \
+					-e 's/libssl1.1/libssl1.0.0/g' \
+					-e 's/libreadline7/libreadline6/g' \
+					"$dir/Dockerfile"
 				;;
 		esac
 

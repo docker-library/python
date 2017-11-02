@@ -11,6 +11,7 @@ ENV LANG C.UTF-8
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
 		libgdbm3 \
+		libreadline6 \
 		libsqlite3-0 \
 		libssl1.0.0 \
 	&& rm -rf /var/lib/apt/lists/*

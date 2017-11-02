@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libexpat1 \
 		libffi6 \
 		libgdbm3 \
+		libreadline7 \
 		libsqlite3-0 \
 		libssl1.1 \
 	&& rm -rf /var/lib/apt/lists/*
