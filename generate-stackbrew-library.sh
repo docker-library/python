@@ -92,7 +92,8 @@ for version in "${versions[@]}"; do
 	for v in \
 		{stretch,jessie,wheezy}{,/slim,/onbuild} \
 		alpine{3.6,3.4} \
-		windows/windowsservercore windows/nanoserver \
+		windows/windowsservercore-{ltsc2016,1709} \
+		windows/nanoserver-{sac2016,1709} \
 	; do
 		dir="$version/$v"
 		variant="$(basename "$v")"
@@ -144,10 +145,21 @@ for version in "${versions[@]}"; do
 				;;
 		esac
 
+		sharedTags=()
+		for windowsShared in windowsservercore nanoserver; do
+			if [[ "$variant" == "$windowsShared"* ]]; then
+				sharedTags+=( "$windowsShared" )
+				break
+			fi
+		done
+		if [ "$variant" = "$debianSuite" ] || [[ "$variant" == 'windowsservercore'* ]]; then
+			sharedTags+=( "${versionAliases[@]}" )
+		fi
+
 		echo
 		echo "Tags: $(join ', ' "${variantAliases[@]}")"
-		if [ "$variant" = "$debianSuite" ] || [ "$variant" = 'windowsservercore' ]; then
-			echo "SharedTags: $(join ', ' "${versionAliases[@]}")"
+		if [ "${#sharedTags[@]}" -gt 0 ]; then
+			echo "SharedTags: $(join ', ' "${sharedTags[@]}")"
 		fi
 		cat <<-EOE
 			Architectures: $(join ', ' $variantArches)

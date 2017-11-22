@@ -99,7 +99,8 @@ for version in "${versions[@]}"; do
 	for v in \
 		alpine{3.4,3.6} \
 		{wheezy,jessie,stretch}{/slim,/onbuild,} \
-		windows/{windowsservercore,nanoserver} \
+		windows/nanoserver-{1709,sac2016} \
+		windows/windowsservercore-{1709,ltsc2016} \
 	; do
 		dir="$version/$v"
 		variant="$(basename "$v")"
@@ -107,7 +108,8 @@ for version in "${versions[@]}"; do
 		[ -d "$dir" ] || continue
 
 		case "$variant" in
-			slim|onbuild|windowsservercore) template="$variant"; tag="$(basename "$(dirname "$dir")")" ;;
+			slim|onbuild) template="$variant"; tag="$(basename "$(dirname "$dir")")" ;;
+			windowsservercore-*) template='windowsservercore'; tag="${variant#*-}" ;;
 			alpine*) template='alpine'; tag="${variant#alpine}" ;;
 			*) template='debian'; tag="$variant" ;;
 		esac
@@ -129,7 +131,7 @@ for version in "${versions[@]}"; do
 			-e 's/^(ENV PYTHON_RELEASE) .*/\1 '"${fullVersion%%[a-z]*}"'/' \
 			-e 's/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/' \
 			-e 's/^(FROM python):.*/\1:'"$version-$tag"'/' \
-			-e 's/^(FROM (debian|buildpack-deps|alpine)):.*/\1:'"$tag"'/' \
+			-e 's!^(FROM (debian|buildpack-deps|alpine|microsoft/[^:]+)):.*!\1:'"$tag"'!' \
 			"$dir/Dockerfile"
 
 		case "$variant" in
@@ -148,6 +150,7 @@ for version in "${versions[@]}"; do
 
 		case "$v" in
 			*/onbuild) ;;
+			windows/*-1709) ;; # no AppVeyor support for 1709 yet: https://github.com/appveyor/ci/issues/1885
 			windows/*)
 				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant$appveyorEnv"
 				;;
