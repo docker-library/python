@@ -72,6 +72,9 @@ RUN set -ex \
 		--with-system-ffi \
 		--without-ensurepip \
 	&& make -j "$(nproc)" \
+# set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
+# https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
+		EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000" \
 	&& make install \
 	\
 	&& runDeps="$( \
