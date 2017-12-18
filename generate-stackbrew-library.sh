@@ -14,7 +14,7 @@ declare -A debianSuites=(
 	[3.5]='jessie'
 	[3.6]='jessie'
 )
-defaultAlpineVersion='3.6'
+defaultAlpineVersion='3.7'
 declare -A alpineVersions=(
 	[2.7]='3.4'
 	[3.4]='3.4'
