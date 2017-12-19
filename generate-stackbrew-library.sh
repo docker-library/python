@@ -148,7 +148,8 @@ for version in "${versions[@]}"; do
 		sharedTags=()
 		for windowsShared in windowsservercore nanoserver; do
 			if [[ "$variant" == "$windowsShared"* ]]; then
-				sharedTags+=( "$windowsShared" )
+				sharedTags=( "${versionAliases[@]/%/-$windowsShared}" )
+				sharedTags=( "${sharedTags[@]//latest-/}" )
 				break
 			fi
 		done
