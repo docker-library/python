@@ -55,6 +55,7 @@ RUN set -ex \
 			-o \
 			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
 		\) -exec rm -rf '{}' + \
+	&& cp /usr/src/python/python-gdb.py /usr/lib/debug/usr/local/bin/python$(echo "${PYTHON_VERSION}" | cut -d'.' -f1,2)-gdb.py \
 	&& rm -rf /usr/src/python
 
 # make some useful symlinks that are expected to exist
