@@ -57,7 +57,7 @@ for version in "${versions[@]}"; do
 	possibles=( $(
 		{
 			git ls-remote --tags https://github.com/python/cpython.git "refs/tags/v${rcVersion}.*" \
-				| sed -r 's!^.*refs/tags/v([0-9.]+).*$!\1!' \
+				| sed -r 's!^.*refs/tags/v([0-9a-z.]+).*$!\1!' \
 				|| :
 
 			# this page has a very aggressive varnish cache in front of it, which is why we also scrape tags from GitHub
@@ -68,9 +68,22 @@ for version in "${versions[@]}"; do
 		} | sort -ruV
 	) )
 	fullVersion=
+	declare -A impossible=()
 	for possible in "${possibles[@]}"; do
+		rcPossible="${possible%[a-z]*}"
+
+		# varnish is great until it isn't
+		if wget -q -O /dev/null -o /dev/null --spider "https://www.python.org/ftp/python/$rcPossible/Python-$possible.tar.xz"; then
+			fullVersion="$possible"
+			break
+		fi
+
+		if [ -n "${impossible[$rcPossible]:-}" ]; then
+			continue
+		fi
+		impossible[$rcPossible]=1
 		possibleVersions=( $(
-			curl -fsSL "https://www.python.org/ftp/python/$possible/" \
+			wget -qO- -o /dev/null "https://www.python.org/ftp/python/$rcPossible/" \
 				| grep '<a href="Python-'"$rcVersion"'.*\.tar\.xz"' \
 				| sed -r 's!.*<a href="Python-([^"/]+)\.tar\.xz".*!\1!' \
 				| grep $rcGrepV -E -- '[a-zA-Z]+' \
