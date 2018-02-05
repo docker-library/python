@@ -152,6 +152,12 @@ for version in "${versions[@]}"; do
 			wheezy) sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$dir/Dockerfile" ;;
 		esac
 
+		# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
+		# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL doesn't implement (yet?)
+		if [[ "$version" == 3.7* ]] && [[ "$variant" == alpine* ]]; then
+			sed -ri -e 's/libressl/openssl/g' "$dir/Dockerfile"
+		fi
+
 		case "$v" in
 			wheezy/slim|jessie/slim)
 				sed -ri \
