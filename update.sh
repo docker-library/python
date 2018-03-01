@@ -158,6 +158,13 @@ for version in "${versions[@]}"; do
 			sed -ri -e 's/libressl/openssl/g' "$dir/Dockerfile"
 		fi
 
+		# Libraries to build the nis module available in Alpine 3.7, but also require this patch:
+		# https://bugs.python.org/issue32521
+		# TODO: Remove Python version check once 2.7 and 3.6 have the patch
+		if [[ "$variant" == alpine* ]] && [[ "$variant" != alpine3.7 || "$version" != 3.7* ]]; then
+			sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
+		fi
+
 		case "$v" in
 			wheezy/slim|jessie/slim)
 				sed -ri \
