@@ -160,8 +160,7 @@ for version in "${versions[@]}"; do
 
 		# Libraries to build the nis module available in Alpine 3.7, but also require this patch:
 		# https://bugs.python.org/issue32521
-		# TODO: Remove Python version check once 2.7 and 3.6 have the patch
-		if [[ "$variant" == alpine* ]] && [[ "$variant" != alpine3.7 || "$version" != 3.7* ]]; then
+		if [[ "$variant" == alpine* ]] && [[ "$variant" != alpine3.7 ]]; then
 			sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
 		fi
 
