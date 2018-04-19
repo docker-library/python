@@ -83,7 +83,7 @@ RUN set -ex \
 	&& rm -rf /usr/src/python
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 10.0.0
+ENV PYTHON_PIP_VERSION 10.0.1
 
 RUN set -ex; \
 	\
