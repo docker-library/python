@@ -47,12 +47,12 @@ RUN set -ex \
 		libc-dev \
 		libffi-dev \
 		libnsl-dev \
+		openssl \
+		openssl-dev \
 		libtirpc-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
-		openssl \
-		openssl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \

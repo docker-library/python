@@ -40,11 +40,11 @@ RUN set -ex \
 		gcc \
 		gdbm-dev \
 		libc-dev \
+		libressl \
+		libressl-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
-		libressl \
-		libressl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
