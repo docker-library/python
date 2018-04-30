@@ -40,8 +40,10 @@ RUN set -ex \
 		gcc \
 		gdbm-dev \
 		libc-dev \
+		libnsl-dev \
 		libressl \
 		libressl-dev \
+		libtirpc-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
