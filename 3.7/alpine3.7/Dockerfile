@@ -80,7 +80,10 @@ RUN set -ex \
 	&& make install \
 	\
 	&& runDeps="$( \
-		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
+		scanelf --needed --nobanner --format '%f:%n#p' --recursive /usr/local \
+# don't install libraries for tkinter as it is rarely used inside a container
+			| grep -v tkinter \
+			| cut -d ':' -f 2 \
 			| tr ',' '\n' \
 			| sort -u \
 			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
