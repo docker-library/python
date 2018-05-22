@@ -11,14 +11,13 @@ env:
   - VERSION=3.6 VARIANT=jessie/slim
   - VERSION=3.6 VARIANT=alpine3.7
   - VERSION=3.6 VARIANT=alpine3.6
-  - VERSION=3.6 VARIANT=alpine3.4
   - VERSION=3.5 VARIANT=jessie
   - VERSION=3.5 VARIANT=jessie/slim
-  - VERSION=3.5 VARIANT=alpine3.4
+  - VERSION=3.5 VARIANT=alpine3.7
   - VERSION=3.4 VARIANT=jessie
   - VERSION=3.4 VARIANT=jessie/slim
   - VERSION=3.4 VARIANT=wheezy
-  - VERSION=3.4 VARIANT=alpine3.4
+  - VERSION=3.4 VARIANT=alpine3.7
   - VERSION=2.7 VARIANT=stretch
   - VERSION=2.7 VARIANT=stretch/slim
   - VERSION=2.7 VARIANT=jessie
@@ -26,7 +25,6 @@ env:
   - VERSION=2.7 VARIANT=wheezy
   - VERSION=2.7 VARIANT=alpine3.7
   - VERSION=2.7 VARIANT=alpine3.6
-  - VERSION=2.7 VARIANT=alpine3.4
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
