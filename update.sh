@@ -110,7 +110,7 @@ for version in "${versions[@]}"; do
 	echo "$version: $fullVersion"
 
 	for v in \
-		alpine{3.4,3.6,3.7} \
+		alpine{3.6,3.7} \
 		{wheezy,jessie,stretch}{/slim,/onbuild,} \
 		windows/nanoserver-{1709,sac2016} \
 		windows/windowsservercore-{1709,ltsc2016} \
@@ -148,7 +148,6 @@ for version in "${versions[@]}"; do
 			"$dir/Dockerfile"
 
 		case "$variant" in
-			alpine3.4) sed -ri -e 's/libressl/openssl/g' "$dir/Dockerfile" ;;
 			wheezy) sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$dir/Dockerfile" ;;
 		esac
 

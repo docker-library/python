@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.4
+FROM alpine:3.7
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -18,12 +18,12 @@ ENV LANG C.UTF-8
 RUN apk add --no-cache ca-certificates
 
 ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
-ENV PYTHON_VERSION 3.5.5
+ENV PYTHON_VERSION 3.4.8
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
 		gnupg \
-		openssl \
+		libressl \
 		tar \
 		xz \
 	\
@@ -46,11 +46,13 @@ RUN set -ex \
 		gdbm-dev \
 		libc-dev \
 		libffi-dev \
+		libnsl-dev \
+		libtirpc-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
-		openssl \
-		openssl-dev \
+		libressl \
+		libressl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
@@ -106,7 +108,7 @@ ENV PYTHON_PIP_VERSION 10.0.1
 
 RUN set -ex; \
 	\
-	apk add --no-cache --virtual .fetch-deps openssl; \
+	apk add --no-cache --virtual .fetch-deps libressl; \
 	\
 	wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
 	\
