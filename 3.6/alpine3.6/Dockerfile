@@ -46,11 +46,11 @@ RUN set -ex \
 		gdbm-dev \
 		libc-dev \
 		libffi-dev \
+		libressl \
+		libressl-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
-		libressl \
-		libressl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
