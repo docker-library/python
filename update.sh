@@ -58,12 +58,14 @@ for version in "${versions[@]}"; do
 		{
 			git ls-remote --tags https://github.com/python/cpython.git "refs/tags/v${rcVersion}.*" \
 				| sed -r 's!^.*refs/tags/v([0-9a-z.]+).*$!\1!' \
+				| grep $rcGrepV -E -- '[a-zA-Z]+' \
 				|| :
 
 			# this page has a very aggressive varnish cache in front of it, which is why we also scrape tags from GitHub
 			curl -fsSL 'https://www.python.org/ftp/python/' \
 				| grep '<a href="'"$rcVersion." \
 				| sed -r 's!.*<a href="([^"/]+)/?".*!\1!' \
+				| grep $rcGrepV -E -- '[a-zA-Z]+' \
 				|| :
 		} | sort -ruV
 	) )
