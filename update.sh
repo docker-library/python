@@ -112,7 +112,7 @@ for version in "${versions[@]}"; do
 	echo "$version: $fullVersion"
 
 	for v in \
-		alpine{3.6,3.7} \
+		alpine{3.6,3.7,3.8} \
 		{wheezy,jessie,stretch}{/slim,/onbuild,} \
 		windows/nanoserver-{1709,sac2016} \
 		windows/windowsservercore-{1709,ltsc2016} \
@@ -162,8 +162,8 @@ for version in "${versions[@]}"; do
 		esac
 
 		# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
-		# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL doesn't implement (yet?)
-		if [[ "$version" == 3.7* ]] && [[ "$variant" == alpine* ]]; then
+		# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL 2.6.x in Alpine 3.7 doesn't implement
+		if [[ "$version" == 3.7* ]] && [[ "$variant" == alpine3.7 ]]; then
 			sed -ri -e 's/libressl/openssl/g' "$dir/Dockerfile"
 		fi
 
