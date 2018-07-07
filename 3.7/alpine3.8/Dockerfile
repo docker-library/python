@@ -23,7 +23,7 @@ ENV PYTHON_VERSION 3.7.0
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
 		gnupg \
-		openssl \
+		libressl \
 		tar \
 		xz \
 	\
