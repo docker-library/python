@@ -153,11 +153,16 @@ for version in "${versions[@]}"; do
 		esac
 
 		case "$version/$v" in
+			# On Alpine 3.6 it's necessary to install libressl to get working HTTPS.
+			# Later Alpine versions have CA certificates pre-installed.
+			*/alpine3.6)
+				sed -ri -e '/^# .* libressl$/s/^# //' "$dir/Dockerfile"
+				;;& # (other patches needed for Alpine 3.6 in later blocks)
 			# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
 			# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL 2.6.x in Alpine 3.7 doesn't implement
 			# Python 3.5 on Alpine 3.8 needs OpenSSL too
 			3.7*/alpine3.7 | 3.5*/alpine3.8)
-				sed -ri -e 's/libressl/openssl/g' "$dir/Dockerfile"
+				sed -ri -e 's/libressl-dev/openssl-dev/g' "$dir/Dockerfile"
 				;;& # (3.5*/alpine* needs to match the next block too)
 			# Libraries to build the nis module only available in Alpine 3.7+.
 			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.

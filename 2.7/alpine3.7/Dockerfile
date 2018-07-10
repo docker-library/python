@@ -15,9 +15,8 @@ ENV LANG C.UTF-8
 # https://github.com/docker-library/python/issues/147
 ENV PYTHONIOENCODING UTF-8
 
-# install ca-certificates so that HTTPS works consistently
-# the other runtime dependencies for Python are installed later
-RUN apk add --no-cache ca-certificates
+# install libressl so that HTTPS works on Alpine <3.7
+# RUN apk add --no-cache libressl
 
 ENV GPG_KEY C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
 ENV PYTHON_VERSION 2.7.15
@@ -25,7 +24,6 @@ ENV PYTHON_VERSION 2.7.15
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
 		gnupg \
-		libressl \
 		tar \
 		xz \
 	\
@@ -49,7 +47,6 @@ RUN set -ex \
 		gdbm-dev \
 		libc-dev \
 		libnsl-dev \
-		libressl \
 		libressl-dev \
 		libtirpc-dev \
 		linux-headers \
@@ -99,11 +96,7 @@ ENV PYTHON_PIP_VERSION 18.0
 
 RUN set -ex; \
 	\
-	apk add --no-cache --virtual .fetch-deps libressl; \
-	\
 	wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
-	\
-	apk del .fetch-deps; \
 	\
 	python get-pip.py \
 		--disable-pip-version-check \

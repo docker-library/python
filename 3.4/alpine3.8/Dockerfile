@@ -13,9 +13,8 @@ ENV PATH /usr/local/bin:$PATH
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
-# install ca-certificates so that HTTPS works consistently
-# the other runtime dependencies for Python are installed later
-RUN apk add --no-cache ca-certificates
+# install libressl so that HTTPS works on Alpine <3.7
+# RUN apk add --no-cache libressl
 
 ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
 ENV PYTHON_VERSION 3.4.8
@@ -23,7 +22,6 @@ ENV PYTHON_VERSION 3.4.8
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
 		gnupg \
-		libressl \
 		tar \
 		xz \
 	\
@@ -48,7 +46,6 @@ RUN set -ex \
 		gdbm-dev \
 		libc-dev \
 		libffi-dev \
-		libressl \
 		libressl-dev \
 		linux-headers \
 		make \
@@ -108,11 +105,7 @@ ENV PYTHON_PIP_VERSION 18.0
 
 RUN set -ex; \
 	\
-	apk add --no-cache --virtual .fetch-deps libressl; \
-	\
 	wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
-	\
-	apk del .fetch-deps; \
 	\
 	python get-pip.py \
 		--disable-pip-version-check \
