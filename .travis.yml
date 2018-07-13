@@ -37,6 +37,7 @@ install:
 
 before_script:
   - env | sort
+  - wget -qO- 'https://github.com/tianon/pgp-happy-eyeballs/raw/master/hack-my-builds.sh' | bash
   - cd "$VERSION/$VARIANT"
   - slash='/'; image="python:${VERSION}-${VARIANT//$slash/-}"
 
@@ -45,7 +46,7 @@ script:
     (
       set -Eeuo pipefail
       set -x
-      travis_retry docker build -t "$image" .
+      docker build -t "$image" .
       ~/official-images/test/run.sh "$image"
       if [ -d onbuild ]; then
         onbuildFrom="$(awk 'toupper($1) == "FROM" { print $2; exit }' onbuild/Dockerfile)"
