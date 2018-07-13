@@ -135,7 +135,15 @@ for version in "${versions[@]}"; do
 		template="Dockerfile-${template}.template"
 
 		if [[ "$version" == 2.* ]]; then
-			echo "  TODO: vimdiff 3.6/$v/Dockerfile $version/$v/Dockerfile"
+			fail=1
+			for newVersion in "${versions[@]}"; do
+				[[ "$newVersion" == 3.* ]] || continue
+				[ -f "$newVersion/$v/Dockerfile" ] || continue
+				echo "  TODO: vimdiff $newVersion/$v/Dockerfile $version/$v/Dockerfile"
+				fail=
+				break
+			done
+			[ -z "$fail" ] || { echo >&2 "error: cannot find a suitable version for 'vimdiff' on '$version/$v/Dockerfile'"; exit 1; }
 		else
 			{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
 		fi
