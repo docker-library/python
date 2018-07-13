@@ -174,12 +174,13 @@ for version in "${versions[@]}"; do
 			sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
 		fi
 
-		case "$v" in
-			wheezy/slim|jessie/slim)
-				sed -ri \
-					-e 's/libssl1.1/libssl1.0.0/g' \
-					-e 's/libreadline7/libreadline6/g' \
-					"$dir/Dockerfile"
+		case "$version/$v" in
+			3.4/stretch*)
+				sed -ri -e 's/libssl-dev/libssl1.0-dev/g' "$dir/Dockerfile"
+				;;
+			*/slim) ;;
+			*/stretch | */jessie | */wheezy)
+				sed -ri -e '/libssl-dev/d' "$dir/Dockerfile"
 				;;
 		esac
 

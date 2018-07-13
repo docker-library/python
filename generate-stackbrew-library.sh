@@ -77,7 +77,7 @@ for version in "${versions[@]}"; do
 
 	for v in \
 		{stretch,jessie,wheezy}{,/slim,/onbuild} \
-		alpine{3.7,3.6} \
+		alpine{3.8,3.7,3.6} \
 		windows/windowsservercore-{ltsc2016,1709} \
 		windows/nanoserver-{sac2016,1709} \
 	; do

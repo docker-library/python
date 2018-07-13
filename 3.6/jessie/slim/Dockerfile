@@ -16,12 +16,6 @@ ENV LANG C.UTF-8
 # runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
-		libexpat1 \
-		libffi6 \
-		libgdbm3 \
-		libreadline6 \
-		libsqlite3-0 \
-		libssl1.0.0 \
 		netbase \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -29,6 +23,7 @@ ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
 ENV PYTHON_VERSION 3.6.6
 
 RUN set -ex \
+	\
 	&& savedAptMark="$(apt-mark showmanual)" \
 	&& apt-get update && apt-get install -y --no-install-recommends \
 		dpkg-dev \
@@ -44,7 +39,6 @@ RUN set -ex \
 		libsqlite3-dev \
 		libssl-dev \
 		make \
-		tcl-dev \
 		tk-dev \
 		wget \
 		xz-utils \
@@ -78,6 +72,13 @@ RUN set -ex \
 	\
 	&& apt-mark auto '.*' > /dev/null \
 	&& apt-mark manual $savedAptMark \
+	&& find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
+		| awk '/=>/ { print $(NF-1) }' \
+		| sort -u \
+		| xargs -r dpkg-query --search \
+		| cut -d: -f1 \
+		| sort -u \
+		| xargs -r apt-mark manual \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 	\
 	&& find /usr/local -depth \

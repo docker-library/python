@@ -12,10 +12,6 @@ ENV PYTHONIOENCODING UTF-8
 # runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
-		libgdbm3 \
-		libreadline6 \
-		libsqlite3-0 \
-		libssl1.0.0 \
 		netbase \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -23,6 +19,7 @@ ENV GPG_KEY C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
 ENV PYTHON_VERSION 2.7.15
 
 RUN set -ex \
+	\
 	&& savedAptMark="$(apt-mark showmanual)" \
 	&& apt-get update && apt-get install -y --no-install-recommends \
 		dpkg-dev \
@@ -36,7 +33,6 @@ RUN set -ex \
 		libsqlite3-dev \
 		libssl-dev \
 		make \
-		tcl-dev \
 		tk-dev \
 		wget \
 		xz-utils \
@@ -67,6 +63,13 @@ RUN set -ex \
 	\
 	&& apt-mark auto '.*' > /dev/null \
 	&& apt-mark manual $savedAptMark \
+	&& find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
+		| awk '/=>/ { print $(NF-1) }' \
+		| sort -u \
+		| xargs -r dpkg-query --search \
+		| cut -d: -f1 \
+		| sort -u \
+		| xargs -r apt-mark manual \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 	\
 	&& find /usr/local -depth \
