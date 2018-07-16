@@ -4,27 +4,34 @@ services: docker
 env:
   - VERSION=3.7 VARIANT=stretch
   - VERSION=3.7 VARIANT=stretch/slim
+  - VERSION=3.7 VARIANT=alpine3.8
   - VERSION=3.7 VARIANT=alpine3.7
   - VERSION=3.6 VARIANT=stretch
   - VERSION=3.6 VARIANT=stretch/slim
   - VERSION=3.6 VARIANT=jessie
   - VERSION=3.6 VARIANT=jessie/slim
+  - VERSION=3.6 VARIANT=alpine3.8
   - VERSION=3.6 VARIANT=alpine3.7
   - VERSION=3.6 VARIANT=alpine3.6
   - VERSION=3.5 VARIANT=stretch
   - VERSION=3.5 VARIANT=stretch/slim
   - VERSION=3.5 VARIANT=jessie
   - VERSION=3.5 VARIANT=jessie/slim
+  - VERSION=3.5 VARIANT=alpine3.8
   - VERSION=3.5 VARIANT=alpine3.7
+  - VERSION=3.4 VARIANT=stretch
+  - VERSION=3.4 VARIANT=stretch/slim
   - VERSION=3.4 VARIANT=jessie
   - VERSION=3.4 VARIANT=jessie/slim
   - VERSION=3.4 VARIANT=wheezy
+  - VERSION=3.4 VARIANT=alpine3.8
   - VERSION=3.4 VARIANT=alpine3.7
   - VERSION=2.7 VARIANT=stretch
   - VERSION=2.7 VARIANT=stretch/slim
   - VERSION=2.7 VARIANT=jessie
   - VERSION=2.7 VARIANT=jessie/slim
   - VERSION=2.7 VARIANT=wheezy
+  - VERSION=2.7 VARIANT=alpine3.8
   - VERSION=2.7 VARIANT=alpine3.7
   - VERSION=2.7 VARIANT=alpine3.6
 
@@ -33,6 +40,7 @@ install:
 
 before_script:
   - env | sort
+  - wget -qO- 'https://github.com/tianon/pgp-happy-eyeballs/raw/master/hack-my-builds.sh' | bash
   - cd "$VERSION/$VARIANT"
   - slash='/'; image="python:${VERSION}-${VARIANT//$slash/-}"
 
@@ -41,7 +49,7 @@ script:
     (
       set -Eeuo pipefail
       set -x
-      travis_retry docker build -t "$image" .
+      docker build -t "$image" .
       ~/official-images/test/run.sh "$image"
       if [ -d onbuild ]; then
         onbuildFrom="$(awk 'toupper($1) == "FROM" { print $2; exit }' onbuild/Dockerfile)"
