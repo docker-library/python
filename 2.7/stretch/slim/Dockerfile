@@ -1,3 +1,9 @@
+#
+# NOTE: THIS DOCKERFILE IS GENERATED VIA "update.sh"
+#
+# PLEASE DO NOT EDIT IT DIRECTLY.
+#
+
 FROM debian:stretch-slim
 
 # ensure local python is preferred over distribution python
@@ -12,10 +18,6 @@ ENV PYTHONIOENCODING UTF-8
 # runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
-		libgdbm3 \
-		libreadline7 \
-		libsqlite3-0 \
-		libssl1.1 \
 		netbase \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -50,6 +52,7 @@ RUN set -ex \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY" \
 	&& gpg --batch --verify python.tar.xz.asc python.tar.xz \
+	&& { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
 	&& rm -rf "$GNUPGHOME" python.tar.xz.asc \
 	&& mkdir -p /usr/src/python \
 	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
