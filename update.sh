@@ -113,7 +113,7 @@ for version in "${versions[@]}"; do
 
 	for v in \
 		alpine{3.6,3.7,3.8} \
-		{wheezy,jessie,stretch}{/slim,/onbuild,} \
+		{wheezy,jessie,stretch}{/slim,} \
 		windows/nanoserver-{1709,sac2016} \
 		windows/windowsservercore-{1709,ltsc2016} \
 	; do
@@ -123,7 +123,7 @@ for version in "${versions[@]}"; do
 		[ -d "$dir" ] || continue
 
 		case "$variant" in
-			slim|onbuild) template="$variant"; tag="$(basename "$(dirname "$dir")")" ;;
+			slim) template="$variant"; tag="$(basename "$(dirname "$dir")")" ;;
 			windowsservercore-*) template='windowsservercore'; tag="${variant#*-}" ;;
 			alpine*) template='alpine'; tag="${variant#alpine}" ;;
 			*) template='debian'; tag="$variant" ;;
@@ -183,7 +183,6 @@ for version in "${versions[@]}"; do
 		esac
 
 		case "$v" in
-			*/onbuild) ;;
 			windows/*-1709) ;; # no AppVeyor support for 1709 yet: https://github.com/appveyor/ci/issues/1885
 			windows/*)
 				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant$appveyorEnv"
