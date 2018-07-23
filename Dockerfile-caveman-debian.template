@@ -1,10 +1,4 @@
-#
-# NOTE: THIS DOCKERFILE IS GENERATED VIA "update.sh"
-#
-# PLEASE DO NOT EDIT IT DIRECTLY.
-#
-
-FROM debian:stretch-slim
+FROM buildpack-deps:%%PLACEHOLDER%%
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -15,37 +9,15 @@ ENV LANG C.UTF-8
 # https://github.com/docker-library/python/issues/147
 ENV PYTHONIOENCODING UTF-8
 
-# runtime dependencies
+# extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-		ca-certificates \
-		netbase \
+		tk-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GPG_KEY C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
-ENV PYTHON_VERSION 2.7.15
+ENV GPG_KEY %%PLACEHOLDER%%
+ENV PYTHON_VERSION %%PLACEHOLDER%%
 
 RUN set -ex \
-	\
-	&& savedAptMark="$(apt-mark showmanual)" \
-	&& apt-get update && apt-get install -y --no-install-recommends \
-		dpkg-dev \
-		gcc \
-		libbz2-dev \
-		libc6-dev \
-		libdb-dev \
-		libgdbm-dev \
-		libncursesw5-dev \
-		libreadline-dev \
-		libsqlite3-dev \
-		libssl-dev \
-		make \
-		tk-dev \
-		wget \
-		xz-utils \
-		zlib1g-dev \
-# as of Stretch, "gpg" is no longer included by default
-		$(command -v gpg > /dev/null || echo 'gnupg dirmngr') \
-	&& rm -rf /var/lib/apt/lists/* \
 	\
 	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
 	&& wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" \
@@ -68,17 +40,6 @@ RUN set -ex \
 	&& make install \
 	&& ldconfig \
 	\
-	&& apt-mark auto '.*' > /dev/null \
-	&& apt-mark manual $savedAptMark \
-	&& find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
-		| awk '/=>/ { print $(NF-1) }' \
-		| sort -u \
-		| xargs -r dpkg-query --search \
-		| cut -d: -f1 \
-		| sort -u \
-		| xargs -r apt-mark manual \
-	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-	\
 	&& find /usr/local -depth \
 		\( \
 			\( -type d -a \( -name test -o -name tests \) \) \
@@ -90,20 +51,11 @@ RUN set -ex \
 	&& python2 --version
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 18.0
+ENV PYTHON_PIP_VERSION %%PLACEHOLDER%%
 
 RUN set -ex; \
 	\
-	savedAptMark="$(apt-mark showmanual)"; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends wget; \
-	rm -rf /var/lib/apt/lists/*; \
-	\
 	wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
-	\
-	apt-mark auto '.*' > /dev/null; \
-	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
-	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
 	python get-pip.py \
 		--disable-pip-version-check \
@@ -119,5 +71,8 @@ RUN set -ex; \
 			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
+
+# install "virtualenv", since the vast majority of users of this image will want it
+RUN pip install --no-cache-dir virtualenv
 
 CMD ["python2"]
