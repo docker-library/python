@@ -15,9 +15,6 @@ ENV LANG C.UTF-8
 # https://github.com/docker-library/python/issues/147
 ENV PYTHONIOENCODING UTF-8
 
-# install libressl so that HTTPS works on Alpine <3.7
-# RUN apk add --no-cache libressl
-
 ENV GPG_KEY C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
 ENV PYTHON_VERSION 2.7.15
 
