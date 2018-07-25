@@ -152,12 +152,22 @@ for version in "${versions[@]}"; do
 			wheezy) sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$dir/Dockerfile" ;;
 		esac
 
+		if [[ "$v" == alpine* ]] && [ "$v" != 'alpine3.6' ]; then
+			# https://github.com/docker-library/python/pull/307
+			# on Alpine 3.6 it's necessary to install libressl to get working HTTPS with wget (and ca-certificates for Python's runtime), but later versions don't require this (support for both is baked into the base)
+			sed -ri -e '/(libressl|openssl|ca-certificates)([ ;]|$)/d' "$dir/Dockerfile"
+
+			# remove any double-empty (or double-empty-continuation) lines the above created
+			uniq "$dir/Dockerfile" > "$dir/Dockerfile.new"
+			mv "$dir/Dockerfile.new" "$dir/Dockerfile"
+		fi
+
 		case "$version/$v" in
 			# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
 			# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL 2.6.x in Alpine 3.7 doesn't implement
 			# Python 3.5 on Alpine 3.8 needs OpenSSL too
 			3.7*/alpine3.7 | 3.5*/alpine3.8)
-				sed -ri -e 's/libressl/openssl/g' "$dir/Dockerfile"
+				sed -ri -e 's/libressl-dev/openssl-dev/g' "$dir/Dockerfile"
 				;;& # (3.5*/alpine* needs to match the next block too)
 			# Libraries to build the nis module only available in Alpine 3.7+.
 			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.
