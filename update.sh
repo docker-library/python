@@ -155,7 +155,10 @@ for version in "${versions[@]}"; do
 		if [[ "$v" == alpine* ]] && [ "$v" != 'alpine3.6' ]; then
 			# https://github.com/docker-library/python/pull/307
 			# on Alpine 3.6 it's necessary to install libressl to get working HTTPS with wget (and ca-certificates for Python's runtime), but later versions don't require this (support for both is baked into the base)
-			sed -ri -e '/(libressl|openssl|ca-certificates)([ ;]|$)/d' "$dir/Dockerfile"
+			# https://github.com/docker-library/python/issues/324
+			# while Alpine 3.7+ includes CA certs in the base (/etc/ssl/cert.pem) and this is sufficient for working HTTPS in wget and Python, some software (notably, any Golang code) expects CA certs at /etc/ssl/certs/
+			# this means it is still necessary to install ca-certificates in all Alpine images for consistently working HTTPS
+			sed -ri -e '/(libressl|openssl)([ ;]|$)/d' "$dir/Dockerfile"
 
 			# remove any double-empty (or double-empty-continuation) lines the above created
 			uniq "$dir/Dockerfile" > "$dir/Dockerfile.new"
