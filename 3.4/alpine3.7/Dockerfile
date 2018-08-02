@@ -14,7 +14,7 @@ ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
-ENV PYTHON_VERSION 3.4.8
+ENV PYTHON_VERSION 3.4.9
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
