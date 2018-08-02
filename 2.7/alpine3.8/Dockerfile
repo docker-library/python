@@ -15,6 +15,10 @@ ENV LANG C.UTF-8
 # https://github.com/docker-library/python/issues/147
 ENV PYTHONIOENCODING UTF-8
 
+# install ca-certificates so that HTTPS works consistently
+# other runtime dependencies for Python are installed later
+RUN apk add --no-cache ca-certificates
+
 ENV GPG_KEY C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
 ENV PYTHON_VERSION 2.7.15
 
