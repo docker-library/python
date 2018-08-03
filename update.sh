@@ -174,9 +174,18 @@ for version in "${versions[@]}"; do
 				;;& # (3.5*/alpine* needs to match the next block too)
 			# Libraries to build the nis module only available in Alpine 3.7+.
 			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.
-			3.4*/alpine* | 3.5*/alpine* | */alpine3.6)
+			3.[4-5]*/alpine* | */alpine3.6)
 				sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
+				;;& # (3.4*/alpine* and 3.5*/alpine* need to match the next block too)
+			# https://bugs.python.org/issue11063, https://bugs.python.org/issue20519 (Python 3.7.0+)
+			# A new native _uuid module improves uuid import time and avoids using ctypes.
+			# This requires the development libuuid headers.
+			3.[4-6]*/alpine*)
+				sed -ri -e '/util-linux-dev/d' "$dir/Dockerfile"
 				;;
+			3.[4-6]*)
+				sed -ri -e '/uuid-dev/d' "$dir/Dockerfile"
+				;;& # (other Debian variants need to match later blocks)
 			3.4/stretch*)
 				sed -ri -e 's/libssl-dev/libssl1.0-dev/g' "$dir/Dockerfile"
 				;;
