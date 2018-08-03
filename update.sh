@@ -165,6 +165,19 @@ for version in "${versions[@]}"; do
 			mv "$dir/Dockerfile.new" "$dir/Dockerfile"
 		fi
 
+		# https://bugs.python.org/issue11063, https://bugs.python.org/issue20519 (Python 3.7.0+)
+		# A new native _uuid module improves uuid import time and avoids using ctypes.
+		# This requires the development libuuid headers.
+		case "$version" in
+			3.4* | 3.5* | 3.6*)
+				if [[ "$v" = alpine* ]]; then
+					sed -ri -e '/util-linux-dev/d' "$dir/Dockerfile"
+				else
+					sed -ri -e '/uuid-dev/d' "$dir/Dockerfile"
+				fi
+				;;
+		esac
+
 		case "$version/$v" in
 			# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
 			# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL 2.6.x in Alpine 3.7 doesn't implement

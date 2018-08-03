@@ -40,6 +40,7 @@ RUN set -ex \
 		libssl-dev \
 		make \
 		tk-dev \
+		uuid-dev \
 		wget \
 		xz-utils \
 		zlib1g-dev \
