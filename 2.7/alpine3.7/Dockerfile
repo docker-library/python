@@ -43,22 +43,27 @@ RUN set -ex \
 		bzip2-dev \
 		coreutils \
 		dpkg-dev dpkg \
+		expat-dev \
 		findutils \
 		gcc \
 		gdbm-dev \
 		libc-dev \
+		libffi-dev \
 		libnsl-dev \
 		libressl-dev \
 		libtirpc-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
+		openssl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
 		tcl-dev \
 		tk \
 		tk-dev \
+		util-linux-dev \
+		xz-dev \
 		zlib-dev \
 # add build deps before removing fetch deps in case there's overlap
 	&& apk del .fetch-deps \
@@ -69,6 +74,8 @@ RUN set -ex \
 		--build="$gnuArch" \
 		--enable-shared \
 		--enable-unicode=ucs4 \
+		--with-system-expat \
+		--with-system-ffi \
 		--enable-optimizations \
 	&& make -j "$(nproc)" \
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
