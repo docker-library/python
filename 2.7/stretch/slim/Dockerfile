@@ -63,6 +63,7 @@ RUN set -ex \
 		--build="$gnuArch" \
 		--enable-shared \
 		--enable-unicode=ucs4 \
+		--enable-optimizations \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& ldconfig \
