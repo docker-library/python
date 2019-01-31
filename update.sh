@@ -165,6 +165,11 @@ for version in "${versions[@]}"; do
 			mv "$dir/Dockerfile.new" "$dir/Dockerfile"
 		fi
 
+		# Alpine < 3.9 used libressl instead of openssl
+		if [[ "$v" == alpine3.[6-8] ]]; then
+			sed -ri -e 's/openssl/libressl/g' "$dir/Dockerfile"
+		fi
+
 		case "$version/$v" in
 			# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
 			# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL 2.6.x in Alpine 3.7 doesn't implement

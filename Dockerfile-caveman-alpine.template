@@ -46,7 +46,7 @@ RUN set -ex \
 		libffi-dev \
 		libnsl-dev \
 		libressl \
-		libressl-dev \
+		openssl-dev \
 		libtirpc-dev \
 		linux-headers \
 		make \
