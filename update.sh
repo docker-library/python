@@ -112,7 +112,7 @@ for version in "${versions[@]}"; do
 	echo "$version: $fullVersion"
 
 	for v in \
-		alpine{3.6,3.7,3.8} \
+		alpine{3.6,3.7,3.8,3.9} \
 		{wheezy,jessie,stretch}{/slim,} \
 		windows/nanoserver-{1709,sac2016} \
 		windows/windowsservercore-{1709,ltsc2016} \
@@ -182,7 +182,13 @@ for version in "${versions[@]}"; do
 			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.
 			3.[4-5]*/alpine* | */alpine3.6)
 				sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
-				;;& # (3.4*/alpine* and 3.5*/alpine* need to match the next block too)
+				;;& # (3.4*/alpine* and 3.5*/alpine* need to match the next blocks too)
+
+			# Alpine 3.9's OpenSSL 1.1.1 is too new for Python 3.4
+			# no OpenSSL 1.0.x package available, so have to switch back to LibreSSL
+			3.4/alpine3.9)
+				sed -ri -e 's/openssl-dev/libressl-dev/g' "$dir/Dockerfile"
+				;;& # (need to match next block too)
 
 			# https://bugs.python.org/issue11063, https://bugs.python.org/issue20519 (Python 3.7.0+)
 			# A new native _uuid module improves uuid import time and avoids using ctypes.
