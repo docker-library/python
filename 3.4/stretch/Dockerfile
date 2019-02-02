@@ -36,6 +36,8 @@ RUN set -ex \
 	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
 	&& rm python.tar.xz \
 	\
+	&& apt-get install -y --no-install-recommends systemtap-sdt-dev \
+	\
 	&& cd /usr/src/python \
 	&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
 	&& ./configure \
@@ -45,6 +47,7 @@ RUN set -ex \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
+		--without-dtrace \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& ldconfig \
@@ -56,6 +59,7 @@ RUN set -ex \
 			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
 		\) -exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python \
+	&& apt-get remove -y systemtap-sdt-dev \
 	\
 	&& python3 --version
 

@@ -39,6 +39,7 @@ RUN set -ex \
 		libsqlite3-dev \
 		libssl-dev \
 		make \
+		systemtap-sdt-dev \
 		tk-dev \
 		uuid-dev \
 		wget \
@@ -67,6 +68,7 @@ RUN set -ex \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
+		--with-dtrace \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& ldconfig \
