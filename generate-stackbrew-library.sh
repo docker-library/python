@@ -47,7 +47,7 @@ getArches() {
 
 	eval "declare -g -A parentRepoToArches=( $(
 		find -name 'Dockerfile' -exec awk '
-				toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|microsoft\/[^:]+)(:|$)/ {
+				toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
 					print "'"$officialImagesUrl"'" $2
 				}
 			' '{}' + \
