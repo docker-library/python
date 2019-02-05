@@ -50,11 +50,11 @@ RUN set -ex \
 		libc-dev \
 		libffi-dev \
 		libnsl-dev \
-		libressl-dev \
 		libtirpc-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
+		libressl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \

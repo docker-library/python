@@ -19,7 +19,6 @@ ENV PYTHON_VERSION %%PLACEHOLDER%%
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
 		gnupg \
-		libressl \
 		tar \
 		xz \
 	\
@@ -45,12 +44,11 @@ RUN set -ex \
 		libc-dev \
 		libffi-dev \
 		libnsl-dev \
-		libressl \
-		libressl-dev \
 		libtirpc-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
+		openssl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
@@ -96,8 +94,6 @@ RUN set -ex \
 ENV PYTHON_PIP_VERSION %%PLACEHOLDER%%
 
 RUN set -ex; \
-	\
-	apk add --no-cache --virtual .fetch-deps libressl; trap 'apk del .fetch-deps' EXIT; \
 	\
 	wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
 	\

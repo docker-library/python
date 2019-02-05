@@ -112,7 +112,7 @@ for version in "${versions[@]}"; do
 	echo "$version: $fullVersion"
 
 	for v in \
-		alpine{3.6,3.7,3.8} \
+		alpine{3.8,3.9} \
 		{wheezy,jessie,stretch}{/slim,} \
 		windows/nanoserver-{1709,sac2016} \
 		windows/windowsservercore-{1709,ltsc2016} \
@@ -152,32 +152,30 @@ for version in "${versions[@]}"; do
 			wheezy) sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$dir/Dockerfile" ;;
 		esac
 
-		if [[ "$v" == alpine* ]] && [ "$v" != 'alpine3.6' ]; then
-			# https://github.com/docker-library/python/pull/307
-			# on Alpine 3.6 it's necessary to install libressl to get working HTTPS with wget (and ca-certificates for Python's runtime), but later versions don't require this (support for both is baked into the base)
-			# https://github.com/docker-library/python/issues/324
-			# while Alpine 3.7+ includes CA certs in the base (/etc/ssl/cert.pem) and this is sufficient for working HTTPS in wget and Python, some software (notably, any Golang code) expects CA certs at /etc/ssl/certs/
-			# this means it is still necessary to install ca-certificates in all Alpine images for consistently working HTTPS
-			sed -ri -e '/(libressl|openssl)([ ;]|$)/d' "$dir/Dockerfile"
-
-			# remove any double-empty (or double-empty-continuation) lines the above created
-			uniq "$dir/Dockerfile" > "$dir/Dockerfile.new"
-			mv "$dir/Dockerfile.new" "$dir/Dockerfile"
+		# Alpine < 3.9 used libressl instead of openssl
+		if [ "$v" = 'alpine3.8' ]; then
+			sed -ri -e 's/openssl/libressl/g' "$dir/Dockerfile"
 		fi
 
 		case "$version/$v" in
 			# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
 			# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL 2.6.x in Alpine 3.7 doesn't implement
 			# Python 3.5 on Alpine 3.8 needs OpenSSL too
-			3.7*/alpine3.7 | 3.5*/alpine3.8)
+			3.5*/alpine3.8)
 				sed -ri -e 's/libressl-dev/openssl-dev/g' "$dir/Dockerfile"
 				;;& # (3.5*/alpine* needs to match the next block too)
 
 			# Libraries to build the nis module only available in Alpine 3.7+.
 			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.
-			3.[4-5]*/alpine* | */alpine3.6)
+			3.[4-5]*/alpine*)
 				sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
-				;;& # (3.4*/alpine* and 3.5*/alpine* need to match the next block too)
+				;;& # (3.4*/alpine* and 3.5*/alpine* need to match the next blocks too)
+
+			# Alpine 3.9's OpenSSL 1.1.1 is too new for Python 3.4
+			# no OpenSSL 1.0.x package available, so have to switch back to LibreSSL
+			3.4/alpine3.9)
+				sed -ri -e 's/openssl-dev/libressl-dev/g' "$dir/Dockerfile"
+				;;& # (need to match next block too)
 
 			# https://bugs.python.org/issue11063, https://bugs.python.org/issue20519 (Python 3.7.0+)
 			# A new native _uuid module improves uuid import time and avoids using ctypes.

@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.7
+FROM alpine:3.9
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -17,8 +17,8 @@ ENV LANG C.UTF-8
 # other runtime dependencies for Python are installed later
 RUN apk add --no-cache ca-certificates
 
-ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.6.8
+ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
+ENV PYTHON_VERSION 3.4.9
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
@@ -47,12 +47,10 @@ RUN set -ex \
 		gdbm-dev \
 		libc-dev \
 		libffi-dev \
-		libnsl-dev \
-		libressl-dev \
-		libtirpc-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
+		libressl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \

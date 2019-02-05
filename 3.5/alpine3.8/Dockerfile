@@ -47,10 +47,10 @@ RUN set -ex \
 		gdbm-dev \
 		libc-dev \
 		libffi-dev \
-		openssl-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
+		openssl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \

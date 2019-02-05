@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.7
+FROM alpine:3.9
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -12,15 +12,13 @@ ENV PATH /usr/local/bin:$PATH
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
-# https://github.com/docker-library/python/issues/147
-ENV PYTHONIOENCODING UTF-8
 
 # install ca-certificates so that HTTPS works consistently
 # other runtime dependencies for Python are installed later
 RUN apk add --no-cache ca-certificates
 
-ENV GPG_KEY C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
-ENV PYTHON_VERSION 2.7.15
+ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
+ENV PYTHON_VERSION 3.6.8
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
@@ -50,17 +48,18 @@ RUN set -ex \
 		libc-dev \
 		libffi-dev \
 		libnsl-dev \
-		libressl-dev \
 		libtirpc-dev \
 		linux-headers \
 		make \
 		ncurses-dev \
+		openssl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
 		tcl-dev \
 		tk \
 		tk-dev \
+		xz-dev \
 		zlib-dev \
 # add build deps before removing fetch deps in case there's overlap
 	&& apk del .fetch-deps \
@@ -69,10 +68,11 @@ RUN set -ex \
 	&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
 	&& ./configure \
 		--build="$gnuArch" \
+		--enable-loadable-sqlite-extensions \
 		--enable-shared \
-		--enable-unicode=ucs4 \
 		--with-system-expat \
 		--with-system-ffi \
+		--without-ensurepip \
 	&& make -j "$(nproc)" \
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
@@ -94,7 +94,14 @@ RUN set -ex \
 		\) -exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python \
 	\
-	&& python2 --version
+	&& python3 --version
+
+# make some useful symlinks that are expected to exist
+RUN cd /usr/local/bin \
+	&& ln -s idle3 idle \
+	&& ln -s pydoc3 pydoc \
+	&& ln -s python3 python \
+	&& ln -s python3-config python-config
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 19.0.1
@@ -118,4 +125,4 @@ RUN set -ex; \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
-CMD ["python2"]
+CMD ["python3"]
