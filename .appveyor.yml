@@ -5,19 +5,10 @@ environment:
   matrix:
     - version: 3.7
       variant: windowsservercore-ltsc2016
-    - os: windows
-      dist: 1803-containers
-      env: VERSION=3.7 VARIANT=windowsservercore-1803
     - version: 3.6
       variant: windowsservercore-ltsc2016
-    - os: windows
-      dist: 1803-containers
-      env: VERSION=3.6 VARIANT=windowsservercore-1803
     - version: 2.7
       variant: windowsservercore-ltsc2016
-    - os: windows
-      dist: 1803-containers
-      env: VERSION=2.7 VARIANT=windowsservercore-1803
 
 install:
   - ps: |

@@ -198,9 +198,7 @@ for version in "${versions[@]}"; do
 		esac
 
 		case "$v" in
-			windows/*-1803)
-				appveyorEnv='\n    - os: windows\n      dist: 1803-containers\n      env: VERSION='"$version VARIANT=$variant$appveyorEnv"
-				;;
+			windows/*-1803) ;; # TODO
 			windows/*-1709|windows/*-1809) ;; # no AppVeyor support for 1709 or 1809 yet: https://github.com/appveyor/ci/issues/1885 and https://github.com/appveyor/ci/issues/2676
 			windows/*)
 				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant$appveyorEnv"
