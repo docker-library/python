@@ -4,29 +4,30 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM mcr.microsoft.com/windows/servercore:1709
+FROM mcr.microsoft.com/windows/servercore:1809
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-ENV PYTHON_VERSION 2.7.15
-ENV PYTHON_RELEASE 2.7.15
+ENV PYTHON_VERSION 3.7.2
+ENV PYTHON_RELEASE 3.7.2
 
-RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}.amd64.msi' -f $env:PYTHON_RELEASE, $env:PYTHON_VERSION); \
+RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env:PYTHON_RELEASE, $env:PYTHON_VERSION); \
 	Write-Host ('Downloading {0} ...' -f $url); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-	Invoke-WebRequest -Uri $url -OutFile 'python.msi'; \
+	Invoke-WebRequest -Uri $url -OutFile 'python.exe'; \
 	\
 	Write-Host 'Installing ...'; \
-# https://www.python.org/download/releases/2.4/msi/
-	Start-Process msiexec -Wait \
+# https://docs.python.org/3.5/using/windows.html#installing-without-ui
+	Start-Process python.exe -Wait \
 		-ArgumentList @( \
-			'/i', \
-			'python.msi', \
 			'/quiet', \
-			'/qn', \
-			'TARGETDIR=C:\Python', \
-			'ALLUSERS=1', \
-			'ADDLOCAL=DefaultFeature,Extensions,TclTk,Tools,PrependPath' \
+			'InstallAllUsers=1', \
+			'TargetDir=C:\Python', \
+			'PrependPath=1', \
+			'Shortcuts=0', \
+			'Include_doc=0', \
+			'Include_pip=0', \
+			'Include_test=0' \
 		); \
 	\
 # the installer updated PATH, so we should refresh our local value
@@ -36,7 +37,7 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}.amd64.msi' -f $env
 	Write-Host '  python --version'; python --version; \
 	\
 	Write-Host 'Removing ...'; \
-	Remove-Item python.msi -Force; \
+	Remove-Item python.exe -Force; \
 	\
 	Write-Host 'Complete.';
 
@@ -57,8 +58,5 @@ RUN Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
 	pip --version; \
 	\
 	Write-Host 'Complete.';
-
-# install "virtualenv", since the vast majority of users of this image will want it
-RUN pip install --no-cache-dir virtualenv
 
 CMD ["python"]
