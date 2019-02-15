@@ -114,7 +114,6 @@ for version in "${versions[@]}"; do
 	for v in \
 		alpine{3.8,3.9} \
 		{wheezy,jessie,stretch}{/slim,} \
-		windows/nanoserver-{1709,sac2016} \
 		windows/windowsservercore-{1809,1803,1709,ltsc2016} \
 	; do
 		dir="$version/$v"
@@ -145,7 +144,7 @@ for version in "${versions[@]}"; do
 			-e 's/^(ENV PYTHON_RELEASE) .*/\1 '"${fullVersion%%[a-z]*}"'/' \
 			-e 's/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/' \
 			-e 's/^(FROM python):.*/\1:'"$version-$tag"'/' \
-			-e 's!^(FROM (debian|buildpack-deps|alpine|[^/]+/windows/[^:]+)):.*!\1:'"$tag"'!' \
+			-e 's!^(FROM (debian|buildpack-deps|alpine|mcr[.]microsoft[.]com/[^:]+)):.*!\1:'"$tag"'!' \
 			"$dir/Dockerfile"
 
 		case "$variant" in
@@ -198,19 +197,24 @@ for version in "${versions[@]}"; do
 		esac
 
 		case "$v" in
-			windows/*-1803) ;; # TODO
-			windows/*-1709|windows/*-1809) ;; # no AppVeyor support for 1709 or 1809 yet: https://github.com/appveyor/ci/issues/1885 and https://github.com/appveyor/ci/issues/2676
+			windows/*-1803)
+				travisEnv='\n    - os: windows\n      dist: 1803-containers\n      env: VERSION='"$version VARIANT=$v$travisEnv"
+				;;
+
+			windows/*-1709 | windows/*-1809) ;; # no AppVeyor support for 1709 or 1809 yet: https://github.com/appveyor/ci/issues/1885 and https://github.com/appveyor/ci/issues/2676
+
 			windows/*)
 				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant$appveyorEnv"
 				;;
+
 			*)
-				travisEnv='\n  - VERSION='"$version VARIANT=$v$travisEnv"
+				travisEnv='\n    - os: linux\n      env: VERSION='"$version VARIANT=$v$travisEnv"
 				;;
 		esac
 	done
 done
 
-travis="$(awk -v 'RS=\n\n' '$1 == "env:" { $0 = "env:'"$travisEnv"'" } { printf "%s%s", $0, RS }' .travis.yml)"
+travis="$(awk -v 'RS=\n\n' '$1 == "matrix:" { $0 = "matrix:\n  include:'"$travisEnv"'" } { printf "%s%s", $0, RS }' .travis.yml)"
 echo "$travis" > .travis.yml
 
 appveyor="$(awk -v 'RS=\n\n' '$1 == "environment:" { $0 = "environment:\n  matrix:'"$appveyorEnv"'" } { printf "%s%s", $0, RS }' .appveyor.yml)"
