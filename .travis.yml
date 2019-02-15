@@ -75,10 +75,10 @@ matrix:
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
+  - if [ "$TRAVIS_OS_NAME" = 'linux' ]; then wget -qO- 'https://github.com/tianon/pgp-happy-eyeballs/raw/master/hack-my-builds.sh' | bash; fi
 
 before_script:
   - env | sort
-  - wget -qO- 'https://github.com/tianon/pgp-happy-eyeballs/raw/master/hack-my-builds.sh' | bash
   - cd "$VERSION/$VARIANT"
   - slash='/'; image="python:${VERSION}-${VARIANT//$slash/-}"
 
