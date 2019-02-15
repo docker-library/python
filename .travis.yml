@@ -1,44 +1,84 @@
 language: bash
 services: docker
 
-env:
-  - VERSION=3.7 VARIANT=stretch
-  - VERSION=3.7 VARIANT=stretch/slim
-  - VERSION=3.7 VARIANT=alpine3.9
-  - VERSION=3.7 VARIANT=alpine3.8
-  - VERSION=3.6 VARIANT=stretch
-  - VERSION=3.6 VARIANT=stretch/slim
-  - VERSION=3.6 VARIANT=jessie
-  - VERSION=3.6 VARIANT=jessie/slim
-  - VERSION=3.6 VARIANT=alpine3.9
-  - VERSION=3.6 VARIANT=alpine3.8
-  - VERSION=3.5 VARIANT=stretch
-  - VERSION=3.5 VARIANT=stretch/slim
-  - VERSION=3.5 VARIANT=jessie
-  - VERSION=3.5 VARIANT=jessie/slim
-  - VERSION=3.5 VARIANT=alpine3.9
-  - VERSION=3.5 VARIANT=alpine3.8
-  - VERSION=3.4 VARIANT=stretch
-  - VERSION=3.4 VARIANT=stretch/slim
-  - VERSION=3.4 VARIANT=jessie
-  - VERSION=3.4 VARIANT=jessie/slim
-  - VERSION=3.4 VARIANT=wheezy
-  - VERSION=3.4 VARIANT=alpine3.9
-  - VERSION=3.4 VARIANT=alpine3.8
-  - VERSION=2.7 VARIANT=stretch
-  - VERSION=2.7 VARIANT=stretch/slim
-  - VERSION=2.7 VARIANT=jessie
-  - VERSION=2.7 VARIANT=jessie/slim
-  - VERSION=2.7 VARIANT=wheezy
-  - VERSION=2.7 VARIANT=alpine3.9
-  - VERSION=2.7 VARIANT=alpine3.8
+matrix:
+  include:
+    - os: windows
+      dist: 1803-containers
+      env: VERSION=3.7 VARIANT=windows/windowsservercore-1803
+    - os: linux
+      env: VERSION=3.7 VARIANT=stretch
+    - os: linux
+      env: VERSION=3.7 VARIANT=stretch/slim
+    - os: linux
+      env: VERSION=3.7 VARIANT=alpine3.9
+    - os: linux
+      env: VERSION=3.7 VARIANT=alpine3.8
+    - os: windows
+      dist: 1803-containers
+      env: VERSION=3.6 VARIANT=windows/windowsservercore-1803
+    - os: linux
+      env: VERSION=3.6 VARIANT=stretch
+    - os: linux
+      env: VERSION=3.6 VARIANT=stretch/slim
+    - os: linux
+      env: VERSION=3.6 VARIANT=jessie
+    - os: linux
+      env: VERSION=3.6 VARIANT=jessie/slim
+    - os: linux
+      env: VERSION=3.6 VARIANT=alpine3.9
+    - os: linux
+      env: VERSION=3.6 VARIANT=alpine3.8
+    - os: linux
+      env: VERSION=3.5 VARIANT=stretch
+    - os: linux
+      env: VERSION=3.5 VARIANT=stretch/slim
+    - os: linux
+      env: VERSION=3.5 VARIANT=jessie
+    - os: linux
+      env: VERSION=3.5 VARIANT=jessie/slim
+    - os: linux
+      env: VERSION=3.5 VARIANT=alpine3.9
+    - os: linux
+      env: VERSION=3.5 VARIANT=alpine3.8
+    - os: linux
+      env: VERSION=3.4 VARIANT=stretch
+    - os: linux
+      env: VERSION=3.4 VARIANT=stretch/slim
+    - os: linux
+      env: VERSION=3.4 VARIANT=jessie
+    - os: linux
+      env: VERSION=3.4 VARIANT=jessie/slim
+    - os: linux
+      env: VERSION=3.4 VARIANT=wheezy
+    - os: linux
+      env: VERSION=3.4 VARIANT=alpine3.9
+    - os: linux
+      env: VERSION=3.4 VARIANT=alpine3.8
+    - os: windows
+      dist: 1803-containers
+      env: VERSION=2.7 VARIANT=windows/windowsservercore-1803
+    - os: linux
+      env: VERSION=2.7 VARIANT=stretch
+    - os: linux
+      env: VERSION=2.7 VARIANT=stretch/slim
+    - os: linux
+      env: VERSION=2.7 VARIANT=jessie
+    - os: linux
+      env: VERSION=2.7 VARIANT=jessie/slim
+    - os: linux
+      env: VERSION=2.7 VARIANT=wheezy
+    - os: linux
+      env: VERSION=2.7 VARIANT=alpine3.9
+    - os: linux
+      env: VERSION=2.7 VARIANT=alpine3.8
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
+  - if [ "$TRAVIS_OS_NAME" = 'linux' ]; then wget -qO- 'https://github.com/tianon/pgp-happy-eyeballs/raw/master/hack-my-builds.sh' | bash; fi
 
 before_script:
   - env | sort
-  - wget -qO- 'https://github.com/tianon/pgp-happy-eyeballs/raw/master/hack-my-builds.sh' | bash
   - cd "$VERSION/$VARIANT"
   - slash='/'; image="python:${VERSION}-${VARIANT//$slash/-}"
 

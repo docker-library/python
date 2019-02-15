@@ -78,8 +78,7 @@ for version in "${versions[@]}"; do
 	for v in \
 		{stretch,jessie,wheezy}{,/slim} \
 		alpine{3.9,3.8} \
-		windows/windowsservercore-{ltsc2016,1709} \
-		windows/nanoserver-{sac2016,1709} \
+		windows/windowsservercore-{ltsc2016,1709,1803,1809} \
 	; do
 		dir="$version/$v"
 		variant="$(basename "$v")"

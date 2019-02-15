@@ -1,4 +1,4 @@
-FROM microsoft/windowsservercore:%%PLACEHOLDER%%
+FROM mcr.microsoft.com/windows/servercore:%%PLACEHOLDER%%
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
