@@ -2,6 +2,7 @@
 set -Eeuo pipefail
 shopt -s nullglob
 
+# https://www.python.org/downloads/23Introduction (under "OpenPGP Public Keys")
 declare -A gpgKeys=(
 	# gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
 	[2.7]='C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF'
@@ -21,7 +22,11 @@ declare -A gpgKeys=(
 
 	# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
 	[3.7]='0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'
-	# https://www.python.org/dev/peps/pep-0494/#release-manager-and-crew
+	# https://www.python.org/dev/peps/pep-0537/#release-manager-and-crew
+
+	# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
+	[3.8]='E3FF2839C048B25C084DEBE9B26995E310250568'
+	# https://www.python.org/dev/peps/pep-0569/#release-manager-and-crew
 )
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
