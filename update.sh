@@ -9,10 +9,6 @@ declare -A gpgKeys=(
 	# https://www.python.org/dev/peps/pep-0373/#release-manager-and-crew
 
 	# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
-	[3.4]='97FC712E4C024BBEA48A61ED3A5CA953F73C700D'
-	# https://www.python.org/dev/peps/pep-0429/#release-manager-and-crew
-
-	# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
 	[3.5]='97FC712E4C024BBEA48A61ED3A5CA953F73C700D'
 	# https://www.python.org/dev/peps/pep-0478/#release-manager-and-crew
 
@@ -171,30 +167,19 @@ for version in "${versions[@]}"; do
 
 			# Libraries to build the nis module only available in Alpine 3.7+.
 			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.
-			3.[4-5]*/alpine*)
+			3.5*/alpine*)
 				sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
-				;;& # (3.4*/alpine* and 3.5*/alpine* need to match the next blocks too)
-
-			# Alpine 3.9's OpenSSL 1.1.1 is too new for Python 3.4
-			# no OpenSSL 1.0.x package available, so have to switch back to LibreSSL
-			3.4/alpine3.9)
-				sed -ri -e 's/openssl-dev/libressl-dev/g' "$dir/Dockerfile"
-				;;& # (need to match next block too)
+				;;& # (3.5*/alpine* needs to match the next blocks too)
 
 			# https://bugs.python.org/issue11063, https://bugs.python.org/issue20519 (Python 3.7.0+)
 			# A new native _uuid module improves uuid import time and avoids using ctypes.
 			# This requires the development libuuid headers.
-			3.[4-6]*/alpine*)
+			3.[5-6]*/alpine*)
 				sed -ri -e '/util-linux-dev/d' "$dir/Dockerfile"
 				;;
-			3.[4-6]*)
+			3.[5-6]*)
 				sed -ri -e '/uuid-dev/d' "$dir/Dockerfile"
 				;;& # (other Debian variants need to match later blocks)
-
-			3.4/stretch*)
-				# older Python needs older OpenSSL
-				sed -ri -e 's/libssl-dev/libssl1.0-dev/g' "$dir/Dockerfile"
-				;;
 			*/stretch | */jessie | */wheezy)
 				# buildpack-deps already includes libssl-dev
 				sed -ri -e '/libssl-dev/d' "$dir/Dockerfile"
