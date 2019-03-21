@@ -50,20 +50,6 @@ matrix:
       env: VERSION=3.5 VARIANT=alpine3.9
     - os: linux
       env: VERSION=3.5 VARIANT=alpine3.8
-    - os: linux
-      env: VERSION=3.4 VARIANT=stretch
-    - os: linux
-      env: VERSION=3.4 VARIANT=stretch/slim
-    - os: linux
-      env: VERSION=3.4 VARIANT=jessie
-    - os: linux
-      env: VERSION=3.4 VARIANT=jessie/slim
-    - os: linux
-      env: VERSION=3.4 VARIANT=wheezy
-    - os: linux
-      env: VERSION=3.4 VARIANT=alpine3.9
-    - os: linux
-      env: VERSION=3.4 VARIANT=alpine3.8
     - os: windows
       dist: 1803-containers
       env: VERSION=2.7 VARIANT=windows/windowsservercore-1803
