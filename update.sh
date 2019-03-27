@@ -114,7 +114,7 @@ for version in "${versions[@]}"; do
 
 	for v in \
 		alpine{3.8,3.9} \
-		{wheezy,jessie,stretch}{/slim,} \
+		{jessie,stretch}{/slim,} \
 		windows/windowsservercore-{1809,1803,1709,ltsc2016} \
 	; do
 		dir="$version/$v"
@@ -148,10 +148,6 @@ for version in "${versions[@]}"; do
 			-e 's!^(FROM (debian|buildpack-deps|alpine|mcr[.]microsoft[.]com/[^:]+)):.*!\1:'"$tag"'!' \
 			"$dir/Dockerfile"
 
-		case "$variant" in
-			wheezy) sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$dir/Dockerfile" ;;
-		esac
-
 		# Alpine < 3.9 used libressl instead of openssl
 		if [ "$v" = 'alpine3.8' ]; then
 			sed -ri -e 's/openssl/libressl/g' "$dir/Dockerfile"
@@ -180,7 +176,7 @@ for version in "${versions[@]}"; do
 			3.[5-6]*)
 				sed -ri -e '/uuid-dev/d' "$dir/Dockerfile"
 				;;& # (other Debian variants need to match later blocks)
-			*/stretch | */jessie | */wheezy)
+			*/stretch | */jessie)
 				# buildpack-deps already includes libssl-dev
 				sed -ri -e '/libssl-dev/d' "$dir/Dockerfile"
 				;;
