@@ -11,6 +11,8 @@ matrix:
     - os: linux
       env: VERSION=3.8-rc VARIANT=stretch/slim
     - os: linux
+      env: VERSION=3.8-rc VARIANT=alpine3.10
+    - os: linux
       env: VERSION=3.8-rc VARIANT=alpine3.9
     - os: windows
       dist: 1803-containers
@@ -20,9 +22,9 @@ matrix:
     - os: linux
       env: VERSION=3.7 VARIANT=stretch/slim
     - os: linux
-      env: VERSION=3.7 VARIANT=alpine3.9
+      env: VERSION=3.7 VARIANT=alpine3.10
     - os: linux
-      env: VERSION=3.7 VARIANT=alpine3.8
+      env: VERSION=3.7 VARIANT=alpine3.9
     - os: windows
       dist: 1803-containers
       env: VERSION=3.6 VARIANT=windows/windowsservercore-1803
@@ -35,9 +37,9 @@ matrix:
     - os: linux
       env: VERSION=3.6 VARIANT=jessie/slim
     - os: linux
-      env: VERSION=3.6 VARIANT=alpine3.9
+      env: VERSION=3.6 VARIANT=alpine3.10
     - os: linux
-      env: VERSION=3.6 VARIANT=alpine3.8
+      env: VERSION=3.6 VARIANT=alpine3.9
     - os: linux
       env: VERSION=3.5 VARIANT=stretch
     - os: linux
@@ -47,9 +49,9 @@ matrix:
     - os: linux
       env: VERSION=3.5 VARIANT=jessie/slim
     - os: linux
-      env: VERSION=3.5 VARIANT=alpine3.9
+      env: VERSION=3.5 VARIANT=alpine3.10
     - os: linux
-      env: VERSION=3.5 VARIANT=alpine3.8
+      env: VERSION=3.5 VARIANT=alpine3.9
     - os: windows
       dist: 1803-containers
       env: VERSION=2.7 VARIANT=windows/windowsservercore-1803
@@ -62,9 +64,9 @@ matrix:
     - os: linux
       env: VERSION=2.7 VARIANT=jessie/slim
     - os: linux
-      env: VERSION=2.7 VARIANT=alpine3.9
+      env: VERSION=2.7 VARIANT=alpine3.10
     - os: linux
-      env: VERSION=2.7 VARIANT=alpine3.8
+      env: VERSION=2.7 VARIANT=alpine3.9
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
