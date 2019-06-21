@@ -113,7 +113,7 @@ for version in "${versions[@]}"; do
 	echo "$version: $fullVersion"
 
 	for v in \
-		alpine{3.8,3.9} \
+		alpine{3.9,3.10} \
 		{jessie,stretch}{/slim,} \
 		windows/windowsservercore-{1809,1803,ltsc2016} \
 	; do
@@ -148,19 +148,7 @@ for version in "${versions[@]}"; do
 			-e 's!^(FROM (debian|buildpack-deps|alpine|mcr[.]microsoft[.]com/[^:]+)):.*!\1:'"$tag"'!' \
 			"$dir/Dockerfile"
 
-		# Alpine < 3.9 used libressl instead of openssl
-		if [ "$v" = 'alpine3.8' ]; then
-			sed -ri -e 's/openssl/libressl/g' "$dir/Dockerfile"
-		fi
-
 		case "$version/$v" in
-			# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
-			# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL 2.6.x in Alpine 3.7 doesn't implement
-			# Python 3.5 on Alpine 3.8 needs OpenSSL too
-			3.5*/alpine3.8)
-				sed -ri -e 's/libressl-dev/openssl-dev/g' "$dir/Dockerfile"
-				;;& # (3.5*/alpine* needs to match the next block too)
-
 			# Libraries to build the nis module only available in Alpine 3.7+.
 			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.
 			3.5*/alpine*)
