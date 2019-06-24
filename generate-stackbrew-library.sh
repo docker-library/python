@@ -8,7 +8,7 @@ declare -A aliases=(
 )
 
 defaultDebianSuite='stretch'
-defaultAlpineVersion='3.9'
+defaultAlpineVersion='3.10'
 
 self="$(basename "$BASH_SOURCE")"
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
@@ -77,7 +77,7 @@ for version in "${versions[@]}"; do
 
 	for v in \
 		{stretch,jessie}{,/slim} \
-		alpine{3.9,3.8} \
+		alpine{3.10,3.9} \
 		windows/windowsservercore-{ltsc2016,1803,1809} \
 	; do
 		dir="$version/$v"
