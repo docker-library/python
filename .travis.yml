@@ -7,13 +7,11 @@ matrix:
       dist: 1803-containers
       env: VERSION=3.8-rc VARIANT=windows/windowsservercore-1803
     - os: linux
-      env: VERSION=3.8-rc VARIANT=stretch
+      env: VERSION=3.8-rc VARIANT=buster
     - os: linux
-      env: VERSION=3.8-rc VARIANT=stretch/slim
+      env: VERSION=3.8-rc VARIANT=buster/slim
     - os: linux
       env: VERSION=3.8-rc VARIANT=alpine3.10
-    - os: linux
-      env: VERSION=3.8-rc VARIANT=alpine3.9
     - os: windows
       dist: 1803-containers
       env: VERSION=3.7 VARIANT=windows/windowsservercore-1803

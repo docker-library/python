@@ -7,7 +7,10 @@ declare -A aliases=(
 	[2.7]='2'
 )
 
-defaultDebianSuite='stretch'
+defaultDebianSuite='stretch' # TODO buster
+declare -A debianSuites=(
+	[3.8-rc]='buster'
+)
 defaultAlpineVersion='3.10'
 
 self="$(basename "$BASH_SOURCE")"
@@ -77,6 +80,7 @@ for version in "${versions[@]}"; do
 
 	for v in \
 		{stretch,jessie}{,/slim} \
+		{buster,stretch,jessie}{,/slim} \
 		alpine{3.10,3.9} \
 		windows/windowsservercore-{ltsc2016,1803,1809} \
 	; do
@@ -102,9 +106,10 @@ for version in "${versions[@]}"; do
 		)
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
+		debianSuite="${debianSuites[$version]:-$defaultDebianSuite}"
 		case "$variant" in
-			*-"$defaultDebianSuite") # "slim-stretch", etc need "slim"
-				variantAliases+=( "${versionAliases[@]/%/-${variant%-$defaultDebianSuite}}" )
+			*-"$debianSuite") # "slim-stretch", etc need "slim"
+				variantAliases+=( "${versionAliases[@]/%/-${variant%-$debianSuite}}" )
 				;;
 			"alpine${defaultAlpineVersion}")
 				variantAliases+=( "${versionAliases[@]/%/-alpine}" )
@@ -128,7 +133,7 @@ for version in "${versions[@]}"; do
 				break
 			fi
 		done
-		if [ "$variant" = "$defaultDebianSuite" ] || [[ "$variant" == 'windowsservercore'* ]]; then
+		if [ "$variant" = "$debianSuite" ] || [[ "$variant" == 'windowsservercore'* ]]; then
 			sharedTags+=( "${versionAliases[@]}" )
 		fi
 
