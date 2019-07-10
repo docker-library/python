@@ -23,9 +23,6 @@ matrix:
       env: VERSION=3.7 VARIANT=alpine3.10
     - os: linux
       env: VERSION=3.7 VARIANT=alpine3.9
-    - os: windows
-      dist: 1803-containers
-      env: VERSION=3.6 VARIANT=windows/windowsservercore-1803
     - os: linux
       env: VERSION=3.6 VARIANT=stretch
     - os: linux
