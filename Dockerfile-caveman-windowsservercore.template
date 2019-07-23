@@ -32,14 +32,24 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}.amd64.msi' -f $env
 	Write-Host 'Removing ...'; \
 	Remove-Item python.msi -Force; \
 	\
-	Write-Host 'Complete.';
+	Write-Host 'Complete.'
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION %%PLACEHOLDER%%
+# https://github.com/pypa/get-pip
+ENV PYTHON_GET_PIP_URL %%PLACEHOLDER%%
+ENV PYTHON_GET_PIP_SHA256 %%PLACEHOLDER%%
 
-RUN Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
+RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-	Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile 'get-pip.py'; \
+	Invoke-WebRequest -Uri $env:PYTHON_GET_PIP_URL -OutFile 'get-pip.py'; \
+	Write-Host ('Verifying sha256 ({0}) ...' -f $env:PYTHON_GET_PIP_SHA256); \
+	if ((Get-FileHash 'get-pip.py' -Algorithm sha256).Hash -ne $env:PYTHON_GET_PIP_SHA256) { \
+		Write-Host 'FAILED!'; \
+		exit 1; \
+	}; \
+	\
+	Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
 	python get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
@@ -50,7 +60,7 @@ RUN Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
 	Write-Host 'Verifying pip install ...'; \
 	pip --version; \
 	\
-	Write-Host 'Complete.';
+	Write-Host 'Complete.'
 
 # install "virtualenv", since the vast majority of users of this image will want it
 RUN pip install --no-cache-dir virtualenv

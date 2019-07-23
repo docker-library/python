@@ -137,10 +137,14 @@ RUN cd /usr/local/bin \
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION %%PLACEHOLDER%%
+# https://github.com/pypa/get-pip
+ENV PYTHON_GET_PIP_URL %%PLACEHOLDER%%
+ENV PYTHON_GET_PIP_SHA256 %%PLACEHOLDER%%
 
 RUN set -ex; \
 	\
-	wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
+	wget -O get-pip.py "$PYTHON_GET_PIP_URL"; \
+	echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum -c -; \
 	\
 	python get-pip.py \
 		--disable-pip-version-check \
