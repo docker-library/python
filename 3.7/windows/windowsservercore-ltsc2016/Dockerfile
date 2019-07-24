@@ -39,14 +39,24 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env
 	Write-Host 'Removing ...'; \
 	Remove-Item python.exe -Force; \
 	\
-	Write-Host 'Complete.';
+	Write-Host 'Complete.'
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 19.1.1
+ENV PYTHON_PIP_VERSION 19.2.1
+# https://github.com/pypa/get-pip
+ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/404c9418e33c5031b1a9ab623168b3e8a2ed8c88/get-pip.py
+ENV PYTHON_GET_PIP_SHA256 56bb63d3cf54e7444351256f72a60f575f6d8c7f1faacffae33167afc8e7609d
 
-RUN Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
+RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-	Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile 'get-pip.py'; \
+	Invoke-WebRequest -Uri $env:PYTHON_GET_PIP_URL -OutFile 'get-pip.py'; \
+	Write-Host ('Verifying sha256 ({0}) ...' -f $env:PYTHON_GET_PIP_SHA256); \
+	if ((Get-FileHash 'get-pip.py' -Algorithm sha256).Hash -ne $env:PYTHON_GET_PIP_SHA256) { \
+		Write-Host 'FAILED!'; \
+		exit 1; \
+	}; \
+	\
+	Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
 	python get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
@@ -57,6 +67,6 @@ RUN Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
 	Write-Host 'Verifying pip install ...'; \
 	pip --version; \
 	\
-	Write-Host 'Complete.';
+	Write-Host 'Complete.'
 
 CMD ["python"]
