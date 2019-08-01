@@ -153,20 +153,20 @@ for version in "${versions[@]}"; do
 			-e 's!^(FROM (debian|buildpack-deps|alpine|mcr[.]microsoft[.]com/[^:]+)):.*!\1:'"$tag"'!' \
 			"$dir/Dockerfile"
 
-		case "$version/$v" in
+		case "$rcVersion/$v" in
 			# Libraries to build the nis module only available in Alpine 3.7+.
 			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.
-			3.5*/alpine*)
+			3.5/alpine*)
 				sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
 				;;& # (3.5*/alpine* needs to match the next blocks too)
 
 			# https://bugs.python.org/issue11063, https://bugs.python.org/issue20519 (Python 3.7.0+)
 			# A new native _uuid module improves uuid import time and avoids using ctypes.
 			# This requires the development libuuid headers.
-			3.[5-6]*/alpine*)
+			3.[5-6]/alpine*)
 				sed -ri -e '/util-linux-dev/d' "$dir/Dockerfile"
 				;;
-			3.[5-6]*)
+			3.[5-6]/*)
 				sed -ri -e '/uuid-dev/d' "$dir/Dockerfile"
 				;;& # (other Debian variants need to match later blocks)
 			*/buster | */stretch)
@@ -174,6 +174,17 @@ for version in "${versions[@]}"; do
 				sed -ri -e '/libssl-dev/d' "$dir/Dockerfile"
 				;;
 		esac
+
+		major="${rcVersion%%.*}"
+		minor="${rcVersion#$major.}"
+		minor="${minor%%.*}"
+		if [ "$major" -gt 3 ] || { [ "$major" -eq 3 ] && [ "$minor" -ge 8 ]; }; then
+			# PROFILE_TASK has a reasonable default starting in 3.8+; see:
+			#   https://bugs.python.org/issue36044
+			#   https://github.com/python/cpython/pull/14702
+			#   https://github.com/python/cpython/pull/14910
+			perl -0 -i -p -e "s![^\n]+PROFILE_TASK(='[^']+?')?[^\n]+\n!!gs" "$dir/Dockerfile"
+		fi
 
 		case "$v" in
 			windows/*-1803)
