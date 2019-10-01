@@ -76,7 +76,7 @@ for version in "${versions[@]}"; do
 	fullVersion=
 	declare -A impossible=()
 	for possible in "${possibles[@]}"; do
-		rcPossible="${possible%[a-z]*}"
+		rcPossible="${possible%%[a-z]*}"
 
 		# varnish is great until it isn't
 		if wget -q -O /dev/null -o /dev/null --spider "https://www.python.org/ftp/python/$rcPossible/Python-$possible.tar.xz"; then
