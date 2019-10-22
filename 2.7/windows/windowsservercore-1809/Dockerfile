@@ -8,8 +8,8 @@ FROM mcr.microsoft.com/windows/servercore:1809
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-ENV PYTHON_VERSION 2.7.16
-ENV PYTHON_RELEASE 2.7.16
+ENV PYTHON_VERSION 2.7.17
+ENV PYTHON_RELEASE 2.7.17
 
 RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}.amd64.msi' -f $env:PYTHON_RELEASE, $env:PYTHON_VERSION); \
 	Write-Host ('Downloading {0} ...' -f $url); \
