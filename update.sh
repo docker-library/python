@@ -118,7 +118,7 @@ for version in "${versions[@]}"; do
 	for v in \
 		alpine{3.9,3.10} \
 		{stretch,buster}{/slim,} \
-		windows/windowsservercore-{1809,1803,ltsc2016} \
+		windows/windowsservercore-{1809,ltsc2016} \
 	; do
 		dir="$version/$v"
 		variant="$(basename "$v")"
@@ -187,10 +187,6 @@ for version in "${versions[@]}"; do
 		fi
 
 		case "$v" in
-			windows/*-1803)
-				travisEnv='\n    - os: windows\n      dist: 1803-containers\n      env: VERSION='"$version VARIANT=$v$travisEnv"
-				;;
-
 			windows/*-1809) ;; # no AppVeyor support for 1809 yet: https://github.com/appveyor/ci/issues/1885 and https://github.com/appveyor/ci/issues/2676
 
 			windows/*)

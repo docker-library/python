@@ -3,18 +3,12 @@ services: docker
 
 matrix:
   include:
-    - os: windows
-      dist: 1803-containers
-      env: VERSION=3.8 VARIANT=windows/windowsservercore-1803
     - os: linux
       env: VERSION=3.8 VARIANT=buster
     - os: linux
       env: VERSION=3.8 VARIANT=buster/slim
     - os: linux
       env: VERSION=3.8 VARIANT=alpine3.10
-    - os: windows
-      dist: 1803-containers
-      env: VERSION=3.7 VARIANT=windows/windowsservercore-1803
     - os: linux
       env: VERSION=3.7 VARIANT=buster
     - os: linux
@@ -51,9 +45,6 @@ matrix:
       env: VERSION=3.5 VARIANT=alpine3.10
     - os: linux
       env: VERSION=3.5 VARIANT=alpine3.9
-    - os: windows
-      dist: 1803-containers
-      env: VERSION=2.7 VARIANT=windows/windowsservercore-1803
     - os: linux
       env: VERSION=2.7 VARIANT=buster
     - os: linux
