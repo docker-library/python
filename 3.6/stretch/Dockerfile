@@ -40,6 +40,7 @@ RUN set -ex \
 		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
 		--enable-optimizations \
+		--enable-option-checking=fatal \
 		--enable-shared \
 		--with-system-expat \
 		--with-system-ffi \
