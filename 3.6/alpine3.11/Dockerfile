@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.9
+FROM alpine:3.11
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -18,7 +18,7 @@ ENV LANG C.UTF-8
 RUN apk add --no-cache ca-certificates
 
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.7.6
+ENV PYTHON_VERSION 3.6.10
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
@@ -59,7 +59,6 @@ RUN set -ex \
 		tcl-dev \
 		tk \
 		tk-dev \
-		util-linux-dev \
 		xz-dev \
 		zlib-dev \
 # add build deps before removing fetch deps in case there's overlap
