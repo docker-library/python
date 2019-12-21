@@ -38,6 +38,7 @@ RUN set -ex \
 		wget \
 		xz-utils \
 		zlib1g-dev \
+		bluez-dev \
 # as of Stretch, "gpg" is no longer included by default
 		$(command -v gpg > /dev/null || echo 'gnupg dirmngr') \
 	\
