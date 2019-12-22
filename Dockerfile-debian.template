@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libssl-dev \
 		tk-dev \
 		uuid-dev \
-		bluez-dev \
+		libbluetooth-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY %%PLACEHOLDER%%
