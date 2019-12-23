@@ -12,6 +12,8 @@ matrix:
     - os: linux
       env: VERSION=3.8 VARIANT=buster/slim
     - os: linux
+      env: VERSION=3.8 VARIANT=alpine3.11
+    - os: linux
       env: VERSION=3.8 VARIANT=alpine3.10
     - os: linux
       env: VERSION=3.7 VARIANT=buster
@@ -22,9 +24,9 @@ matrix:
     - os: linux
       env: VERSION=3.7 VARIANT=stretch/slim
     - os: linux
-      env: VERSION=3.7 VARIANT=alpine3.10
+      env: VERSION=3.7 VARIANT=alpine3.11
     - os: linux
-      env: VERSION=3.7 VARIANT=alpine3.9
+      env: VERSION=3.7 VARIANT=alpine3.10
     - os: linux
       env: VERSION=3.6 VARIANT=buster
     - os: linux
@@ -34,9 +36,9 @@ matrix:
     - os: linux
       env: VERSION=3.6 VARIANT=stretch/slim
     - os: linux
-      env: VERSION=3.6 VARIANT=alpine3.10
+      env: VERSION=3.6 VARIANT=alpine3.11
     - os: linux
-      env: VERSION=3.6 VARIANT=alpine3.9
+      env: VERSION=3.6 VARIANT=alpine3.10
     - os: linux
       env: VERSION=3.5 VARIANT=buster
     - os: linux
@@ -46,9 +48,9 @@ matrix:
     - os: linux
       env: VERSION=3.5 VARIANT=stretch/slim
     - os: linux
-      env: VERSION=3.5 VARIANT=alpine3.10
+      env: VERSION=3.5 VARIANT=alpine3.11
     - os: linux
-      env: VERSION=3.5 VARIANT=alpine3.9
+      env: VERSION=3.5 VARIANT=alpine3.10
     - os: linux
       env: VERSION=2.7 VARIANT=buster
     - os: linux
@@ -58,9 +60,9 @@ matrix:
     - os: linux
       env: VERSION=2.7 VARIANT=stretch/slim
     - os: linux
-      env: VERSION=2.7 VARIANT=alpine3.10
+      env: VERSION=2.7 VARIANT=alpine3.11
     - os: linux
-      env: VERSION=2.7 VARIANT=alpine3.9
+      env: VERSION=2.7 VARIANT=alpine3.10
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
