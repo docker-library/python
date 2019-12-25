@@ -13,7 +13,6 @@ ENV PYTHONIOENCODING UTF-8
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
 		netbase \
-		libbluetooth-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY %%PLACEHOLDER%%
