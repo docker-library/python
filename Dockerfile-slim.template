@@ -20,6 +20,7 @@ RUN set -ex \
 	\
 	&& savedAptMark="$(apt-mark showmanual)" \
 	&& apt-get update && apt-get install -y --no-install-recommends \
+		bluez-dev \
 		dpkg-dev \
 		gcc \
 		libbz2-dev \
@@ -38,7 +39,6 @@ RUN set -ex \
 		wget \
 		xz-utils \
 		zlib1g-dev \
-		libbluetooth-dev \
 # as of Stretch, "gpg" is no longer included by default
 		$(command -v gpg > /dev/null || echo 'gnupg dirmngr') \
 	\

@@ -10,10 +10,10 @@ ENV LANG C.UTF-8
 # extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update && apt-get install -y --no-install-recommends \
 # Python 3.4 on Stretch+ needs to use an older version of "libssl-dev" (these lines both get removed for every other combination)
+		libbluetooth-dev \
 		libssl-dev \
 		tk-dev \
 		uuid-dev \
-		libbluetooth-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY %%PLACEHOLDER%%
