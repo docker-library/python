@@ -173,10 +173,6 @@ for version in "${versions[@]}"; do
 			3.[5-6]/*)
 				sed -ri -e '/uuid-dev/d' "$dir/Dockerfile"
 				;;& # (other Debian variants need to match later blocks)
-			*/buster | */stretch)
-				# buildpack-deps already includes libssl-dev
-				sed -ri -e '/libssl-dev/d' "$dir/Dockerfile"
-				;;
 		esac
 
 		major="${rcVersion%%.*}"
