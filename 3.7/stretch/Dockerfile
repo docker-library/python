@@ -15,6 +15,7 @@ ENV LANG C.UTF-8
 
 # extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update && apt-get install -y --no-install-recommends \
+		libbluetooth-dev \
 		tk-dev \
 		uuid-dev \
 	&& rm -rf /var/lib/apt/lists/*

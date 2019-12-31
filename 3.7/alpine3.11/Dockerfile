@@ -38,6 +38,7 @@ RUN set -ex \
 	&& rm python.tar.xz \
 	\
 	&& apk add --no-cache --virtual .build-deps  \
+		bluez-dev \
 		bzip2-dev \
 		coreutils \
 		dpkg-dev dpkg \
