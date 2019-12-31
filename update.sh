@@ -172,7 +172,7 @@ for version in "${versions[@]}"; do
 				;;
 			3.[5-6]/*)
 				sed -ri -e '/uuid-dev/d' "$dir/Dockerfile"
-				;;& # (other Debian variants need to match later blocks)
+				;;
 		esac
 
 		major="${rcVersion%%.*}"
