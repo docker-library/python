@@ -1,16 +1,31 @@
 version: build-{build}.{branch}
-image: Visual Studio 2017
 
 environment:
   matrix:
     - version: 3.9-rc
       variant: windowsservercore-ltsc2016
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - version: 3.9-rc
+      variant: windowsservercore-1809
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     - version: 3.8
       variant: windowsservercore-ltsc2016
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - version: 3.8
+      variant: windowsservercore-1809
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     - version: 3.7
       variant: windowsservercore-ltsc2016
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - version: 3.7
+      variant: windowsservercore-1809
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     - version: 2.7
       variant: windowsservercore-ltsc2016
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - version: 2.7
+      variant: windowsservercore-1809
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
 
 install:
   - ps: |

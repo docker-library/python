@@ -187,10 +187,12 @@ for version in "${versions[@]}"; do
 		fi
 
 		case "$v" in
-			windows/*-1809) ;; # no AppVeyor support for 1809 yet: https://github.com/appveyor/ci/issues/1885 and https://github.com/appveyor/ci/issues/2676
-
-			windows/*)
-				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant$appveyorEnv"
+			# https://www.appveyor.com/docs/windows-images-software/
+			windows/*-1809)
+				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant"'\n      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019'"$appveyorEnv"
+				;;
+			windows/*-ltsc2016)
+				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant"'\n      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017'"$appveyorEnv"
 				;;
 
 			*)
