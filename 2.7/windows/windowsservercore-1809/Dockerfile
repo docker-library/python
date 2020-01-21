@@ -41,7 +41,7 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}.amd64.msi' -f $env
 	Write-Host 'Complete.'
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 19.3.1
+ENV PYTHON_PIP_VERSION 20.0.1
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/ffe826207a010164265d9cc807978e3604d18ca0/get-pip.py
 ENV PYTHON_GET_PIP_SHA256 b86f36cc4345ae87bfd4f10ef6b2dbfa7a872fbff70608a1e43944d283fd0eee
