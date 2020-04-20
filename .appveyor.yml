@@ -20,12 +20,6 @@ environment:
     - version: 3.7
       variant: windowsservercore-1809
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-    - version: 2.7
-      variant: windowsservercore-ltsc2016
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    - version: 2.7
-      variant: windowsservercore-1809
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
 
 install:
   - ps: |

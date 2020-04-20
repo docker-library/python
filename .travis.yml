@@ -51,18 +51,6 @@ matrix:
       env: VERSION=3.5 VARIANT=alpine3.11
     - os: linux
       env: VERSION=3.5 VARIANT=alpine3.10
-    - os: linux
-      env: VERSION=2.7 VARIANT=buster
-    - os: linux
-      env: VERSION=2.7 VARIANT=buster/slim
-    - os: linux
-      env: VERSION=2.7 VARIANT=stretch
-    - os: linux
-      env: VERSION=2.7 VARIANT=stretch/slim
-    - os: linux
-      env: VERSION=2.7 VARIANT=alpine3.11
-    - os: linux
-      env: VERSION=2.7 VARIANT=alpine3.10
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images

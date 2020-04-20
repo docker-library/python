@@ -4,10 +4,6 @@ shopt -s nullglob
 
 # https://www.python.org/downloads/23Introduction (under "OpenPGP Public Keys")
 declare -A gpgKeys=(
-	# gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
-	[2.7]='C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF'
-	# https://www.python.org/dev/peps/pep-0373/#release-manager-and-crew
-
 	# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
 	[3.5]='97FC712E4C024BBEA48A61ED3A5CA953F73C700D'
 	# https://www.python.org/dev/peps/pep-0478/#release-manager-and-crew
@@ -139,9 +135,6 @@ for version in "${versions[@]}"; do
 			# use "debian:*-slim" variants for "python:*-slim" variants
 			tag+='-slim'
 		fi
-		if [[ "$version" == 2.* ]]; then
-			template="caveman-${template}"
-		fi
 		template="Dockerfile-${template}.template"
 
 		{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
@@ -178,7 +171,7 @@ for version in "${versions[@]}"; do
 		major="${rcVersion%%.*}"
 		minor="${rcVersion#$major.}"
 		minor="${minor%%.*}"
-		if [ "$major" -gt 3 ] || { [ "$major" -eq 3 ] && [ "$minor" -ge 8 ]; }; then
+		if [ "$minor" -ge 8 ]; then
 			# PROFILE_TASK has a reasonable default starting in 3.8+; see:
 			#   https://bugs.python.org/issue36044
 			#   https://github.com/python/cpython/pull/14702
