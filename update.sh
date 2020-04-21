@@ -49,8 +49,6 @@ generated_warning() {
 	EOH
 }
 
-travisEnv=
-appveyorEnv=
 for version in "${versions[@]}"; do
 	rcVersion="${version%-rc}"
 	rcGrepV='-v'
@@ -178,25 +176,5 @@ for version in "${versions[@]}"; do
 			#   https://github.com/python/cpython/pull/14910
 			perl -0 -i -p -e "s![^\n]+PROFILE_TASK(='[^']+?')?[^\n]+\n!!gs" "$dir/Dockerfile"
 		fi
-
-		case "$v" in
-			# https://www.appveyor.com/docs/windows-images-software/
-			windows/*-1809)
-				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant"'\n      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019'"$appveyorEnv"
-				;;
-			windows/*-ltsc2016)
-				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant"'\n      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017'"$appveyorEnv"
-				;;
-
-			*)
-				travisEnv='\n    - os: linux\n      env: VERSION='"$version VARIANT=$v$travisEnv"
-				;;
-		esac
 	done
 done
-
-travis="$(awk -v 'RS=\n\n' '$1 == "matrix:" { $0 = "matrix:\n  include:'"$travisEnv"'" } { printf "%s%s", $0, RS }' .travis.yml)"
-echo "$travis" > .travis.yml
-
-appveyor="$(awk -v 'RS=\n\n' '$1 == "environment:" { $0 = "environment:\n  matrix:'"$appveyorEnv"'" } { printf "%s%s", $0, RS }' .appveyor.yml)"
-echo "$appveyor" > .appveyor.yml
