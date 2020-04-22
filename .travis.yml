@@ -6,7 +6,7 @@ matrix:
     - os: linux
       env: VERSION=3.9-rc VARIANT=buster
     - os: linux
-      env: VERSION=3.9-rc VARIANT=alpine3.10
+      env: VERSION=3.9-rc VARIANT=alpine3.11
     - os: linux
       env: VERSION=3.8 VARIANT=buster
     - os: linux
