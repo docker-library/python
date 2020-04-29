@@ -117,7 +117,7 @@ for version in "${versions[@]}"; do
 
 	for v in \
 		alpine{3.10,3.11} \
-		{stretch,buster}{/slim,} \
+		{stretch,buster,bullseye}{/slim,} \
 		windows/windowsservercore-{1809,ltsc2016} \
 	; do
 		dir="$version/$v"
