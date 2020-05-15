@@ -71,6 +71,7 @@ RUN set -ex \
 		--with-system-ffi \
 		--without-ensurepip \
 	&& make -j "$(nproc)" \
+		LDFLAGS="-Wl,--strip-all" \
 	&& make install \
 	&& ldconfig \
 	\
