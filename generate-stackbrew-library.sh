@@ -10,7 +10,7 @@ defaultDebianSuite='buster' # TODO buster
 declare -A debianSuites=(
 	#[3.8-rc]='buster'
 )
-defaultAlpineVersion='3.11'
+defaultAlpineVersion='3.12'
 
 self="$(basename "$BASH_SOURCE")"
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
@@ -79,7 +79,7 @@ for version in "${versions[@]}"; do
 
 	for v in \
 		{buster,stretch}{,/slim} \
-		alpine{3.11,3.10} \
+		alpine{3.12,3.11} \
 		windows/windowsservercore-{ltsc2016,1809} \
 	; do
 		dir="$version/$v"

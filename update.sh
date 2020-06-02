@@ -114,7 +114,7 @@ for version in "${versions[@]}"; do
 	echo "$version: $fullVersion"
 
 	for v in \
-		alpine{3.10,3.11} \
+		alpine{3.11,3.12} \
 		{stretch,buster}{/slim,} \
 		windows/windowsservercore-{1809,ltsc2016} \
 	; do
