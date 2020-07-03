@@ -44,10 +44,13 @@ RUN set -ex \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
+		--with-lto \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
 	&& make -j "$(nproc)" \
+		EXTRA_CFLAGS="-fno-semantic-interposition" \
+		LDFLAGS="-fno-semantic-interposition" \
 	&& make install \
 	&& ldconfig \
 	\

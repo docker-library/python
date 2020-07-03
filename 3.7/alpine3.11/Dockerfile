@@ -74,14 +74,15 @@ RUN set -ex \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
+		--with-lto \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
 	&& make -j "$(nproc)" \
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
-		EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000" \
-		LDFLAGS="-Wl,--strip-all" \
+		EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000 -fno-semantic-interposition" \
+		LDFLAGS="-Wl,--strip-all -fno-semantic-interposition" \
 # setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
 		PROFILE_TASK='-m test.regrtest --pgo \
 			test_array \

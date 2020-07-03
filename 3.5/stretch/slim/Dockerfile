@@ -66,11 +66,13 @@ RUN set -ex \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
+		--with-lto \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
 	&& make -j "$(nproc)" \
-		LDFLAGS="-Wl,--strip-all" \
+		EXTRA_CFLAGS="-fno-semantic-interposition" \
+		LDFLAGS="-Wl,--strip-all -fno-semantic-interposition" \
 # setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
 		PROFILE_TASK='-m test.regrtest --pgo \
 			test_array \
