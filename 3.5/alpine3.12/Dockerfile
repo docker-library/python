@@ -129,6 +129,8 @@ RUN set -ex \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
 			-o \
 			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+			-o \
+			\( -type f -a \( -name '*.exe' \) \) \
 		\) -exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python \
 	\
@@ -164,6 +166,8 @@ RUN set -ex; \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
 			-o \
 			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+			-o \
+			\( -type f -a \( -name '*.exe' \) \) \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
