@@ -49,6 +49,22 @@ generated_warning() {
 	EOH
 }
 
+is_good_version() {
+	local dir="$1"; shift
+	local dirVersion="$1"; shift
+	local fullVersion="$1"; shift
+
+	if ! wget -q -O /dev/null -o /dev/null --spider "https://www.python.org/ftp/python/$dirVersion/Python-$fullVersion.tar.xz"; then
+		return 1
+	fi
+
+	if [ -d "$dir/windows" ] && ! wget -q -O /dev/null -o /dev/null --spider "https://www.python.org/ftp/python/$dirVersion/python-$fullVersion-amd64.exe"; then
+		return 1
+	fi
+
+	return 0
+}
+
 for version in "${versions[@]}"; do
 	rcVersion="${version%-rc}"
 	rcGrepV='-v'
@@ -76,8 +92,8 @@ for version in "${versions[@]}"; do
 	for possible in "${possibles[@]}"; do
 		rcPossible="${possible%%[a-z]*}"
 
-		# varnish is great until it isn't
-		if wget -q -O /dev/null -o /dev/null --spider "https://www.python.org/ftp/python/$rcPossible/Python-$possible.tar.xz"; then
+		# varnish is great until it isn't (usually the directory listing we scrape below is updated/uncached significantly later than the release being available)
+		if is_good_version "$version" "$rcPossible" "$possible"; then
 			fullVersion="$possible"
 			break
 		fi
@@ -94,10 +110,12 @@ for version in "${versions[@]}"; do
 				| sort -rV \
 				|| true
 		) )
-		if [ "${#possibleVersions[@]}" -gt 0 ]; then
-			fullVersion="${possibleVersions[0]}"
-			break
-		fi
+		for possibleVersion in "${possibleVersions[@]}"; do
+			if is_good_version "$version" "$rcPossible" "$possibleVersion"; then
+				fullVersion="$possibleVersion"
+				break
+			fi
+		done
 	done
 
 	if [ -z "$fullVersion" ]; then
