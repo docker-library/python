@@ -73,7 +73,14 @@ RUN set -ex \
 	&& make -j "$(nproc)" \
 		LDFLAGS="-Wl,--strip-all" \
 	&& make install \
-	&& ldconfig \
+	&& rm -rf /usr/src/python \
+	\
+	&& find /usr/local -depth \
+		\( \
+			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+			-o \
+			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name '*.a' \) \) \
+		\) -exec rm -rf '{}' + \
 	\
 	&& apt-mark auto '.*' > /dev/null \
 	&& apt-mark manual $savedAptMark \
@@ -87,13 +94,7 @@ RUN set -ex \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 	&& rm -rf /var/lib/apt/lists/* \
 	\
-	&& find /usr/local -depth \
-		\( \
-			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' + \
-	&& rm -rf /usr/src/python \
+	&& ldconfig \
 	\
 	&& python3 --version
 
