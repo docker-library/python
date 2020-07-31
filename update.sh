@@ -194,5 +194,9 @@ for version in "${versions[@]}"; do
 			#   https://github.com/python/cpython/pull/14910
 			perl -0 -i -p -e "s![^\n]+PROFILE_TASK(='[^']+?')?[^\n]+\n!!gs" "$dir/Dockerfile"
 		fi
+		if [ "$minor" -ge 9 ]; then
+			# "wininst-*.exe" is not installed for Unix platforms on Python 3.9+: https://github.com/python/cpython/pull/14511
+			sed -ri -e '/wininst/d' "$dir/Dockerfile"
+		fi
 	done
 done
