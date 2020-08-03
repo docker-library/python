@@ -118,6 +118,8 @@ RUN set -ex \
 			-o \( -type f -a -name 'wininst-*.exe' \) \
 		\) -exec rm -rf '{}' + \
 	\
+	&& ldconfig \
+	\
 	&& apt-mark auto '.*' > /dev/null \
 	&& apt-mark manual $savedAptMark \
 	&& find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
@@ -129,8 +131,6 @@ RUN set -ex \
 		| xargs -r apt-mark manual \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 	&& rm -rf /var/lib/apt/lists/* \
-	\
-	&& ldconfig \
 	\
 	&& python3 --version
 
