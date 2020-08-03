@@ -85,15 +85,16 @@ RUN set -ex \
 			test_unicode \
 		' \
 	&& make install \
-	&& ldconfig \
+	&& rm -rf /usr/src/python \
 	\
 	&& find /usr/local -depth \
 		\( \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name '*.a' \) \) \
+			-o \( -type f -a -name 'wininst-*.exe' \) \
 		\) -exec rm -rf '{}' + \
-	&& rm -rf /usr/src/python \
+	\
+	&& ldconfig \
 	\
 	&& python3 --version
 
