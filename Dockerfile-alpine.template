@@ -28,7 +28,7 @@ RUN set -ex \
 	&& { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
 	&& rm -rf "$GNUPGHOME" python.tar.xz.asc \
 	&& mkdir -p /usr/src/python \
-	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
+	&& tar -xJC /usr/src/python --strip-components=1 f python.tar.xz \
 	&& rm python.tar.xz \
 	\
 	&& apk add --no-cache --virtual .build-deps  \
