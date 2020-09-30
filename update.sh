@@ -2,7 +2,9 @@
 set -Eeuo pipefail
 shopt -s nullglob
 
+
 # https://www.python.org/downloads/23Introduction (under "OpenPGP Public Keys")
+
 declare -A gpgKeys=(
 	# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
 	[3.5]='97FC712E4C024BBEA48A61ED3A5CA953F73C700D'
@@ -28,6 +30,7 @@ declare -A gpgKeys=(
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
 versions=( "$@" )
+
 if [ ${#versions[@]} -eq 0 ]; then
 	versions=( */ )
 fi
