@@ -4,10 +4,6 @@ shopt -s nullglob
 
 # https://www.python.org/downloads/23Introduction (under "OpenPGP Public Keys")
 declare -A gpgKeys=(
-	# gpg: key F73C700D: public key "Larry Hastings <larry@hastings.org>" imported
-	[3.5]='97FC712E4C024BBEA48A61ED3A5CA953F73C700D'
-	# https://www.python.org/dev/peps/pep-0478/#release-manager-and-crew
-
 	# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
 	[3.6]='0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'
 	# https://www.python.org/dev/peps/pep-0494/#release-manager-and-crew
@@ -167,19 +163,13 @@ for version in "${versions[@]}"; do
 			"$dir/Dockerfile"
 
 		case "$rcVersion/$v" in
-			# Libraries to build the nis module only available in Alpine 3.7+.
-			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.
-			3.5/alpine*)
-				sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
-				;;& # (3.5*/alpine* needs to match the next blocks too)
-
 			# https://bugs.python.org/issue11063, https://bugs.python.org/issue20519 (Python 3.7.0+)
 			# A new native _uuid module improves uuid import time and avoids using ctypes.
 			# This requires the development libuuid headers.
-			3.[5-6]/alpine*)
+			3.6/alpine*)
 				sed -ri -e '/util-linux-dev/d' "$dir/Dockerfile"
 				;;
-			3.[5-6]/*)
+			3.6/*)
 				sed -ri -e '/uuid-dev/d' "$dir/Dockerfile"
 				;;
 		esac
