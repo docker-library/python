@@ -1,3 +1,4 @@
+//Clever Project
 #!/usr/bin/env bash
 set -Eeuo pipefail
 shopt -s nullglob
