@@ -19,6 +19,10 @@ declare -A gpgKeys=(
 	# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
 	[3.9]='E3FF2839C048B25C084DEBE9B26995E310250568'
 	# https://www.python.org/dev/peps/pep-0596/#release-manager-and-crew
+
+	# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
+	[3.10]='A035C8C19219BA821ECEA86B64E628F8D684696D'
+	# https://www.python.org/dev/peps/pep-0619/#release-manager-and-crew
 )
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
