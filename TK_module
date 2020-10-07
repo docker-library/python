@@ -1,0 +1,17 @@
+#Create list box in python
+from tkinter import*
+top = Tk()
+top.geometry('200x250')
+checkvar1 = IntVar()
+checkvar2 = IntVar()
+checkvar3 = IntVar()
+lb1 = Label(top,text = 'A list of countries')
+listbox = Listbox(top)
+listbox.insert(1,'INDIA')
+listbox.insert(2,'USA')
+listbox.insert(3,'JAPAN')
+listbox.insert(4,'AUSTRALIA')
+lb1.pack()
+listbox.pack()
+top.mainloop()
+print('mera bap egoistic hai')
