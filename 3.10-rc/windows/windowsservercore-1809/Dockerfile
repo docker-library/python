@@ -8,6 +8,9 @@ FROM mcr.microsoft.com/windows/servercore:1809
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
+# https://github.com/docker-library/python/pull/557
+ENV PYTHONIOENCODING UTF-8
+
 ENV PYTHON_VERSION 3.10.0a1
 ENV PYTHON_RELEASE 3.10.0
 
