@@ -13,9 +13,15 @@ ENV PATH /usr/local/bin:$PATH
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
+# runtime dependencies
+RUN set -eux; \
+	apk add --no-cache \
 # install ca-certificates so that HTTPS works consistently
+		ca-certificates \
+# and tzdata for PEP 615 (https://www.python.org/dev/peps/pep-0615/)
+		tzdata \
+	;
 # other runtime dependencies for Python are installed later
-RUN apk add --no-cache ca-certificates
 
 ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
 ENV PYTHON_VERSION 3.10.0a2

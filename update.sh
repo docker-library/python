@@ -181,6 +181,7 @@ for version in "${versions[@]}"; do
 		major="${rcVersion%%.*}"
 		minor="${rcVersion#$major.}"
 		minor="${minor%%.*}"
+
 		if [ "$minor" -ge 8 ]; then
 			# PROFILE_TASK has a reasonable default starting in 3.8+; see:
 			#   https://bugs.python.org/issue36044
@@ -191,6 +192,12 @@ for version in "${versions[@]}"; do
 		if [ "$minor" -ge 9 ]; then
 			# "wininst-*.exe" is not installed for Unix platforms on Python 3.9+: https://github.com/python/cpython/pull/14511
 			sed -ri -e '/wininst/d' "$dir/Dockerfile"
+		fi
+
+		# https://www.python.org/dev/peps/pep-0615/
+		# https://mail.python.org/archives/list/python-dev@python.org/thread/PYXET7BHSETUJHSLFREM5TDZZXDTDTLY/
+		if [ "$minor" -lt 9 ]; then
+			sed -ri -e '/tzdata/d' "$dir/Dockerfile"
 		fi
 	done
 done
