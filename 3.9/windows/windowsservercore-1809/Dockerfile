@@ -45,10 +45,10 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env
 	Write-Host 'Complete.'
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 20.3
+ENV PYTHON_PIP_VERSION 20.3.1
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/2357a5f805565496648ebf597bcffe9e2d9ce379/get-pip.py
-ENV PYTHON_GET_PIP_SHA256 7f28b41ce236af61a00dfcbd6fd38c52d46488ece91fb4585b95775b076bbc85
+ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/91630a4867b1f93ba0a12aa81d0ec4ecc1e7eeb9/get-pip.py
+ENV PYTHON_GET_PIP_SHA256 d48ae68f297cac54db17e4107b800faae0e5210131f9f386c30c0166bf8d81b7
 
 RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
