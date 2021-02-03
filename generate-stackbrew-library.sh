@@ -10,7 +10,7 @@ defaultDebianSuite='buster' # TODO buster
 declare -A debianSuites=(
 	#[3.8-rc]='buster'
 )
-defaultAlpineVersion='3.12'
+defaultAlpineVersion='3.13'
 
 self="$(basename "$BASH_SOURCE")"
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
