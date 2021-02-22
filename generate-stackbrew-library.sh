@@ -78,6 +78,7 @@ for version in "${versions[@]}"; do
 	rcVersion="${version%-rc}"
 
 	for v in \
+		buster \
 		{buster,stretch}{,/slim} \
 		alpine{3.13,3.12} \
 		windows/windowsservercore-{1809,ltsc2016} \
