@@ -20,8 +20,8 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env
 	Invoke-WebRequest -Uri $url -OutFile 'python.exe'; \
 	\
 	Write-Host 'Installing ...'; \
-# https://docs.python.org/3.5/using/windows.html#installing-without-ui
-	Start-Process python.exe -Wait \
+# https://docs.python.org/3/using/windows.html#installing-without-ui
+	$exitCode = (Start-Process python.exe -Wait -NoNewWindow -PassThru \
 		-ArgumentList @( \
 			'/quiet', \
 			'InstallAllUsers=1', \
@@ -31,7 +31,13 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env
 			'Include_doc=0', \
 			'Include_pip=0', \
 			'Include_test=0' \
-		); \
+		) \
+	).ExitCode; \
+	if ($exitCode -ne 0) { \
+		Write-Host ('Running python installer failed with exit code: {0}' -f $exitCode); \
+		Get-ChildItem $env:TEMP | Sort-Object -Descending -Property LastWriteTime | Select-Object -First 1 | Get-Content; \
+		exit $exitCode; \
+	} \
 	\
 # the installer updated PATH, so we should refresh our local value
 	$env:PATH = [Environment]::GetEnvironmentVariable('PATH', [EnvironmentVariableTarget]::Machine); \
@@ -41,6 +47,7 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env
 	\
 	Write-Host 'Removing ...'; \
 	Remove-Item python.exe -Force; \
+	Remove-Item $env:TEMP/Python*.log -Force; \
 	\
 	Write-Host 'Complete.'
 
