@@ -20,7 +20,8 @@ RUN set -eux; \
 		ca-certificates \
 		netbase \
 	; \
-	rm -rf /var/lib/apt/lists/*
+	rm -rf /var/lib/apt/lists/*; \
+	rm -rf /var/cache/*
 
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
 ENV PYTHON_VERSION 3.7.10
@@ -134,6 +135,7 @@ RUN set -ex \
 		| xargs -r apt-mark manual \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 	&& rm -rf /var/lib/apt/lists/* \
+	&& rm -rf /var/cache/* \
 	\
 	&& python3 --version
 
@@ -163,6 +165,7 @@ RUN set -ex; \
 	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*; \
+	rm -rf /var/cache/*; \
 	\
 	python get-pip.py \
 		--disable-pip-version-check \
