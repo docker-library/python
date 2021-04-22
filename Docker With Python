@@ -1,0 +1,1 @@
+Docker is a containerization tool used for spinning up isolated, reproducible application environments. It is a popular development tool for Python developers. The tutorials and articles here will teach you how to include Docker to your development workflow and use it to deploy applications locally and to the cloud.
