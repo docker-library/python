@@ -148,10 +148,10 @@ RUN cd /usr/local/bin \
 	&& ln -s python3-config python-config
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 21.1
+ENV PYTHON_PIP_VERSION 21.1.1
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/ab9dde151f662745c13461f00c453dcf32a51ea9/public/get-pip.py
-ENV PYTHON_GET_PIP_SHA256 0ed17e859b835ad5bf00851f4dc8bbc3520c13dfff6c131d410cdb3a92ff0af9
+ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/1954f15b3f102ace496a34a013ea76b061535bd2/public/get-pip.py
+ENV PYTHON_GET_PIP_SHA256 f499d76e0149a673fb8246d88e116db589afbd291739bd84f2cd9a7bca7b6993
 
 RUN set -ex; \
 	\
