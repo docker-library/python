@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libbluetooth-dev \
 		tk-dev \
 		uuid-dev \
+		libssl-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
