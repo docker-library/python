@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.12
+FROM alpine:3.14
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -18,11 +18,13 @@ RUN set -eux; \
 	apk add --no-cache \
 # install ca-certificates so that HTTPS works consistently
 		ca-certificates \
+# and tzdata for PEP 615 (https://www.python.org/dev/peps/pep-0615/)
+		tzdata \
 	;
 # other runtime dependencies for Python are installed later
 
 ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
-ENV PYTHON_VERSION 3.8.10
+ENV PYTHON_VERSION 3.9.5
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
@@ -93,7 +95,6 @@ RUN set -ex \
 		\( \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
 			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name '*.a' \) \) \
-			-o \( -type f -a -name 'wininst-*.exe' \) \
 		\) -exec rm -rf '{}' + \
 	\
 	&& find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec scanelf --needed --nobanner --format '%n#p' '{}' ';' \

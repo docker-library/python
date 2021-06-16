@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.12
+FROM alpine:3.14
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
