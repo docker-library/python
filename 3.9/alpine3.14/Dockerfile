@@ -20,6 +20,9 @@ RUN set -eux; \
 		ca-certificates \
 # and tzdata for PEP 615 (https://www.python.org/dev/peps/pep-0615/)
 		tzdata \
+# adding wget from apk, since busybox wget fails behind a proxy
+# https://gitlab.alpinelinux.org/alpine/aports/-/issues/10446
+		wget \
 	;
 # other runtime dependencies for Python are installed later
 
