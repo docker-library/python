@@ -6,9 +6,9 @@ declare -A aliases=(
 	[3.9]='3 latest'
 )
 
-defaultDebianSuite='buster' # TODO buster
+defaultDebianSuite='bullseye'
 declare -A debianSuites=(
-	#[3.8-rc]='buster'
+	#[3.10-rc]='bullseye'
 )
 defaultAlpineVersion='3.14'
 
@@ -78,7 +78,7 @@ for version in "${versions[@]}"; do
 	rcVersion="${version%-rc}"
 
 	for v in \
-		{buster,stretch}{,/slim} \
+		{bullseye,buster,stretch}{,/slim} \
 		alpine{3.14,3.13} \
 		windows/windowsservercore-{1809,ltsc2016} \
 	; do
