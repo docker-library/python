@@ -101,6 +101,8 @@ RUN cd /usr/local/bin \
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION %%PLACEHOLDER%%
+# https://github.com/docker-library/python/issues/365
+ENV PYTHON_SETUPTOOLS_VERSION %%PLACEHOLDER%%
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL %%PLACEHOLDER%%
 ENV PYTHON_GET_PIP_SHA256 %%PLACEHOLDER%%
@@ -114,6 +116,7 @@ RUN set -ex; \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		"pip==$PYTHON_PIP_VERSION" \
+		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
 	; \
 	pip --version; \
 	\
