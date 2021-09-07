@@ -24,7 +24,7 @@ RUN set -eux; \
 # other runtime dependencies for Python are installed later
 
 ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
-ENV PYTHON_VERSION 3.10.0rc1
+ENV PYTHON_VERSION 3.10.0rc2
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
