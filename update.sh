@@ -25,6 +25,26 @@ declare -A gpgKeys=(
 	# https://www.python.org/dev/peps/pep-0619/#release-manager-and-crew
 )
 
+# https://github.com/docker-library/python/issues/365
+# https://pypi.org/project/pip/#history
+declare -A pipVersions=(
+	[3.10]='21.2' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
+	[3.9]='21.2' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
+	[3.8]='21.2' # historical
+	[3.7]='21.2' # historical
+	[3.6]='21.2' # historical
+)
+# https://pypi.org/project/setuptools/#history
+declare -A setuptoolsVersions=(
+	[3.10]='57' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
+	[3.9]='57' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
+	[3.8]='57' # historical
+	[3.7]='57' # historical
+	[3.6]='57' # historical
+)
+# https://pypi.org/project/wheel/#history
+# TODO wheelVersions: https://github.com/docker-library/python/issues/365#issuecomment-914669320
+
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
 versions=( "$@" )
@@ -33,7 +53,9 @@ if [ ${#versions[@]} -eq 0 ]; then
 fi
 versions=( "${versions[@]%/}" )
 
-pipVersion="$(curl -fsSL 'https://pypi.org/pypi/pip/json' | jq -r .info.version)"
+pipJson="$(curl -fsSL 'https://pypi.org/pypi/pip/json')"
+setuptoolsJson="$(curl -fsSL 'https://pypi.org/pypi/setuptools/json')"
+
 getPipCommit="$(curl -fsSL 'https://github.com/pypa/get-pip/commits/main/public/get-pip.py.atom' | tac|tac | awk -F '[[:space:]]*[<>/]+' '$2 == "id" && $3 ~ /Commit/ { print $4; exit }')"
 getPipUrl="https://github.com/pypa/get-pip/raw/$getPipCommit/public/get-pip.py"
 getPipSha256="$(curl -fsSL "$getPipUrl" | sha256sum | cut -d' ' -f1)"
@@ -129,7 +151,32 @@ for version in "${versions[@]}"; do
 		exit 1
 	fi
 
-	echo "$version: $fullVersion"
+	pipVersion="${pipVersions[$rcVersion]}"
+	pipVersion="$(
+		export pipVersion
+		jq <<<"$pipJson" -r '
+			.releases
+			| [
+				keys_unsorted[]
+				| select(. == env.pipVersion or startswith(env.pipVersion + "."))
+			]
+			| max_by(split(".") | map(tonumber))
+		'
+	)"
+	setuptoolsVersion="${setuptoolsVersions[$rcVersion]}"
+	setuptoolsVersion="$(
+		export setuptoolsVersion
+		jq <<<"$setuptoolsJson" -r '
+			.releases
+			| [
+				keys_unsorted[]
+				| select(. == env.setuptoolsVersion or startswith(env.setuptoolsVersion + "."))
+			]
+			| max_by(split(".") | map(tonumber))
+		'
+	)"
+
+	echo "$version: $fullVersion (pip $pipVersion, setuptools $setuptoolsVersion)"
 
 	for v in \
 		alpine{3.14,3.13} \
@@ -160,6 +207,7 @@ for version in "${versions[@]}"; do
 			-e 's/^(ENV PYTHON_VERSION) .*/\1 '"$fullVersion"'/' \
 			-e 's/^(ENV PYTHON_RELEASE) .*/\1 '"${fullVersion%%[a-z]*}"'/' \
 			-e 's/^(ENV PYTHON_PIP_VERSION) .*/\1 '"$pipVersion"'/' \
+			-e 's/^(ENV PYTHON_SETUPTOOLS_VERSION) .*/\1 '"$setuptoolsVersion"'/' \
 			-e 's!^(ENV PYTHON_GET_PIP_URL) .*!\1 '"$getPipUrl"'!' \
 			-e 's!^(ENV PYTHON_GET_PIP_SHA256) .*!\1 '"$getPipSha256"'!' \
 			-e 's/^(FROM python):.*/\1:'"$version-$tag"'/' \
