@@ -26,7 +26,7 @@ fileCommit() {
 	git log -1 --format='format:%H' HEAD -- "$@"
 }
 
-# get the most recent commit which modified "$1/Dockerfile" or any file COPY'd from "$1/Dockerfile"
+# get the most recent commit which changed "$1/Dockerfile" or any file COPY'd from "$1/Dockerfile"
 dirCommit() {
 	local dir="$1"; shift
 	(
