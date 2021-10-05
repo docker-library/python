@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:buster-slim
+FROM buildpack-deps:buster
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -13,44 +13,17 @@ ENV PATH /usr/local/bin:$PATH
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
-# runtime dependencies
-RUN set -eux; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends \
-		ca-certificates \
-		netbase \
-		tzdata \
-	; \
-	rm -rf /var/lib/apt/lists/*
-
-ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
-ENV PYTHON_VERSION 3.10.0rc2
-
-RUN set -ex \
-	\
-	&& savedAptMark="$(apt-mark showmanual)" \
-	&& apt-get update && apt-get install -y --no-install-recommends \
-		dpkg-dev \
-		gcc \
+# extra dependencies (over what buildpack-deps already includes)
+RUN apt-get update && apt-get install -y --no-install-recommends \
 		libbluetooth-dev \
-		libbz2-dev \
-		libc6-dev \
-		libexpat1-dev \
-		libffi-dev \
-		libgdbm-dev \
-		liblzma-dev \
-		libncursesw5-dev \
-		libreadline-dev \
-		libsqlite3-dev \
-		libssl-dev \
-		make \
 		tk-dev \
 		uuid-dev \
-		wget \
-		xz-utils \
-		zlib1g-dev \
-# as of Stretch, "gpg" is no longer included by default
-		$(command -v gpg > /dev/null || echo 'gnupg dirmngr') \
+	&& rm -rf /var/lib/apt/lists/*
+
+ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
+ENV PYTHON_VERSION 3.10.0
+
+RUN set -ex \
 	\
 	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
 	&& wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" \
@@ -75,7 +48,6 @@ RUN set -ex \
 		--with-system-ffi \
 		--without-ensurepip \
 	&& make -j "$(nproc)" \
-		LDFLAGS="-Wl,--strip-all" \
 	&& make install \
 	&& rm -rf /usr/src/python \
 	\
@@ -86,18 +58,6 @@ RUN set -ex \
 		\) -exec rm -rf '{}' + \
 	\
 	&& ldconfig \
-	\
-	&& apt-mark auto '.*' > /dev/null \
-	&& apt-mark manual $savedAptMark \
-	&& find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
-		| awk '/=>/ { print $(NF-1) }' \
-		| sort -u \
-		| xargs -r dpkg-query --search \
-		| cut -d: -f1 \
-		| sort -u \
-		| xargs -r apt-mark manual \
-	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-	&& rm -rf /var/lib/apt/lists/* \
 	\
 	&& python3 --version
 
@@ -118,17 +78,8 @@ ENV PYTHON_GET_PIP_SHA256 01249aa3e58ffb3e1686b7141b4e9aac4d398ef4ac3012ed9dff8d
 
 RUN set -ex; \
 	\
-	savedAptMark="$(apt-mark showmanual)"; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends wget; \
-	\
 	wget -O get-pip.py "$PYTHON_GET_PIP_URL"; \
 	echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum --check --strict -; \
-	\
-	apt-mark auto '.*' > /dev/null; \
-	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
-	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-	rm -rf /var/lib/apt/lists/*; \
 	\
 	python get-pip.py \
 		--disable-pip-version-check \
