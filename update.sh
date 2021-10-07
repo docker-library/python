@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 shopt -s nullglob
 
-# https://www.python.org/downloads/23Introduction (under "OpenPGP Public Keys")
+# https://www.python.org/downloads/ (under "OpenPGP Public Keys")
 declare -A gpgKeys=(
 	# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
 	[3.6]='0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'
@@ -23,11 +23,16 @@ declare -A gpgKeys=(
 	# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
 	[3.10]='A035C8C19219BA821ECEA86B64E628F8D684696D'
 	# https://www.python.org/dev/peps/pep-0619/#release-manager-and-crew
+
+	# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
+	[3.11]='A035C8C19219BA821ECEA86B64E628F8D684696D'
+	# https://www.python.org/dev/peps/pep-0664/#release-manager-and-crew
 )
 
 # https://github.com/docker-library/python/issues/365
 # https://pypi.org/project/pip/#history
 declare -A pipVersions=(
+	[3.11]='21.2' # https://github.com/python/cpython/blob/v3.11.0a1/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.10]='21.2' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.9]='21.2' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.8]='21.2' # historical
@@ -36,6 +41,7 @@ declare -A pipVersions=(
 )
 # https://pypi.org/project/setuptools/#history
 declare -A setuptoolsVersions=(
+	[3.11]='57' # https://github.com/python/cpython/blob/v3.11.0a1/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.10]='57' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.9]='57' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.8]='57' # historical
