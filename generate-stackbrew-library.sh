@@ -2,13 +2,12 @@
 set -Eeuo pipefail
 
 declare -A aliases=(
-	[3.11-rc]='rc'
 	[3.10]='3 latest'
 )
 
 defaultDebianSuite='bullseye'
 declare -A debianSuites=(
-	#[3.10-rc]='bullseye'
+	#[3.10]='bullseye'
 )
 defaultAlpineVersion='3.14'
 
