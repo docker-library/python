@@ -253,5 +253,10 @@ for version in "${versions[@]}"; do
 		if [ "$minor" -lt 9 ]; then
 			sed -ri -e '/tzdata/d' "$dir/Dockerfile"
 		fi
+
+		if [ "$minor" -lt 10 ]; then
+			# <3.10 does not have -fno-semantic-interposition enabled and --with-lto does nothing for performance
+			sed -ri -e '/with-lto/d' "$dir/Dockerfile"
+		fi
 	done
 done
