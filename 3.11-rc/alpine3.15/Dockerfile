@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.13
+FROM alpine:3.15
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -24,7 +24,7 @@ RUN set -eux; \
 # other runtime dependencies for Python are installed later
 
 ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
-ENV PYTHON_VERSION 3.10.0
+ENV PYTHON_VERSION 3.11.0a2
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
