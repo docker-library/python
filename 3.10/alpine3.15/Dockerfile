@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.13
+FROM alpine:3.15
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -18,11 +18,13 @@ RUN set -eux; \
 	apk add --no-cache \
 # install ca-certificates so that HTTPS works consistently
 		ca-certificates \
+# and tzdata for PEP 615 (https://www.python.org/dev/peps/pep-0615/)
+		tzdata \
 	;
 # other runtime dependencies for Python are installed later
 
-ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.6.15
+ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
+ENV PYTHON_VERSION 3.10.0
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
@@ -64,6 +66,7 @@ RUN set -ex \
 		tcl-dev \
 		tk \
 		tk-dev \
+		util-linux-dev \
 		xz-dev \
 		zlib-dev \
 # add build deps before removing fetch deps in case there's overlap
@@ -77,6 +80,7 @@ RUN set -ex \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
+		--with-lto \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
@@ -85,42 +89,6 @@ RUN set -ex \
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
 		EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000" \
 		LDFLAGS="-Wl,--strip-all" \
-# setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
-		PROFILE_TASK='-m test.regrtest --pgo \
-			test_array \
-			test_base64 \
-			test_binascii \
-			test_binhex \
-			test_binop \
-			test_bytes \
-			test_c_locale_coercion \
-			test_class \
-			test_cmath \
-			test_codecs \
-			test_compile \
-			test_complex \
-			test_csv \
-			test_decimal \
-			test_dict \
-			test_float \
-			test_fstring \
-			test_hashlib \
-			test_io \
-			test_iter \
-			test_json \
-			test_long \
-			test_math \
-			test_memoryview \
-			test_pickle \
-			test_re \
-			test_set \
-			test_slice \
-			test_struct \
-			test_threading \
-			test_time \
-			test_traceback \
-			test_unicode \
-		' \
 	&& make install \
 	&& rm -rf /usr/src/python \
 	\
@@ -128,7 +96,6 @@ RUN set -ex \
 		\( \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
 			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name '*.a' \) \) \
-			-o \( -type f -a -name 'wininst-*.exe' \) \
 		\) -exec rm -rf '{}' + \
 	\
 	&& find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec scanelf --needed --nobanner --format '%n#p' '{}' ';' \

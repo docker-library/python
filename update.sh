@@ -185,7 +185,7 @@ for version in "${versions[@]}"; do
 	echo "$version: $fullVersion (pip $pipVersion, setuptools $setuptoolsVersion)"
 
 	for v in \
-		alpine{3.14,3.13} \
+		alpine{3.15,3.14} \
 		{buster,bullseye}{/slim,} \
 		windows/windowsservercore-{ltsc2022,1809,ltsc2016} \
 	; do

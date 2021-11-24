@@ -9,7 +9,7 @@ defaultDebianSuite='bullseye'
 declare -A debianSuites=(
 	#[3.10]='bullseye'
 )
-defaultAlpineVersion='3.14'
+defaultAlpineVersion='3.15'
 
 self="$(basename "$BASH_SOURCE")"
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
@@ -78,7 +78,7 @@ for version in "${versions[@]}"; do
 
 	for v in \
 		{bullseye,buster}{,/slim} \
-		alpine{3.14,3.13} \
+		alpine{3.15,3.14} \
 		windows/windowsservercore-{ltsc2022,1809,ltsc2016} \
 	; do
 		dir="$version/$v"
