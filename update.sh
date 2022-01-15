@@ -5,10 +5,6 @@ shopt -s nullglob
 # https://www.python.org/downloads/ (under "OpenPGP Public Keys")
 declare -A gpgKeys=(
 	# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
-	[3.6]='0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'
-	# https://www.python.org/dev/peps/pep-0494/#release-manager-and-crew
-
-	# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
 	[3.7]='0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'
 	# https://www.python.org/dev/peps/pep-0537/#release-manager-and-crew
 
@@ -37,7 +33,6 @@ declare -A pipVersions=(
 	[3.9]='21.2' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.8]='21.2' # historical
 	[3.7]='21.2' # historical
-	[3.6]='21.2' # historical
 )
 # https://pypi.org/project/setuptools/#history
 declare -A setuptoolsVersions=(
@@ -46,7 +41,6 @@ declare -A setuptoolsVersions=(
 	[3.9]='57' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.8]='57' # historical
 	[3.7]='57' # historical
-	[3.6]='57' # historical
 )
 # https://pypi.org/project/wheel/#history
 # TODO wheelVersions: https://github.com/docker-library/python/issues/365#issuecomment-914669320
@@ -219,18 +213,6 @@ for version in "${versions[@]}"; do
 			-e 's/^(FROM python):.*/\1:'"$version-$tag"'/' \
 			-e 's!^(FROM (debian|buildpack-deps|alpine|mcr[.]microsoft[.]com/[^:]+)):.*!\1:'"$tag"'!' \
 			"$dir/Dockerfile"
-
-		case "$rcVersion/$v" in
-			# https://bugs.python.org/issue11063, https://bugs.python.org/issue20519 (Python 3.7.0+)
-			# A new native _uuid module improves uuid import time and avoids using ctypes.
-			# This requires the development libuuid headers.
-			3.6/alpine*)
-				sed -ri -e '/util-linux-dev/d' "$dir/Dockerfile"
-				;;
-			3.6/*)
-				sed -ri -e '/uuid-dev/d' "$dir/Dockerfile"
-				;;
-		esac
 
 		major="${rcVersion%%.*}"
 		minor="${rcVersion#$major.}"
