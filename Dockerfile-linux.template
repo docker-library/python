@@ -1,10 +1,20 @@
-#
-# NOTE: THIS DOCKERFILE IS GENERATED VIA "apply-templates.sh"
-#
-# PLEASE DO NOT EDIT IT DIRECTLY.
-#
-
-FROM alpine:3.15
+{{
+	def is_alpine:
+		env.variant | startswith("alpine")
+	;
+	def is_slim:
+		env.variant | startswith("slim-")
+	;
+	def rcVersion:
+		env.version | rtrimstr("-rc")
+-}}
+{{ if is_alpine then ( -}}
+FROM alpine:{{ env.variant | ltrimstr("alpine") }}
+{{ ) elif is_slim then ( -}}
+FROM debian:{{ env.variant | ltrimstr("slim-") }}-slim
+{{ ) else ( -}}
+FROM buildpack-deps:{{ env.variant }}
+{{ ) end -}}
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -14,17 +24,57 @@ ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 # runtime dependencies
+{{ if is_alpine then ( -}}
 RUN set -eux; \
 	apk add --no-cache \
 		ca-certificates \
 		tzdata \
 	;
+{{ ) else ( -}}
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+{{ if is_slim then ( -}}
+		ca-certificates \
+		netbase \
+		tzdata \
+{{ ) else ( -}}
+		libbluetooth-dev \
+		tk-dev \
+		uuid-dev \
+{{ ) end -}}
+	; \
+	rm -rf /var/lib/apt/lists/*
+{{ ) end -}}
 
-ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.7.12
+ENV GPG_KEY {{
+	{
+		# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
+		"3.7": "0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D",
+		# https://www.python.org/dev/peps/pep-0537/#release-manager-and-crew
+
+		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
+		"3.8": "E3FF2839C048B25C084DEBE9B26995E310250568",
+		# https://www.python.org/dev/peps/pep-0569/#release-manager-and-crew
+
+		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
+		"3.9": "E3FF2839C048B25C084DEBE9B26995E310250568",
+		# https://www.python.org/dev/peps/pep-0596/#release-manager-and-crew
+
+		# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
+		"3.10": "A035C8C19219BA821ECEA86B64E628F8D684696D",
+		# https://www.python.org/dev/peps/pep-0619/#release-manager-and-crew
+
+		# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
+		"3.11": "A035C8C19219BA821ECEA86B64E628F8D684696D",
+		# https://www.python.org/dev/peps/pep-0664/#release-manager-and-crew
+	}[rcVersion]
+}}
+ENV PYTHON_VERSION {{ .version }}
 
 RUN set -eux; \
 	\
+{{ if is_alpine then ( -}}
 	apk add --no-cache --virtual .build-deps \
 		gnupg \
 		tar \
@@ -57,6 +107,33 @@ RUN set -eux; \
 		zlib-dev \
 	; \
 	\
+{{ ) elif is_slim then ( -}}
+	savedAptMark="$(apt-mark showmanual)"; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		dpkg-dev \
+		gcc \
+		gnupg dirmngr \
+		libbluetooth-dev \
+		libbz2-dev \
+		libc6-dev \
+		libexpat1-dev \
+		libffi-dev \
+		libgdbm-dev \
+		liblzma-dev \
+		libncursesw5-dev \
+		libreadline-dev \
+		libsqlite3-dev \
+		libssl-dev \
+		make \
+		tk-dev \
+		uuid-dev \
+		wget \
+		xz-utils \
+		zlib1g-dev \
+	; \
+	\
+{{ ) else "" end -}}
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
 	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
 	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
@@ -76,16 +153,25 @@ RUN set -eux; \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
+{{
+	# <3.10 does not have -fno-semantic-interposition enabled and --with-lto does nothing for performance
+	if [ "3.7", "3.8", "3.9" ] | index(rcVersion) then "" else (
+-}}
+		--with-lto \
+{{ ) end -}}
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
 	; \
 	nproc="$(nproc)"; \
 	make -j "$nproc" \
+{{ if is_alpine then ( -}}
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
 		EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000" \
+{{ ) else "" end -}}
 		LDFLAGS="-Wl,--strip-all" \
+{{ if env.version == "3.7" then ( -}}
 # setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
 		PROFILE_TASK='-m test.regrtest --pgo \
 			test_array \
@@ -122,6 +208,15 @@ RUN set -eux; \
 			test_traceback \
 			test_unicode \
 		' \
+{{
+	) else
+		# PROFILE_TASK has a reasonable default starting in 3.8+; see:
+		#   https://bugs.python.org/issue36044
+		#   https://github.com/python/cpython/pull/14702
+		#   https://github.com/python/cpython/pull/14910
+		""
+	end
+-}}
 	; \
 	make install; \
 	cd /; \
@@ -131,10 +226,18 @@ RUN set -eux; \
 		\( \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
 			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name '*.a' \) \) \
+{{ if [ "3.7", "3.8" ] | index(env.version) then ( -}}
 			-o \( -type f -a -name 'wininst-*.exe' \) \
+{{
+	) else
+		# "wininst-*.exe" is not installed for Unix platforms on Python 3.9+: https://github.com/python/cpython/pull/14511
+		""
+	end
+-}}
 		\) -exec rm -rf '{}' + \
 	; \
 	\
+{{ if is_alpine then ( -}}
 	find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec scanelf --needed --nobanner --format '%n#p' '{}' ';' \
 		| tr ',' '\n' \
 		| sort -u \
@@ -142,6 +245,24 @@ RUN set -eux; \
 		| xargs -rt apk add --no-network --virtual .python-rundeps \
 	; \
 	apk del --no-network .build-deps; \
+{{ ) else ( -}}
+	ldconfig; \
+{{ if is_slim then ( -}}
+	\
+	apt-mark auto '.*' > /dev/null; \
+	apt-mark manual $savedAptMark; \
+	find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
+		| awk '/=>/ { print $(NF-1) }' \
+		| sort -u \
+		| xargs -r dpkg-query --search \
+		| cut -d: -f1 \
+		| sort -u \
+		| xargs -r apt-mark manual \
+	; \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	rm -rf /var/lib/apt/lists/*; \
+{{ ) else "" end -}}
+{{ ) end -}}
 	\
 	python3 --version
 
@@ -155,18 +276,31 @@ RUN set -eux; \
 	done
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 21.2.4
+ENV PYTHON_PIP_VERSION {{ .pip.version }}
 # https://github.com/docker-library/python/issues/365
-ENV PYTHON_SETUPTOOLS_VERSION 57.5.0
+ENV PYTHON_SETUPTOOLS_VERSION {{ .setuptools.version }}
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/3cb8888cc2869620f57d5d2da64da38f516078c7/public/get-pip.py
-ENV PYTHON_GET_PIP_SHA256 c518250e91a70d7b20cceb15272209a4ded2a0c263ae5776f129e0d9b5674309
+ENV PYTHON_GET_PIP_URL {{ .pip.url }}
+ENV PYTHON_GET_PIP_SHA256 {{ .pip.sha256 }}
 
 RUN set -eux; \
 	\
+{{ if is_slim then ( -}}
+	savedAptMark="$(apt-mark showmanual)"; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends wget; \
+	\
+{{ ) else "" end -}}
 	wget -O get-pip.py "$PYTHON_GET_PIP_URL"; \
 	echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum -c -; \
 	\
+{{ if is_slim then ( -}}
+	apt-mark auto '.*' > /dev/null; \
+	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark > /dev/null; \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	rm -rf /var/lib/apt/lists/*; \
+	\
+{{ ) else "" end -}}
 	python get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
