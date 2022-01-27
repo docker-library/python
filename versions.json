@@ -6,7 +6,7 @@
       "version": "21.2.4"
     },
     "setuptools": {
-      "version": "57.5.0"
+      "version": "58.1.0"
     },
     "variants": [
       "bullseye",
@@ -27,7 +27,7 @@
       "version": "21.2.4"
     },
     "setuptools": {
-      "version": "57.5.0"
+      "version": "58.1.0"
     },
     "variants": [
       "bullseye",
@@ -86,7 +86,7 @@
       "version": "21.2.4"
     },
     "setuptools": {
-      "version": "57.5.0"
+      "version": "58.1.0"
     },
     "variants": [
       "bullseye",
