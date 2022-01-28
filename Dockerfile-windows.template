@@ -1,14 +1,13 @@
-FROM mcr.microsoft.com/windows/servercore:%%PLACEHOLDER%%
+FROM mcr.microsoft.com/windows/{{ env.windowsVariant }}:{{ env.windowsRelease }}
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # https://github.com/docker-library/python/pull/557
 ENV PYTHONIOENCODING UTF-8
 
-ENV PYTHON_VERSION %%PLACEHOLDER%%
-ENV PYTHON_RELEASE %%PLACEHOLDER%%
+ENV PYTHON_VERSION {{ .version }}
 
-RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env:PYTHON_RELEASE, $env:PYTHON_VERSION); \
+RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($env:PYTHON_VERSION -replace '[a-z]+[0-9]*$', ''), $env:PYTHON_VERSION); \
 	Write-Host ('Downloading {0} ...' -f $url); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
 	Invoke-WebRequest -Uri $url -OutFile 'python.exe'; \
@@ -46,12 +45,12 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f $env
 	Write-Host 'Complete.'
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION %%PLACEHOLDER%%
+ENV PYTHON_PIP_VERSION {{ .pip.version }}
 # https://github.com/docker-library/python/issues/365
-ENV PYTHON_SETUPTOOLS_VERSION %%PLACEHOLDER%%
+ENV PYTHON_SETUPTOOLS_VERSION {{ .setuptools.version }}
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL %%PLACEHOLDER%%
-ENV PYTHON_GET_PIP_SHA256 %%PLACEHOLDER%%
+ENV PYTHON_GET_PIP_URL {{ .pip.url }}
+ENV PYTHON_GET_PIP_SHA256 {{ .pip.sha256 }}
 
 RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
