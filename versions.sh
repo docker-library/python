@@ -2,26 +2,10 @@
 set -Eeuo pipefail
 shopt -s nullglob
 
-# TODO https://github.com/docker-library/python/pull/686
 # https://github.com/docker-library/python/issues/365
-# https://pypi.org/project/pip/#history
-declare -A pipVersions=(
-	[3.11]='21.2' # https://github.com/python/cpython/blob/v3.11.0a1/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
-	[3.10]='21.2' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
-	[3.9]='21.2' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
-	[3.8]='21.2' # historical
-	[3.7]='21.2' # historical
-)
-# https://pypi.org/project/setuptools/#history
-declare -A setuptoolsVersions=(
-	[3.11]='57' # https://github.com/python/cpython/blob/v3.11.0a1/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
-	[3.10]='57' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
-	[3.9]='57' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
-	[3.8]='57' # historical
-	[3.7]='57' # historical
-)
-# https://pypi.org/project/wheel/#history
-# TODO wheelVersions: https://github.com/docker-library/python/issues/365#issuecomment-914669320
+minimumPipVersion='21.2.4'
+minimumSetuptoolsVersion='57.5.0'
+# for historical reasons, these get pinned to either the version bundled with each Python version or these, whichever is higher
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
@@ -33,9 +17,6 @@ else
 	json="$(< versions.json)"
 fi
 versions=( "${versions[@]%/}" )
-
-pipJson="$(curl -fsSL 'https://pypi.org/pypi/pip/json')"
-setuptoolsJson="$(curl -fsSL 'https://pypi.org/pypi/setuptools/json')"
 
 getPipCommit="$(curl -fsSL 'https://github.com/pypa/get-pip/commits/main/public/get-pip.py.atom' | tac|tac | awk -F '[[:space:]]*[<>/]+' '$2 == "id" && $3 ~ /Commit/ { print $4; exit }')"
 getPipUrl="https://github.com/pypa/get-pip/raw/$getPipCommit/public/get-pip.py"
@@ -139,30 +120,37 @@ for version in "${versions[@]}"; do
 		exit 1
 	fi
 
-	pipVersion="${pipVersions[$rcVersion]}"
+	ensurepipVersions="$(
+		wget -qO- "https://github.com/python/cpython/raw/v$fullVersion/Lib/ensurepip/__init__.py" \
+			| grep -E '^[^[:space:]]+_VERSION[[:space:]]*='
+	)"
+	pipVersion="$(sed -nre 's/^_PIP_VERSION[[:space:]]*=[[:space:]]*"(.*?)".*/\1/p' <<<"$ensurepipVersions")"
+	setuptoolsVersion="$(sed -nre 's/^_SETUPTOOLS_VERSION[[:space:]]*=[[:space:]]*"(.*?)".*/\1/p' <<<"$ensurepipVersions")"
+	# make sure we got something
+	if [ -z "$pipVersion" ] || [ -z "$setuptoolsVersion" ]; then
+		echo >&2 "error: $version: missing either pip ($pipVersion) or setuptools ($setuptoolsVersion) version"
+		exit 1
+	fi
+	# make sure what we got is valid versions
+	if ! wget -q -O /dev/null -o /dev/null --spider "https://pypi.org/pypi/pip/$pipVersion/json" || ! wget -q -O /dev/null -o /dev/null --spider "https://pypi.org/pypi/setuptools/$setuptoolsVersion/json"; then
+		echo >&2 "error: $version: either pip ($pipVersion) or setuptools ($setuptoolsVersion) version seems to be invalid?"
+		exit 1
+	fi
+
 	pipVersion="$(
-		export pipVersion
-		jq <<<"$pipJson" -r '
-			.releases
-			| [
-				keys_unsorted[]
-				| select(. == env.pipVersion or startswith(env.pipVersion + "."))
-			]
-			| max_by(split(".") | map(tonumber))
-		'
+		{
+			echo "$pipVersion"
+			echo "$minimumPipVersion"
+		} | sort -rV | head -1
 	)"
-	setuptoolsVersion="${setuptoolsVersions[$rcVersion]}"
 	setuptoolsVersion="$(
-		export setuptoolsVersion
-		jq <<<"$setuptoolsJson" -r '
-			.releases
-			| [
-				keys_unsorted[]
-				| select(. == env.setuptoolsVersion or startswith(env.setuptoolsVersion + "."))
-			]
-			| max_by(split(".") | map(tonumber))
-		'
+		{
+			echo "$setuptoolsVersion"
+			echo "$minimumSetuptoolsVersion"
+		} | sort -rV | head -1
 	)"
+
+	# TODO wheelVersion, somehow: https://github.com/docker-library/python/issues/365#issuecomment-914669320
 
 	echo "$version: $fullVersion (pip $pipVersion, setuptools $setuptoolsVersion${hasWindows:+, windows})"
 
