@@ -32,7 +32,6 @@ RUN set -eux; \
 		\
 		bluez-dev \
 		bzip2-dev \
-		coreutils \
 		dpkg-dev dpkg \
 		expat-dev \
 		findutils \
