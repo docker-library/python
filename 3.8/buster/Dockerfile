@@ -56,6 +56,8 @@ RUN set -eux; \
 	; \
 	make install; \
 	cd /; \
+	mkdir -p /usr/share/gdb/auto-load/usr/local/bin; \
+	cp /usr/src/python/Tools/gdb/libpython.py /usr/share/gdb/auto-load/usr/local/bin/python3.8-gdb.py; \
 	rm -rf /usr/src/python; \
 	\
 	find /usr/local -depth \

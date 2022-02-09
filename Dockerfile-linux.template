@@ -221,6 +221,10 @@ RUN set -eux; \
 	; \
 	make install; \
 	cd /; \
+{{ if (is_alpine or is_slim) | not then ( -}}
+	mkdir -p /usr/share/gdb/auto-load/usr/local/bin; \
+	cp /usr/src/python/Tools/gdb/libpython.py /usr/share/gdb/auto-load/usr/local/bin/python{{ rcVersion }}-gdb.py; \
+{{ ) else "" end -}}
 	rm -rf /usr/src/python; \
 	\
 	find /usr/local -depth \
