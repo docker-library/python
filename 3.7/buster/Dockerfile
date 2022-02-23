@@ -128,21 +128,17 @@ RUN set -eux; \
 	wget -O get-pip.py "$PYTHON_GET_PIP_URL"; \
 	echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum -c -; \
 	\
+	export PYTHONDONTWRITEBYTECODE=1; \
+	\
 	python get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
+		--no-compile \
 		"pip==$PYTHON_PIP_VERSION" \
 		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
 	; \
-	pip --version; \
+	rm -f get-pip.py; \
 	\
-	find /usr/local -depth \
-		\( \
-			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' + \
-	; \
-	rm -f get-pip.py
+	pip --version
 
 CMD ["python3"]

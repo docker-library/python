@@ -61,10 +61,13 @@ RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); 
 		exit 1; \
 	}; \
 	\
+	$env:PYTHONDONTWRITEBYTECODE = '1'; \
+	\
 	Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
 	python get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
+		--no-compile \
 		('pip=={0}' -f $env:PYTHON_PIP_VERSION) \
 		('setuptools=={0}' -f $env:PYTHON_SETUPTOOLS_VERSION) \
 	; \
