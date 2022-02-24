@@ -56,6 +56,13 @@ RUN set -eux; \
 	make -j "$nproc" \
 	; \
 	make install; \
+	\
+# enable GDB to load debugging data: https://github.com/docker-library/python/pull/701
+	bin="$(readlink -ve /usr/local/bin/python3)"; \
+	dir="$(dirname "$bin")"; \
+	mkdir -p "/usr/share/gdb/auto-load/$dir"; \
+	cp -vL Tools/gdb/libpython.py "/usr/share/gdb/auto-load/$bin-gdb.py"; \
+	\
 	cd /; \
 	rm -rf /usr/src/python; \
 	\

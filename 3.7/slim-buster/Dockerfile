@@ -117,6 +117,7 @@ RUN set -eux; \
 		' \
 	; \
 	make install; \
+	\
 	cd /; \
 	rm -rf /usr/src/python; \
 	\

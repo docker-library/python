@@ -82,6 +82,7 @@ RUN set -eux; \
 		LDFLAGS="-Wl,--strip-all" \
 	; \
 	make install; \
+	\
 	cd /; \
 	rm -rf /usr/src/python; \
 	\
