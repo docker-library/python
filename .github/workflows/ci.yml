@@ -24,6 +24,23 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/docker-library/bashbrew.git -b master ~/bashbrew
           strategy="$(~/bashbrew/scripts/github-actions/generate.sh)"
+
+          # https://github.com/docker-library/python/pull/706 (ensure we don't have any unexpected ".a" leftovers in "/usr/local")
+          strategy="$(jq <<<"$strategy" -c '
+            .matrix.include |= map(
+              if .os == "ubuntu-latest" then
+                .runs.test += "\n" + (
+                  .meta.entries
+                  | map(
+                    .tags[0]
+                    | "aFiles=\"$(docker run --rm \(. | @sh) find /usr/local -name \"*.a\" | tee /dev/stderr)\"; [ -z \"$aFiles\" ]"
+                  )
+                  | join("\n")
+                )
+              else . end
+            )
+          ')"
+
           jq . <<<"$strategy" # sanity check / debugging aid
           echo "::set-output name=strategy::$strategy"
 
