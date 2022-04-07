@@ -116,7 +116,7 @@ RUN set -eux; \
 		dst="$(echo "$src" | tr -d 3)"; \
 		[ -s "/usr/local/bin/$src" ]; \
 		[ ! -e "/usr/local/bin/$dst" ]; \
-		ln -svT "/usr/local/bin/$src" "/usr/local/bin/$dst"; \
+		ln -svT "$src" "/usr/local/bin/$dst"; \
 	done
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
