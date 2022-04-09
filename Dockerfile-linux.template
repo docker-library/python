@@ -159,7 +159,6 @@ RUN set -eux; \
 		--with-lto \
 {{ ) end -}}
 		--with-system-expat \
-		--with-system-ffi \
 		--without-ensurepip \
 	; \
 	nproc="$(nproc)"; \

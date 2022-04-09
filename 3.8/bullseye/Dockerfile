@@ -48,7 +48,6 @@ RUN set -eux; \
 		--enable-option-checking=fatal \
 		--enable-shared \
 		--with-system-expat \
-		--with-system-ffi \
 		--without-ensurepip \
 	; \
 	nproc="$(nproc)"; \
