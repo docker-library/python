@@ -91,6 +91,7 @@ for version; do
 		| map(select(
 			startswith("alpine")
 			or startswith("slim-")
+			or startswith("windows/")
 			| not
 		))
 		| .[0]
