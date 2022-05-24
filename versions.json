@@ -13,8 +13,8 @@
       "slim-bullseye",
       "buster",
       "slim-buster",
+      "alpine3.16",
       "alpine3.15",
-      "alpine3.14",
       "windows/windowsservercore-ltsc2022",
       "windows/windowsservercore-1809"
     ],
@@ -34,8 +34,8 @@
       "slim-bullseye",
       "buster",
       "slim-buster",
+      "alpine3.16",
       "alpine3.15",
-      "alpine3.14",
       "windows/windowsservercore-ltsc2022",
       "windows/windowsservercore-1809"
     ],
@@ -55,8 +55,8 @@
       "slim-bullseye",
       "buster",
       "slim-buster",
-      "alpine3.15",
-      "alpine3.14"
+      "alpine3.16",
+      "alpine3.15"
     ],
     "version": "3.7.13"
   },
@@ -74,8 +74,8 @@
       "slim-bullseye",
       "buster",
       "slim-buster",
-      "alpine3.15",
-      "alpine3.14"
+      "alpine3.16",
+      "alpine3.15"
     ],
     "version": "3.8.13"
   },
@@ -93,8 +93,8 @@
       "slim-bullseye",
       "buster",
       "slim-buster",
+      "alpine3.16",
       "alpine3.15",
-      "alpine3.14",
       "windows/windowsservercore-ltsc2022",
       "windows/windowsservercore-1809"
     ],
