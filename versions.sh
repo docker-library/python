@@ -3,9 +3,8 @@ set -Eeuo pipefail
 shopt -s nullglob
 
 # https://github.com/docker-library/python/issues/365
-minimumPipVersion='21.2.4'
 minimumSetuptoolsVersion='57.5.0'
-# for historical reasons, these get pinned to either the version bundled with each Python version or these, whichever is higher
+# for historical reasons, setuptools gets pinned to either the version bundled with each Python version or this, whichever is higher
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
@@ -137,12 +136,7 @@ for version in "${versions[@]}"; do
 		exit 1
 	fi
 
-	pipVersion="$(
-		{
-			echo "$pipVersion"
-			echo "$minimumPipVersion"
-		} | sort -rV | head -1
-	)"
+	# TODO remove this once Python 3.7 and 3.8 are either "new enough setuptools" or EOL
 	setuptoolsVersion="$(
 		{
 			echo "$setuptoolsVersion"
