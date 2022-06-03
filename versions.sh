@@ -3,7 +3,7 @@ set -Eeuo pipefail
 shopt -s nullglob
 
 # https://github.com/docker-library/python/issues/365
-minimumPipVersion='21.2.4'
+minimumPipVersion='22.1.2'
 minimumSetuptoolsVersion='57.5.0'
 # for historical reasons, these get pinned to either the version bundled with each Python version or these, whichever is higher
 
