@@ -133,6 +133,14 @@ for version; do
 				;;
 		esac
 
+		case "$version" in
+			3.7 | 3.8 | 3.9 | 3.10) ;;
+			*)
+				# https://github.com/python/cpython/issues/93619 + https://peps.python.org/pep-0011/
+				variantArches="$(sed <<<" $variantArches " -e 's/ mips64le / /g')"
+				;;
+		esac
+
 		sharedTags=()
 		for windowsShared in windowsservercore nanoserver; do
 			if [[ "$variant" == "$windowsShared"* ]]; then
