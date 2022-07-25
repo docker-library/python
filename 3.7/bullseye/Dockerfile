@@ -126,8 +126,8 @@ ENV PYTHON_PIP_VERSION 22.0.4
 # https://github.com/docker-library/python/issues/365
 ENV PYTHON_SETUPTOOLS_VERSION 57.5.0
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/6ce3639da143c5d79b44f94b04080abf2531fd6e/public/get-pip.py
-ENV PYTHON_GET_PIP_SHA256 ba3ab8267d91fd41c58dbce08f76db99f747f716d85ce1865813842bb035524d
+ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/49ca29908cfd49683da12f2d5a4fa5689539f9d9/public/get-pip.py
+ENV PYTHON_GET_PIP_SHA256 d077d469ce4c0beaf9cc97b73f8164ad20e68e0519f14dd886ce35d053721501
 
 RUN set -eux; \
 	\
