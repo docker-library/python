@@ -22,8 +22,8 @@
   },
   "3.11-rc": {
     "pip": {
-      "sha256": "d077d469ce4c0beaf9cc97b73f8164ad20e68e0519f14dd886ce35d053721501",
-      "url": "https://github.com/pypa/get-pip/raw/49ca29908cfd49683da12f2d5a4fa5689539f9d9/public/get-pip.py",
+      "sha256": "d0b5909f3ab32dae9d115aa68a4b763529823ad5589c56af15cf816fca2773d6",
+      "url": "https://github.com/pypa/get-pip/raw/aeca83c7ba7f9cdfd681103c4dcbf0214f6d742e/public/get-pip.py",
       "version": "22.2"
     },
     "setuptools": {
