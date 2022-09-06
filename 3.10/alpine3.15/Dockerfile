@@ -21,7 +21,7 @@ RUN set -eux; \
 	;
 
 ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
-ENV PYTHON_VERSION 3.10.6
+ENV PYTHON_VERSION 3.10.7
 
 RUN set -eux; \
 	\
@@ -118,7 +118,7 @@ RUN set -eux; \
 	done
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 22.2.1
+ENV PYTHON_PIP_VERSION 22.2.2
 # https://github.com/docker-library/python/issues/365
 ENV PYTHON_SETUPTOOLS_VERSION 63.2.0
 # https://github.com/pypa/get-pip
