@@ -14,7 +14,7 @@ For outstanding `python` image PRs, check [PRs with the "library/python" label o
 
 ---
 
--	[![build status badge](https://img.shields.io/github/workflow/status/docker-library/python/GitHub%20CI/master?label=GitHub%20CI)](https://github.com/docker-library/python/actions?query=workflow%3A%22GitHub+CI%22+branch%3Amaster)
+-	[![build status badge](https://img.shields.io/github/actions/workflow/status/docker-library/python/ci.yml?branch=master&label=GitHub%20CI)](https://github.com/docker-library/python/actions?query=workflow%3A%22GitHub+CI%22+branch%3Amaster)
 -	[![build status badge](https://img.shields.io/jenkins/s/https/doi-janky.infosiftr.net/job/update.sh/job/python.svg?label=Automated%20update.sh)](https://doi-janky.infosiftr.net/job/update.sh/job/python/)
 
 | Build | Status | Badges | (per-arch) |
