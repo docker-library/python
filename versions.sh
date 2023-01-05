@@ -17,7 +17,8 @@ else
 fi
 versions=( "${versions[@]%/}" )
 
-getPipCommit="$(curl -fsSL 'https://github.com/pypa/get-pip/commits/main/public/get-pip.py.atom' | tac|tac | awk -F '[[:space:]]*[<>/]+' '$2 == "id" && $3 ~ /Commit/ { print $4; exit }')"
+getPipCommit="$(curl -fsSL 'https://github.com/pypa/get-pip/commits/main/public/get-pip.py.atom' | grep -E 'id.*Commit')"
+getPipCommit="$(awk <<<"$getPipCommit" -F '[[:space:]]*[<>/]+' '$2 == "id" && $3 ~ /Commit/ { print $4; exit }')"
 getPipUrl="https://github.com/pypa/get-pip/raw/$getPipCommit/public/get-pip.py"
 getPipSha256="$(curl -fsSL "$getPipUrl" | sha256sum | cut -d' ' -f1)"
 export getPipUrl getPipSha256
