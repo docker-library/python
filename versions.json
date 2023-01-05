@@ -35,7 +35,9 @@
       "buster",
       "slim-buster",
       "alpine3.17",
-      "alpine3.16"
+      "alpine3.16",
+      "windows/windowsservercore-ltsc2022",
+      "windows/windowsservercore-1809"
     ],
     "version": "3.11.1"
   },
