@@ -6,7 +6,7 @@
       "version": "22.3.1"
     },
     "setuptools": {
-      "version": "65.5.0"
+      "version": "65.5.1"
     },
     "variants": [
       "bullseye",
@@ -27,7 +27,7 @@
       "version": "22.3.1"
     },
     "setuptools": {
-      "version": "65.5.0"
+      "version": "65.5.1"
     },
     "variants": [
       "bullseye",
@@ -48,7 +48,7 @@
       "version": "22.3.1"
     },
     "setuptools": {
-      "version": "65.5.0"
+      "version": "65.5.1"
     },
     "variants": [
       "bullseye",

@@ -145,6 +145,11 @@ for version in "${versions[@]}"; do
 		} | sort -rV | head -1
 	)"
 
+	# https://github.com/docker-library/python/issues/781 (TODO remove this once 3.10, 3.11, and 3.12 embed a newer setuptools and this section no longer applies)
+	if [ "$setuptoolsVersion" = '65.5.0' ]; then
+		setuptoolsVersion='65.5.1'
+	fi
+
 	# TODO wheelVersion, somehow: https://github.com/docker-library/python/issues/365#issuecomment-914669320
 
 	echo "$version: $fullVersion (pip $pipVersion, setuptools $setuptoolsVersion${hasWindows:+, windows})"
