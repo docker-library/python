@@ -83,7 +83,10 @@ RUN set -eux; \
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
 		EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000" \
-		LDFLAGS="-Wl,--strip-all" \
+# \$ because of the double quotes in the shell to prevent interpolation
+# $$ for make to not interpret the $O
+# " because it needs the ' around the path, and '"'"' instead is 🤢
+		LDFLAGS="-Wl,-rpath='\$\$ORIGIN/../lib',--strip-all" \
 	; \
 	make install; \
 	\
