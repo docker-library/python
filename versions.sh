@@ -196,6 +196,8 @@ for version in "${versions[@]}"; do
 					"3.17",
 					empty
 				| "alpine" + .),
+					"jammy",
+					"kinetic",
 				if env.hasWindows != "" then
 					(
 						"ltsc2022",
