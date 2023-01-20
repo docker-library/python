@@ -99,6 +99,7 @@ RUN set -eux; \
 		make \
 		ncurses-dev \
 		openssl-dev \
+		patchelf \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
@@ -110,10 +111,11 @@ RUN set -eux; \
 		zlib-dev \
 	; \
 	\
-{{ ) elif is_slim then ( -}}
+{{ ) else ( -}}
 	savedAptMark="$(apt-mark showmanual)"; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
+{{ if is_slim then ( -}}
 		dpkg-dev \
 		gcc \
 		gnupg dirmngr \
@@ -129,14 +131,18 @@ RUN set -eux; \
 		libsqlite3-dev \
 		libssl-dev \
 		make \
+		patchelf \
 		tk-dev \
 		uuid-dev \
 		wget \
 		xz-utils \
 		zlib1g-dev \
+{{ ) else ( -}}
+		patchelf \
+{{ ) end -}}
 	; \
 	\
-{{ ) else "" end -}}
+{{ ) end -}}
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
 	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
 	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
@@ -223,10 +229,14 @@ RUN set -eux; \
 -}}
 	; \
 	make install; \
+	\
+# https://github.com/docker-library/python/issues/784
+# prevent accidental usage of a system installed libpython of the same version
+	bin="$(readlink -vf /usr/local/bin/python3)"; \
+	patchelf --set-rpath '$ORIGIN/../lib' "$bin"; \
 {{ if is_alpine or is_slim then "" else ( -}}
 	\
 # enable GDB to load debugging data: https://github.com/docker-library/python/pull/701
-	bin="$(readlink -ve /usr/local/bin/python3)"; \
 	dir="$(dirname "$bin")"; \
 	mkdir -p "/usr/share/gdb/auto-load/$dir"; \
 	cp -vL Tools/gdb/libpython.py "/usr/share/gdb/auto-load/$bin-gdb.py"; \
@@ -260,10 +270,10 @@ RUN set -eux; \
 	apk del --no-network .build-deps; \
 {{ ) else ( -}}
 	ldconfig; \
-{{ if is_slim then ( -}}
 	\
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual $savedAptMark; \
+{{ if is_slim then ( -}}
 	find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
 		| awk '/=>/ { print $(NF-1) }' \
 		| sort -u \
@@ -272,9 +282,9 @@ RUN set -eux; \
 		| sort -u \
 		| xargs -r apt-mark manual \
 	; \
+{{ ) else "" end -}}
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*; \
-{{ ) else "" end -}}
 {{ ) end -}}
 	\
 	python3 --version
