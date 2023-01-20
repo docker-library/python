@@ -77,10 +77,7 @@ RUN set -eux; \
 	; \
 	nproc="$(nproc)"; \
 	make -j "$nproc" \
-# \$ because of the double quotes in the shell to prevent interpolation
-# $$ for make to not interpret the $O
-# " because it needs the ' around the path, and '"'"' instead is 🤢
-		LDFLAGS="-Wl,-rpath='\$\$ORIGIN/../lib',--strip-all" \
+		LDFLAGS="-Wl,--strip-all" \
 	; \
 	make install; \
 	\
