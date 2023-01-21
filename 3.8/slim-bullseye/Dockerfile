@@ -46,6 +46,7 @@ RUN set -eux; \
 		libsqlite3-dev \
 		libssl-dev \
 		make \
+		patchelf \
 		tk-dev \
 		uuid-dev \
 		wget \
@@ -77,12 +78,14 @@ RUN set -eux; \
 	; \
 	nproc="$(nproc)"; \
 	make -j "$nproc" \
-# \$ because of the double quotes in the shell to prevent interpolation
-# $$ for make to not interpret the $O
-# " because it needs the ' around the path, and '"'"' instead is 🤢
-		LDFLAGS="-Wl,-rpath='\$\$ORIGIN/../lib',--strip-all" \
+		LDFLAGS="-Wl,--strip-all" \
 	; \
 	make install; \
+	\
+# https://github.com/docker-library/python/issues/784
+# prevent accidental usage of a system installed libpython of the same version
+	bin="$(readlink -vf /usr/local/bin/python3)"; \
+	patchelf --set-rpath '$ORIGIN/../lib' "$bin"; \
 	\
 	cd /; \
 	rm -rf /usr/src/python; \

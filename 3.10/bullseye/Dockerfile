@@ -28,6 +28,12 @@ ENV PYTHON_VERSION 3.10.9
 
 RUN set -eux; \
 	\
+	savedAptMark="$(apt-mark showmanual)"; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		patchelf \
+	; \
+	\
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
 	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
 	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
@@ -53,15 +59,15 @@ RUN set -eux; \
 	; \
 	nproc="$(nproc)"; \
 	make -j "$nproc" \
-# \$ because of the double quotes in the shell to prevent interpolation
-# $$ for make to not interpret the $O
-# " because it needs the ' around the path, and '"'"' instead is 🤢
-		LDFLAGS="-Wl,-rpath='\$\$ORIGIN/../lib'" \
 	; \
 	make install; \
 	\
+# https://github.com/docker-library/python/issues/784
+# prevent accidental usage of a system installed libpython of the same version
+	bin="$(readlink -vf /usr/local/bin/python3)"; \
+	patchelf --set-rpath '$ORIGIN/../lib' "$bin"; \
+	\
 # enable GDB to load debugging data: https://github.com/docker-library/python/pull/701
-	bin="$(readlink -ve /usr/local/bin/python3)"; \
 	dir="$(dirname "$bin")"; \
 	mkdir -p "/usr/share/gdb/auto-load/$dir"; \
 	cp -vL Tools/gdb/libpython.py "/usr/share/gdb/auto-load/$bin-gdb.py"; \
@@ -77,6 +83,11 @@ RUN set -eux; \
 	; \
 	\
 	ldconfig; \
+	\
+	apt-mark auto '.*' > /dev/null; \
+	apt-mark manual $savedAptMark; \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	rm -rf /var/lib/apt/lists/*; \
 	\
 	python3 --version
 
