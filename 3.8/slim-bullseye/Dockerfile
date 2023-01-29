@@ -79,6 +79,13 @@ RUN set -eux; \
 	make -j "$nproc" \
 		LDFLAGS="-Wl,--strip-all" \
 	; \
+# https://github.com/docker-library/python/issues/784
+# prevent accidental usage of a system installed libpython of the same version
+	rm python; \
+	make -j "$nproc" \
+		LDFLAGS="-Wl,-rpath='\$\$ORIGIN/../lib',--strip-all" \
+		python \
+	; \
 	make install; \
 	\
 	cd /; \

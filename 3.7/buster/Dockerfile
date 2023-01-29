@@ -89,6 +89,13 @@ RUN set -eux; \
 			test_unicode \
 		' \
 	; \
+# https://github.com/docker-library/python/issues/784
+# prevent accidental usage of a system installed libpython of the same version
+	rm python; \
+	make -j "$nproc" \
+		LDFLAGS="-Wl,-rpath='\$\$ORIGIN/../lib'" \
+		python \
+	; \
 	make install; \
 	\
 # enable GDB to load debugging data: https://github.com/docker-library/python/pull/701
