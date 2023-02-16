@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM ubuntu:kinetic
+FROM riscv64/ubuntu:kinetic
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH

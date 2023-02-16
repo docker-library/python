@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM ubuntu:jammy
+FROM riscv64/ubuntu:jammy
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH

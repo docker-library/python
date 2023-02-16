@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM buildpack-deps:kinetic
+FROM riscv64/buildpack-deps:kinetic
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
