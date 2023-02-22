@@ -64,6 +64,7 @@ cat <<-EOH
 Maintainers: Tianon Gravi <admwiggin@gmail.com> (@tianon),
              Joseph Ferguson <yosifkit@gmail.com> (@yosifkit)
 GitRepo: https://github.com/docker-library/python.git
+Builder: buildkit
 EOH
 
 # prints "$2$1$3$1...$N"
@@ -165,6 +166,7 @@ for version; do
 		EOE
 		if [[ "$v" == windows/* ]]; then
 			echo "Constraints: $variant"
+			echo 'Builder: classic'
 		fi
 	done
 done
