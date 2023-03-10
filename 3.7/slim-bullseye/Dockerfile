@@ -76,7 +76,9 @@ RUN set -eux; \
 		--without-ensurepip \
 	; \
 	nproc="$(nproc)"; \
-	LDFLAGS="-Wl,--strip-all"; \
+	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
+	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
+	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
 # setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
 	PROFILE_TASK='-m test.regrtest --pgo \
 		test_array \
