@@ -37,6 +37,7 @@ RUN set -eux; \
 		libbluetooth-dev \
 		libbz2-dev \
 		libc6-dev \
+		libdb-dev \
 		libexpat1-dev \
 		libffi-dev \
 		libgdbm-dev \
