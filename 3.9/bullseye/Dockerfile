@@ -33,7 +33,7 @@ RUN set -eux; \
 	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
 	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY"; \
 	gpg --batch --verify python.tar.xz.asc python.tar.xz; \
-	command -v gpgconf > /dev/null && gpgconf --kill all || :; \
+	gpgconf --kill all; \
 	rm -rf "$GNUPGHOME" python.tar.xz.asc; \
 	mkdir -p /usr/src/python; \
 	tar --extract --directory /usr/src/python --strip-components=1 --file python.tar.xz; \
