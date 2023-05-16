@@ -51,6 +51,7 @@ ENV PYTHON_SETUPTOOLS_VERSION {{ .setuptools.version }}
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL {{ .pip.url }}
 ENV PYTHON_GET_PIP_SHA256 {{ .pip.sha256 }}
+ENV PIP_NO_CACHE_DIR 1
 
 RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
