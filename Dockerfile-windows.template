@@ -46,8 +46,10 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($en
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION {{ .pip.version }}
+{{ if .setuptools then ( -}}
 # https://github.com/docker-library/python/issues/365
 ENV PYTHON_SETUPTOOLS_VERSION {{ .setuptools.version }}
+{{ ) else "" end -}}
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL {{ .pip.url }}
 ENV PYTHON_GET_PIP_SHA256 {{ .pip.sha256 }}
@@ -69,7 +71,9 @@ RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); 
 		--no-cache-dir \
 		--no-compile \
 		('pip=={0}' -f $env:PYTHON_PIP_VERSION) \
+{{ if .setuptools then ( -}}
 		('setuptools=={0}' -f $env:PYTHON_SETUPTOOLS_VERSION) \
+{{ ) else "" end -}}
 	; \
 	Remove-Item get-pip.py -Force; \
 	\
