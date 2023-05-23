@@ -306,8 +306,10 @@ RUN set -eux; \
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION {{ .pip.version }}
+{{ if .setuptools then ( -}}
 # https://github.com/docker-library/python/issues/365
 ENV PYTHON_SETUPTOOLS_VERSION {{ .setuptools.version }}
+{{ ) else "" end -}}
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL {{ .pip.url }}
 ENV PYTHON_GET_PIP_SHA256 {{ .pip.sha256 }}
@@ -337,7 +339,9 @@ RUN set -eux; \
 		--no-cache-dir \
 		--no-compile \
 		"pip==$PYTHON_PIP_VERSION" \
+{{ if .setuptools then ( -}}
 		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
+{{ ) else "" end -}}
 	; \
 	rm -f get-pip.py; \
 	\
