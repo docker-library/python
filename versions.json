@@ -9,10 +9,10 @@
       "version": "65.5.1"
     },
     "variants": [
+      "bookworm",
+      "slim-bookworm",
       "bullseye",
       "slim-bullseye",
-      "buster",
-      "slim-buster",
       "alpine3.18",
       "alpine3.17"
     ],
@@ -28,10 +28,10 @@
       "version": "65.5.1"
     },
     "variants": [
+      "bookworm",
+      "slim-bookworm",
       "bullseye",
       "slim-bullseye",
-      "buster",
-      "slim-buster",
       "alpine3.18",
       "alpine3.17",
       "windows/windowsservercore-ltsc2022",
@@ -46,10 +46,10 @@
       "version": "23.1.2"
     },
     "variants": [
+      "bookworm",
+      "slim-bookworm",
       "bullseye",
       "slim-bullseye",
-      "buster",
-      "slim-buster",
       "alpine3.18",
       "alpine3.17",
       "windows/windowsservercore-ltsc2022",
@@ -67,10 +67,10 @@
       "version": "57.5.0"
     },
     "variants": [
+      "bookworm",
+      "slim-bookworm",
       "bullseye",
       "slim-bullseye",
-      "buster",
-      "slim-buster",
       "alpine3.18",
       "alpine3.17"
     ],
@@ -86,10 +86,10 @@
       "version": "57.5.0"
     },
     "variants": [
+      "bookworm",
+      "slim-bookworm",
       "bullseye",
       "slim-bullseye",
-      "buster",
-      "slim-buster",
       "alpine3.18",
       "alpine3.17"
     ],
@@ -105,10 +105,10 @@
       "version": "58.1.0"
     },
     "variants": [
+      "bookworm",
+      "slim-bookworm",
       "bullseye",
       "slim-bullseye",
-      "buster",
-      "slim-buster",
       "alpine3.18",
       "alpine3.17"
     ],
