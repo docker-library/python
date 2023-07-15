@@ -41,8 +41,8 @@
   },
   "3.12-rc": {
     "pip": {
-      "sha256": "96461deced5c2a487ddc65207ec5a9cffeca0d34e7af7ea1afc470ff0d746207",
-      "url": "https://github.com/pypa/get-pip/raw/0d8570dc44796f4369b652222cf176b3db6ac70e/public/get-pip.py",
+      "sha256": "221ebd8c2ac62fc2d6e80c60d9674e212c0a468879b7daddb0469570cfa5148f",
+      "url": "https://github.com/pypa/get-pip/raw/12b30d8c229961b6c0892101b365ec185fab7e14/public/get-pip.py",
       "version": "23.1.2"
     },
     "variants": [
