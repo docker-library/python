@@ -311,8 +311,8 @@ ENV PYTHON_PIP_VERSION {{ .pip.version }}
 ENV PYTHON_SETUPTOOLS_VERSION {{ .setuptools.version }}
 {{ ) else "" end -}}
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL {{ .pip.url }}
-ENV PYTHON_GET_PIP_SHA256 {{ .pip.sha256 }}
+ENV PYTHON_GET_PIP_URL {{ ."get-pip".url }}
+ENV PYTHON_GET_PIP_SHA256 {{ ."get-pip".sha256 }}
 
 RUN set -eux; \
 	\
