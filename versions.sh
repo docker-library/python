@@ -21,7 +21,7 @@ getPipCommit="$(curl -fsSL 'https://github.com/pypa/get-pip/commits/main/public/
 getPipCommit="$(awk <<<"$getPipCommit" -F '[[:space:]]*[<>/]+' '$2 == "id" && $3 ~ /Commit/ { print $4; exit }')"
 getPipUrl="https://github.com/pypa/get-pip/raw/$getPipCommit/public/get-pip.py"
 getPipSha256="$(curl -fsSL "$getPipUrl" | sha256sum | cut -d' ' -f1)"
-export getPipUrl getPipSha256
+export getPipCommit getPipUrl getPipSha256
 
 has_linux_version() {
 	local dir="$1"; shift
@@ -179,6 +179,9 @@ for version in "${versions[@]}"; do
 			version: env.fullVersion,
 			pip: {
 				version: env.pipVersion,
+			},
+			"get-pip": {
+				version: "https://github.com/pypa/get-pip/commit/\(env.getPipCommit)",
 				url: env.getPipUrl,
 				sha256: env.getPipSha256,
 			},
