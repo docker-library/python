@@ -10,6 +10,10 @@
 -}}
 {{ if is_alpine then ( -}}
 FROM alpine:{{ env.variant | ltrimstr("alpine") }}
+{{ ) elif is_slim and env.variant == "slim-jammy" then ( -}}
+FROM ubuntu:{{ env.variant | ltrimstr("slim-") }}
+{{ ) elif is_slim and env.variant == "slim-kinetic" then ( -}}
+FROM ubuntu:{{ env.variant | ltrimstr("slim-") }}
 {{ ) elif is_slim then ( -}}
 FROM debian:{{ env.variant | ltrimstr("slim-") }}-slim
 {{ ) else ( -}}

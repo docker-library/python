@@ -19,7 +19,9 @@
       "alpine3.18",
       "alpine3.17",
       "jammy",
-      "kinetic"
+      "slim-jammy",
+      "kinetic",
+      "slim-kinetic"
     ],
     "version": "3.10.12"
   },
@@ -43,7 +45,9 @@
       "alpine3.18",
       "alpine3.17",
       "jammy",
+      "slim-jammy",
       "kinetic",
+      "slim-kinetic",
       "windows/windowsservercore-ltsc2022",
       "windows/windowsservercore-1809"
     ],
@@ -66,7 +70,9 @@
       "alpine3.18",
       "alpine3.17",
       "jammy",
+      "slim-jammy",
       "kinetic",
+      "slim-kinetic",
       "windows/windowsservercore-ltsc2022",
       "windows/windowsservercore-1809"
     ],
@@ -92,7 +98,9 @@
       "alpine3.18",
       "alpine3.17",
       "jammy",
-      "kinetic"
+      "slim-jammy",
+      "kinetic",
+      "slim-kinetic"
     ],
     "version": "3.7.17"
   },
@@ -116,7 +124,9 @@
       "alpine3.18",
       "alpine3.17",
       "jammy",
-      "kinetic"
+      "slim-jammy",
+      "kinetic",
+      "slim-kinetic"
     ],
     "version": "3.8.17"
   },
@@ -140,7 +150,9 @@
       "alpine3.18",
       "alpine3.17",
       "jammy",
-      "kinetic"
+      "slim-jammy",
+      "kinetic",
+      "slim-kinetic"
     ],
     "version": "3.9.17"
   }
