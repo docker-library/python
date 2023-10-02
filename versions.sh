@@ -136,7 +136,7 @@ for version in "${versions[@]}"; do
 
 	setuptoolsVersion="$(sed -nre 's/^_SETUPTOOLS_VERSION[[:space:]]*=[[:space:]]*"(.*?)".*/\1/p' <<<"$ensurepipVersions")"
 	case "$rcVersion" in
-		3.7 | 3.8 | 3.9 | 3.10 | 3.11)
+		3.8 | 3.9 | 3.10 | 3.11)
 			if [ -z "$setuptoolsVersion" ]; then
 				echo >&2 "error: $version: missing setuptools version"
 				exit 1
@@ -146,7 +146,7 @@ for version in "${versions[@]}"; do
 				exit 1
 			fi
 
-			# TODO remove this once Python 3.7 and 3.8 are either "new enough setuptools" or EOL
+			# TODO remove this once Python 3.8 is either "new enough setuptools" or EOL
 			setuptoolsVersion="$(
 				{
 					echo "$setuptoolsVersion"

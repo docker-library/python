@@ -66,28 +66,6 @@
     ],
     "version": "3.12.0"
   },
-  "3.7": {
-    "get-pip": {
-      "sha256": "45a2bb8bf2bb5eff16fdd00faef6f29731831c7c59bd9fc2bf1f3bed511ff1fe",
-      "url": "https://github.com/pypa/get-pip/raw/9af82b715db434abb94a0a6f3569f43e72157346/public/get-pip.py",
-      "version": "https://github.com/pypa/get-pip/commit/9af82b715db434abb94a0a6f3569f43e72157346"
-    },
-    "pip": {
-      "version": "23.0.1"
-    },
-    "setuptools": {
-      "version": "57.5.0"
-    },
-    "variants": [
-      "bookworm",
-      "slim-bookworm",
-      "bullseye",
-      "slim-bullseye",
-      "alpine3.18",
-      "alpine3.17"
-    ],
-    "version": "3.7.17"
-  },
   "3.8": {
     "get-pip": {
       "sha256": "45a2bb8bf2bb5eff16fdd00faef6f29731831c7c59bd9fc2bf1f3bed511ff1fe",
