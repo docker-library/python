@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 declare -A aliases=(
-	[3.11]='3 latest'
+	[3.12]='3 latest'
 )
 
 self="$(basename "$BASH_SOURCE")"
@@ -135,7 +135,7 @@ for version; do
 		esac
 
 		case "$version" in
-			3.7 | 3.8 | 3.9) ;;
+			3.8 | 3.9) ;;
 			*)
 				# https://github.com/python/cpython/issues/93619 + https://peps.python.org/pep-0011/
 				variantArches="$(sed <<<" $variantArches " -e 's/ mips64le / /g')"

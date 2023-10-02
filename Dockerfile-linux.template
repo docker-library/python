@@ -49,10 +49,6 @@ RUN set -eux; \
 
 ENV GPG_KEY {{
 	{
-		# gpg: key AA65421D: public key "Ned Deily (Python release signing key) <nad@acm.org>" imported
-		"3.7": "0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D",
-		# https://www.python.org/dev/peps/pep-0537/#release-manager-and-crew
-
 		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
 		"3.8": "E3FF2839C048B25C084DEBE9B26995E310250568",
 		# https://www.python.org/dev/peps/pep-0569/#release-manager-and-crew
@@ -159,7 +155,7 @@ RUN set -eux; \
 		--enable-shared \
 {{
 	# <3.10 does not have -fno-semantic-interposition enabled and --with-lto does nothing for performance
-	if [ "3.7", "3.8", "3.9" ] | index(rcVersion) then "" else (
+	if [ "3.8", "3.9" ] | index(rcVersion) then "" else (
 -}}
 		--with-lto \
 {{ ) end -}}
@@ -178,52 +174,6 @@ RUN set -eux; \
 {{ if is_slim or is_alpine then ( -}}
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
 {{ ) else "" end -}}
-{{ if env.version == "3.7" then ( -}}
-# setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
-	PROFILE_TASK='-m test.regrtest --pgo \
-		test_array \
-		test_base64 \
-		test_binascii \
-		test_binhex \
-		test_binop \
-		test_bytes \
-		test_c_locale_coercion \
-		test_class \
-		test_cmath \
-		test_codecs \
-		test_compile \
-		test_complex \
-		test_csv \
-		test_decimal \
-		test_dict \
-		test_float \
-		test_fstring \
-		test_hashlib \
-		test_io \
-		test_iter \
-		test_json \
-		test_long \
-		test_math \
-		test_memoryview \
-		test_pickle \
-		test_re \
-		test_set \
-		test_slice \
-		test_struct \
-		test_threading \
-		test_time \
-		test_traceback \
-		test_unicode \
-	'; \
-{{
-) else
-	# PROFILE_TASK has a reasonable default starting in 3.8+; see:
-	#   https://bugs.python.org/issue36044
-	#   https://github.com/python/cpython/pull/14702
-	#   https://github.com/python/cpython/pull/14910
-	""
-end
--}}
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
@@ -255,7 +205,7 @@ end
 		\( \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
 			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
-{{ if [ "3.7", "3.8" ] | index(env.version) then ( -}}
+{{ if [ "3.8" ] | index(env.version) then ( -}}
 			-o \( -type f -a -name 'wininst-*.exe' \) \
 {{
 	) else
