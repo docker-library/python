@@ -68,6 +68,10 @@ ENV GPG_KEY {{
 		# gpg: key A821E680E5FA6305: public key "Thomas Wouters <thomas@python.org>" imported
 		"3.12": "7169605F62C751356D054A26A821E680E5FA6305",
 		# https://www.python.org/dev/peps/pep-0693/#release-manager-and-crew
+
+		# gpg: key A821E680E5FA6305: public key "Thomas Wouters <thomas@python.org>" imported
+		"3.13": "7169605F62C751356D054A26A821E680E5FA6305",
+		# https://peps.python.org/pep-0719/#release-manager-and-crew
 	}[rcVersion]
 }}
 ENV PYTHON_VERSION {{ .version }}
