@@ -85,7 +85,7 @@
       "windows/windowsservercore-ltsc2022",
       "windows/windowsservercore-1809"
     ],
-    "version": "3.13.0a1"
+    "version": "3.13.0a2"
   },
   "3.8": {
     "get-pip": {
