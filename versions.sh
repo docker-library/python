@@ -17,10 +17,12 @@ else
 fi
 versions=( "${versions[@]%/}" )
 
-getPipCommit="$(curl -fsSL 'https://github.com/pypa/get-pip/commits/main/public/get-pip.py.atom' | grep -E 'id.*Commit')"
-getPipCommit="$(awk <<<"$getPipCommit" -F '[[:space:]]*[<>/]+' '$2 == "id" && $3 ~ /Commit/ { print $4; exit }')"
+getPipCommit="$(
+	wget -qO- --header 'Accept: application/json' 'https://github.com/pypa/get-pip/commits/main/public/get-pip.py.atom' \
+		| jq -r '.payload | first(.commitGroups[].commits[].oid)'
+)"
 getPipUrl="https://github.com/pypa/get-pip/raw/$getPipCommit/public/get-pip.py"
-getPipSha256="$(curl -fsSL "$getPipUrl" | sha256sum | cut -d' ' -f1)"
+getPipSha256="$(wget -qO- "$getPipUrl" | sha256sum | cut -d' ' -f1)"
 export getPipCommit getPipUrl getPipSha256
 
 has_linux_version() {
@@ -64,7 +66,7 @@ for version in "${versions[@]}"; do
 				|| :
 
 			# this page has a very aggressive varnish cache in front of it, which is why we also scrape tags from GitHub
-			curl -fsSL 'https://www.python.org/ftp/python/' \
+			wget -qO- 'https://www.python.org/ftp/python/' \
 				| grep '<a href="'"$rcVersion." \
 				| sed -r 's!.*<a href="([^"/]+)/?".*!\1!' \
 				| grep $rcGrepV -E -- '[a-zA-Z]+' \
