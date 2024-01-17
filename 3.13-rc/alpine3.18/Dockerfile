@@ -21,7 +21,7 @@ RUN set -eux; \
 	;
 
 ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
-ENV PYTHON_VERSION 3.13.0a2
+ENV PYTHON_VERSION 3.13.0a3
 
 RUN set -eux; \
 	\
@@ -130,7 +130,7 @@ RUN set -eux; \
 	done
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 23.2.1
+ENV PYTHON_PIP_VERSION 23.3.2
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/049c52c665e8c5fd1751f942316e0a5c777d304f/public/get-pip.py
 ENV PYTHON_GET_PIP_SHA256 7cfd4bdc4d475ea971f1c0710a5953bcc704d171f83c797b9529d9974502fcc6
