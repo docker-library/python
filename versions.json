@@ -19,7 +19,7 @@
       "alpine3.19",
       "alpine3.18"
     ],
-    "version": "3.10.13"
+    "version": "3.10.14"
   },
   "3.11": {
     "get-pip": {

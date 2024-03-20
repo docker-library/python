@@ -58,8 +58,9 @@ ENV GPG_KEY {{
 		# https://www.python.org/dev/peps/pep-0596/#release-manager-and-crew
 
 		# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
-		"3.10": "A035C8C19219BA821ECEA86B64E628F8D684696D",
+		#"3.10": "A035C8C19219BA821ECEA86B64E628F8D684696D",
 		# https://www.python.org/dev/peps/pep-0619/#release-manager-and-crew
+		"3.10": "E3FF2839C048B25C084DEBE9B26995E310250568", # Łukasz, temporarily; TODO swap this back to Pablo when https://github.com/python/cpython/issues/117053 is resolved 👀
 
 		# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
 		"3.11": "A035C8C19219BA821ECEA86B64E628F8D684696D",
