@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.18
+FROM alpine:3.20
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -21,8 +21,8 @@ RUN set -eux; \
 		tzdata \
 	;
 
-ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
-ENV PYTHON_VERSION 3.12.3
+ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
+ENV PYTHON_VERSION 3.10.14
 
 RUN set -eux; \
 	\
@@ -131,7 +131,9 @@ RUN set -eux; \
 	done
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 24.0
+ENV PYTHON_PIP_VERSION 23.0.1
+# https://github.com/docker-library/python/issues/365
+ENV PYTHON_SETUPTOOLS_VERSION 65.5.1
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/dbf0c85f76fb6e1ab42aa672ffca6f0a675d9ee4/public/get-pip.py
 ENV PYTHON_GET_PIP_SHA256 dfe9fd5c28dc98b5ac17979a953ea550cec37ae1b47a5116007395bfacff2ab9
@@ -148,6 +150,7 @@ RUN set -eux; \
 		--no-cache-dir \
 		--no-compile \
 		"pip==$PYTHON_PIP_VERSION" \
+		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
 	; \
 	rm -f get-pip.py; \
 	\
