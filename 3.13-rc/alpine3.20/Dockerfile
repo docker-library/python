@@ -68,7 +68,7 @@ RUN set -eux; \
 	./configure \
 		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
-		--enable-optimizations \
+		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--enable-optimizations') \
 		--enable-option-checking=fatal \
 		--enable-shared \
 		--with-lto \
