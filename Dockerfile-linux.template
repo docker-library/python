@@ -158,7 +158,15 @@ RUN set -eux; \
 	./configure \
 		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
+{{
+	# skip optimizations on alpine on riscv64 (except python 3.8 and 3.9)
+	# only 3.8 and 3.9 complete building on riscv64 with optimizations, 3.10-3.13rc all hit the 3 hour limit
+	if (is_alpine | not) or ( [ "3.8", "3.9" ] | index(rcVersion) ) then (
+-}}
 		--enable-optimizations \
+{{ ) else ( -}}
+		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--enable-optimizations') \
+{{ ) end -}}
 		--enable-option-checking=fatal \
 		--enable-shared \
 {{
