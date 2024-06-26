@@ -103,8 +103,8 @@ RUN set -eux; \
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 24.0
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/5c989baa9bc6bdccbe1ee48aa3d239f011aac4e0/public/get-pip.py
-ENV PYTHON_GET_PIP_SHA256 75ee8318b8bd0f69367c74033c5298f102322075686627af82178c83107ead52
+ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/ac00c61f60b2df101b7cdf90ed319b625ac93b42/public/get-pip.py
+ENV PYTHON_GET_PIP_SHA256 0f8bb2652c0b0965f268312f49ec21e772d421d381af4324beea66b8acf2635c
 
 RUN set -eux; \
 	\
