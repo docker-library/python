@@ -137,6 +137,10 @@ for version; do
 		case "$version" in
 			3.8 | 3.9) ;;
 			*)
+				if [ "$version" != '3.10' ]; then
+					# https://github.com/docker-library/python/pull/931
+					variantArches="$(sed <<<" $variantArches " -e 's/ riscv64 / /g')"
+				fi
 				# https://github.com/python/cpython/issues/93619 + https://peps.python.org/pep-0011/
 				variantArches="$(sed <<<" $variantArches " -e 's/ mips64le / /g')"
 				;;
