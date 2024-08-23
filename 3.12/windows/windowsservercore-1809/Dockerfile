@@ -73,6 +73,8 @@ RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); 
 		--no-cache-dir \
 		--no-compile \
 		('pip=={0}' -f $env:PYTHON_PIP_VERSION) \
+		--no-setuptools \
+		--no-wheel \
 	; \
 	Remove-Item get-pip.py -Force; \
 	\

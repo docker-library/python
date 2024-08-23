@@ -307,7 +307,12 @@ RUN set -eux; \
 		"pip==$PYTHON_PIP_VERSION" \
 {{ if .setuptools then ( -}}
 		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
-{{ ) else "" end -}}
+		# get-pip.py installs wheel by default, adding in case get-pip defaults change
+		wheel \
+{{ ) else ( -}}
+		--no-setuptools \
+		--no-wheel \
+{{ ) end -}}
 	; \
 	rm -f get-pip.py; \
 	\

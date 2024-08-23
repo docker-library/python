@@ -76,6 +76,8 @@ RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); 
 		--no-compile \
 		('pip=={0}' -f $env:PYTHON_PIP_VERSION) \
 		('setuptools=={0}' -f $env:PYTHON_SETUPTOOLS_VERSION) \
+		# get-pip.py installs wheel by default, adding in case get-pip defaults change
+		wheel \
 	; \
 	Remove-Item get-pip.py -Force; \
 	\
