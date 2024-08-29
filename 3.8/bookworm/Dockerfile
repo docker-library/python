@@ -121,6 +121,8 @@ RUN set -eux; \
 		--no-compile \
 		"pip==$PYTHON_PIP_VERSION" \
 		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
+		# get-pip.py installs wheel by default, adding in case get-pip defaults change
+		wheel \
 	; \
 	rm -f get-pip.py; \
 	\

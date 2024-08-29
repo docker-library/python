@@ -118,6 +118,8 @@ RUN set -eux; \
 		--no-cache-dir \
 		--no-compile \
 		"pip==$PYTHON_PIP_VERSION" \
+		--no-setuptools \
+		--no-wheel \
 	; \
 	rm -f get-pip.py; \
 	\
