@@ -1,13 +1,5 @@
 {
   "3.10": {
-    "get-pip": {
-      "sha256": "bc37786ec99618416cc0a0ca32833da447f4d91ab51d2c138dd15b7af21e8e9a",
-      "url": "https://github.com/pypa/get-pip/raw/def4aec84b261b939137dd1c69eff0aabb4a7bf4/public/get-pip.py",
-      "version": "https://github.com/pypa/get-pip/commit/def4aec84b261b939137dd1c69eff0aabb4a7bf4"
-    },
-    "pip": {
-      "version": "23.0.1"
-    },
     "setuptools": {
       "version": "65.5.1"
     },
@@ -22,14 +14,6 @@
     "version": "3.10.15"
   },
   "3.11": {
-    "get-pip": {
-      "sha256": "bc37786ec99618416cc0a0ca32833da447f4d91ab51d2c138dd15b7af21e8e9a",
-      "url": "https://github.com/pypa/get-pip/raw/def4aec84b261b939137dd1c69eff0aabb4a7bf4/public/get-pip.py",
-      "version": "https://github.com/pypa/get-pip/commit/def4aec84b261b939137dd1c69eff0aabb4a7bf4"
-    },
-    "pip": {
-      "version": "24.0"
-    },
     "setuptools": {
       "version": "65.5.1"
     },
@@ -44,14 +28,6 @@
     "version": "3.11.10"
   },
   "3.12": {
-    "get-pip": {
-      "sha256": "bc37786ec99618416cc0a0ca32833da447f4d91ab51d2c138dd15b7af21e8e9a",
-      "url": "https://github.com/pypa/get-pip/raw/def4aec84b261b939137dd1c69eff0aabb4a7bf4/public/get-pip.py",
-      "version": "https://github.com/pypa/get-pip/commit/def4aec84b261b939137dd1c69eff0aabb4a7bf4"
-    },
-    "pip": {
-      "version": "24.2"
-    },
     "variants": [
       "bookworm",
       "slim-bookworm",
@@ -65,14 +41,6 @@
     "version": "3.12.6"
   },
   "3.13-rc": {
-    "get-pip": {
-      "sha256": "bc37786ec99618416cc0a0ca32833da447f4d91ab51d2c138dd15b7af21e8e9a",
-      "url": "https://github.com/pypa/get-pip/raw/def4aec84b261b939137dd1c69eff0aabb4a7bf4/public/get-pip.py",
-      "version": "https://github.com/pypa/get-pip/commit/def4aec84b261b939137dd1c69eff0aabb4a7bf4"
-    },
-    "pip": {
-      "version": "24.2"
-    },
     "variants": [
       "bookworm",
       "slim-bookworm",
@@ -86,14 +54,6 @@
     "version": "3.13.0rc2"
   },
   "3.8": {
-    "get-pip": {
-      "sha256": "bc37786ec99618416cc0a0ca32833da447f4d91ab51d2c138dd15b7af21e8e9a",
-      "url": "https://github.com/pypa/get-pip/raw/def4aec84b261b939137dd1c69eff0aabb4a7bf4/public/get-pip.py",
-      "version": "https://github.com/pypa/get-pip/commit/def4aec84b261b939137dd1c69eff0aabb4a7bf4"
-    },
-    "pip": {
-      "version": "23.0.1"
-    },
     "setuptools": {
       "version": "57.5.0"
     },
@@ -108,14 +68,6 @@
     "version": "3.8.20"
   },
   "3.9": {
-    "get-pip": {
-      "sha256": "bc37786ec99618416cc0a0ca32833da447f4d91ab51d2c138dd15b7af21e8e9a",
-      "url": "https://github.com/pypa/get-pip/raw/def4aec84b261b939137dd1c69eff0aabb4a7bf4/public/get-pip.py",
-      "version": "https://github.com/pypa/get-pip/commit/def4aec84b261b939137dd1c69eff0aabb4a7bf4"
-    },
-    "pip": {
-      "version": "23.0.1"
-    },
     "setuptools": {
       "version": "58.1.0"
     },

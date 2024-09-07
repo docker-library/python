@@ -28,7 +28,7 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($en
 			'PrependPath=1', \
 			'Shortcuts=0', \
 			'Include_doc=0', \
-			'Include_pip=0', \
+			'Include_pip=1', \
 			'Include_test=0' \
 		) \
 	).ExitCode; \
@@ -48,35 +48,7 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($en
 	Remove-Item python.exe -Force; \
 	Remove-Item $env:TEMP/Python*.log -Force; \
 	\
-	Write-Host 'Complete.'
-
-# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 24.2
-# https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/def4aec84b261b939137dd1c69eff0aabb4a7bf4/public/get-pip.py
-ENV PYTHON_GET_PIP_SHA256 bc37786ec99618416cc0a0ca32833da447f4d91ab51d2c138dd15b7af21e8e9a
-
-RUN Write-Host ('Downloading get-pip.py ({0}) ...' -f $env:PYTHON_GET_PIP_URL); \
-	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-	Invoke-WebRequest -Uri $env:PYTHON_GET_PIP_URL -OutFile 'get-pip.py'; \
-	Write-Host ('Verifying sha256 ({0}) ...' -f $env:PYTHON_GET_PIP_SHA256); \
-	if ((Get-FileHash 'get-pip.py' -Algorithm sha256).Hash -ne $env:PYTHON_GET_PIP_SHA256) { \
-		Write-Host 'FAILED!'; \
-		exit 1; \
-	}; \
-	\
 	$env:PYTHONDONTWRITEBYTECODE = '1'; \
-	\
-	Write-Host ('Installing pip=={0} ...' -f $env:PYTHON_PIP_VERSION); \
-	python get-pip.py \
-		--disable-pip-version-check \
-		--no-cache-dir \
-		--no-compile \
-		('pip=={0}' -f $env:PYTHON_PIP_VERSION) \
-		--no-setuptools \
-		--no-wheel \
-	; \
-	Remove-Item get-pip.py -Force; \
 	\
 	Write-Host 'Verifying pip install ...'; \
 	pip --version; \
