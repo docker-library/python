@@ -17,14 +17,6 @@ else
 fi
 versions=( "${versions[@]%/}" )
 
-getPipCommit="$(
-	wget -qO- --header 'Accept: application/json' 'https://github.com/pypa/get-pip/commits/main/public/get-pip.py.atom' \
-		| jq -r '.payload | first(.commitGroups[].commits[].oid)'
-)"
-getPipUrl="https://github.com/pypa/get-pip/raw/$getPipCommit/public/get-pip.py"
-getPipSha256="$(wget -qO- "$getPipUrl" | sha256sum | cut -d' ' -f1)"
-export getPipCommit getPipUrl getPipSha256
-
 has_linux_version() {
 	local dir="$1"; shift
 	local dirVersion="$1"; shift
@@ -126,16 +118,12 @@ for version in "${versions[@]}"; do
 		wget -qO- "https://github.com/python/cpython/raw/v$fullVersion/Lib/ensurepip/__init__.py" \
 			| grep -E '^[^[:space:]]+_VERSION[[:space:]]*='
 	)"
-	pipVersion="$(sed -nre 's/^_PIP_VERSION[[:space:]]*=[[:space:]]*"(.*?)".*/\1/p' <<<"$ensurepipVersions")"
-	if [ -z "$pipVersion" ]; then
-		echo >&2 "error: $version: missing pip version"
-		exit 1
-	fi
-	if ! wget -q -O /dev/null -o /dev/null --spider "https://pypi.org/pypi/pip/$pipVersion/json"; then
-		echo >&2 "error: $version: pip version ($pipVersion) seems to be invalid?"
-		exit 1
-	fi
 
+	# Note: We don't extract the pip version here, since our policy is now to use the pip version
+	# that is installed during the Python build (which is the version bundled in ensurepip), and
+	# to not support overriding it.
+
+	# TODO remove setuptools version handling entirely once Python 3.11 is EOL
 	setuptoolsVersion="$(sed -nre 's/^_SETUPTOOLS_VERSION[[:space:]]*=[[:space:]]*"(.*?)".*/\1/p' <<<"$ensurepipVersions")"
 	case "$rcVersion" in
 		3.8 | 3.9 | 3.10 | 3.11)
@@ -171,22 +159,12 @@ for version in "${versions[@]}"; do
 			;;
 	esac
 
-	# TODO wheelVersion, somehow: https://github.com/docker-library/python/issues/365#issuecomment-914669320
-
-	echo "$version: $fullVersion (pip $pipVersion${setuptoolsVersion:+, setuptools $setuptoolsVersion}${hasWindows:+, windows})"
+	echo "$version: $fullVersion"
 
 	export fullVersion pipVersion setuptoolsVersion hasWindows
 	json="$(jq <<<"$json" -c '
 		.[env.version] = {
 			version: env.fullVersion,
-			pip: {
-				version: env.pipVersion,
-			},
-			"get-pip": {
-				version: "https://github.com/pypa/get-pip/commit/\(env.getPipCommit)",
-				url: env.getPipUrl,
-				sha256: env.getPipSha256,
-			},
 			variants: [
 				(
 					"bookworm",
