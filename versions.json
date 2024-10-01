@@ -38,7 +38,7 @@
       "windows/windowsservercore-ltsc2022",
       "windows/windowsservercore-1809"
     ],
-    "version": "3.12.6"
+    "version": "3.12.7"
   },
   "3.13-rc": {
     "variants": [
