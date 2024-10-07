@@ -19,7 +19,7 @@ FROM buildpack-deps:{{ env.variant }}
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
 
-{{ if [ "3.8", "3.9", "3.10", "3.11", "3.12" ] | index(rcVersion) then ( -}}
+{{ if [ "3.9", "3.10", "3.11", "3.12" ] | index(rcVersion) then ( -}}
 {{ # only set LANG on versions less than 3.13 -}}
 # cannot remove LANG even though https://bugs.python.org/issue19846 is fixed
 # last attempted removal of LANG broke many users:
@@ -53,10 +53,6 @@ RUN set -eux; \
 
 ENV GPG_KEY {{
 	{
-		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
-		"3.8": "E3FF2839C048B25C084DEBE9B26995E310250568",
-		# https://peps.python.org/pep-0569/#release-manager-and-crew
-
 		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
 		"3.9": "E3FF2839C048B25C084DEBE9B26995E310250568",
 		# https://peps.python.org/pep-0596/#release-manager-and-crew
@@ -159,9 +155,9 @@ RUN set -eux; \
 		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
 {{
-	# skip optimizations on alpine on riscv64 (except python 3.8 and 3.9)
-	# only 3.8 and 3.9 complete building on riscv64 with optimizations, 3.10-3.13rc all hit the 3 hour limit
-	if (is_alpine | not) or ( [ "3.8", "3.9" ] | index(rcVersion) ) then (
+	# skip optimizations on alpine on riscv64 (except python 3.9)
+	# only 3.9 completes building on riscv64 with optimizations, 3.10-3.13 all hit the 3 hour limit
+	if (is_alpine | not) or ( [ "3.9" ] | index(rcVersion) ) then (
 -}}
 		--enable-optimizations \
 {{ ) else ( -}}
@@ -171,7 +167,7 @@ RUN set -eux; \
 		--enable-shared \
 {{
 	# <3.10 does not have -fno-semantic-interposition enabled and --with-lto does nothing for performance
-	if [ "3.8", "3.9" ] | index(rcVersion) then "" else (
+	if [ "3.9" ] | index(rcVersion) then "" else (
 -}}
 		--with-lto \
 {{ ) end -}}
@@ -221,14 +217,6 @@ RUN set -eux; \
 		\( \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
 			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
-{{ if [ "3.8" ] | index(env.version) then ( -}}
-			-o \( -type f -a -name 'wininst-*.exe' \) \
-{{
-	) else
-		# "wininst-*.exe" is not installed for Unix platforms on Python 3.9+: https://github.com/python/cpython/pull/14511
-		""
-	end
--}}
 		\) -exec rm -rf '{}' + \
 	; \
 	\

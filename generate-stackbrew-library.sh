@@ -137,7 +137,7 @@ for version; do
 		esac
 
 		case "$version" in
-			3.8 | 3.9) ;;
+			3.9) ;;
 			*)
 				if [ "$version" != '3.10' ]; then
 					# https://github.com/docker-library/python/pull/931

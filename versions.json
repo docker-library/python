@@ -53,20 +53,6 @@
     ],
     "version": "3.13.0"
   },
-  "3.8": {
-    "setuptools": {
-      "version": "57.5.0"
-    },
-    "variants": [
-      "bookworm",
-      "slim-bookworm",
-      "bullseye",
-      "slim-bullseye",
-      "alpine3.20",
-      "alpine3.19"
-    ],
-    "version": "3.8.20"
-  },
   "3.9": {
     "setuptools": {
       "version": "58.1.0"
