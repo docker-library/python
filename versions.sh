@@ -126,7 +126,7 @@ for version in "${versions[@]}"; do
 	# TODO remove setuptools version handling entirely once Python 3.11 is EOL
 	setuptoolsVersion="$(sed -nre 's/^_SETUPTOOLS_VERSION[[:space:]]*=[[:space:]]*"(.*?)".*/\1/p' <<<"$ensurepipVersions")"
 	case "$rcVersion" in
-		3.8 | 3.9 | 3.10 | 3.11)
+		3.9 | 3.10 | 3.11)
 			if [ -z "$setuptoolsVersion" ]; then
 				echo >&2 "error: $version: missing setuptools version"
 				exit 1
@@ -135,14 +135,6 @@ for version in "${versions[@]}"; do
 				echo >&2 "error: $version: setuptools version ($setuptoolsVersion) seems to be invalid?"
 				exit 1
 			fi
-
-			# TODO remove this once Python 3.8 is either "new enough setuptools" or EOL
-			setuptoolsVersion="$(
-				{
-					echo "$setuptoolsVersion"
-					echo "$minimumSetuptoolsVersion"
-				} | sort -rV | head -1
-			)"
 
 			# https://github.com/docker-library/python/issues/781 (TODO remove this if 3.10 and 3.11 embed a newer setuptools and this section no longer applies)
 			if [ "$setuptoolsVersion" = '65.5.0' ]; then

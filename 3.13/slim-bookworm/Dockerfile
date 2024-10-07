@@ -4,15 +4,10 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
-
-# cannot remove LANG even though https://bugs.python.org/issue19846 is fixed
-# last attempted removal of LANG broke many users:
-# https://github.com/docker-library/python/pull/570
-ENV LANG C.UTF-8
 
 # runtime dependencies
 RUN set -eux; \
@@ -24,8 +19,8 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
-ENV PYTHON_VERSION 3.8.20
+ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
+ENV PYTHON_VERSION 3.13.0
 
 RUN set -eux; \
 	\
@@ -74,6 +69,7 @@ RUN set -eux; \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
+		--with-lto \
 		--with-system-expat \
 		--with-ensurepip \
 	; \
@@ -104,7 +100,6 @@ RUN set -eux; \
 		\( \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
 			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
-			-o \( -type f -a -name 'wininst-*.exe' \) \
 		\) -exec rm -rf '{}' + \
 	; \
 	\
@@ -125,14 +120,6 @@ RUN set -eux; \
 	\
 	export PYTHONDONTWRITEBYTECODE=1; \
 	python3 --version; \
-	\
-	pip3 install \
-		--disable-pip-version-check \
-		--no-cache-dir \
-		--no-compile \
-		'setuptools==57.5.0' \
-		wheel \
-	; \
 	pip3 --version
 
 # make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)
