@@ -55,23 +55,23 @@ ENV GPG_KEY {{
 	{
 		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
 		"3.8": "E3FF2839C048B25C084DEBE9B26995E310250568",
-		# https://www.python.org/dev/peps/pep-0569/#release-manager-and-crew
+		# https://peps.python.org/pep-0569/#release-manager-and-crew
 
 		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
 		"3.9": "E3FF2839C048B25C084DEBE9B26995E310250568",
-		# https://www.python.org/dev/peps/pep-0596/#release-manager-and-crew
+		# https://peps.python.org/pep-0596/#release-manager-and-crew
 
 		# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
 		"3.10": "A035C8C19219BA821ECEA86B64E628F8D684696D",
-		# https://www.python.org/dev/peps/pep-0619/#release-manager-and-crew
+		# https://peps.python.org/pep-0619/#release-manager-and-crew
 
 		# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
 		"3.11": "A035C8C19219BA821ECEA86B64E628F8D684696D",
-		# https://www.python.org/dev/peps/pep-0664/#release-manager-and-crew
+		# https://peps.python.org/pep-0664/#release-manager-and-crew
 
 		# gpg: key A821E680E5FA6305: public key "Thomas Wouters <thomas@python.org>" imported
 		"3.12": "7169605F62C751356D054A26A821E680E5FA6305",
-		# https://www.python.org/dev/peps/pep-0693/#release-manager-and-crew
+		# https://peps.python.org/pep-0693/#release-manager-and-crew
 
 		# gpg: key A821E680E5FA6305: public key "Thomas Wouters <thomas@python.org>" imported
 		"3.13": "7169605F62C751356D054A26A821E680E5FA6305",
