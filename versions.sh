@@ -2,10 +2,6 @@
 set -Eeuo pipefail
 shopt -s nullglob
 
-# https://github.com/docker-library/python/issues/365
-minimumSetuptoolsVersion='57.5.0'
-# for historical reasons, setuptools gets pinned to either the version bundled with each Python version or this, whichever is higher
-
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
 versions=( "$@" )
