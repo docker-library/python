@@ -75,6 +75,9 @@ ENV GPG_KEY {{
 	}[rcVersion]
 }}
 ENV PYTHON_VERSION {{ .version }}
+{{ if .checksums.source.sha256 then ( -}}
+ENV PYTHON_SHA256 {{ .checksums.source.sha256 }}
+{{ ) else "" end -}}
 
 RUN set -eux; \
 	\
@@ -139,6 +142,9 @@ RUN set -eux; \
 	\
 {{ ) else "" end -}}
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
+{{ if .checksums.source.sha256 then ( -}}
+	echo "$PYTHON_SHA256 *python.tar.xz" | sha256sum -c -; \
+{{ ) else "" end -}}
 	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
 	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
 	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY"; \

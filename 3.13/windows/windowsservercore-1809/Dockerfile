@@ -12,11 +12,18 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 ENV PYTHONIOENCODING UTF-8
 
 ENV PYTHON_VERSION 3.13.0
+ENV PYTHON_SHA256 78156ad0cf0ec4123bfb5333b40f078596ebf15f2d062a10144863680afbdefc
 
 RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($env:PYTHON_VERSION -replace '[a-z]+[0-9]*$', ''), $env:PYTHON_VERSION); \
 	Write-Host ('Downloading {0} ...' -f $url); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
 	Invoke-WebRequest -Uri $url -OutFile 'python.exe'; \
+	\
+	Write-Host ('Verifying sha256 ({0}) ...' -f $env:PYTHON_SHA256); \
+	if ((Get-FileHash python.exe -Algorithm sha256).Hash -ne $env:PYTHON_SHA256) { \
+		Write-Host 'FAILED!'; \
+		exit 1; \
+	}; \
 	\
 	Write-Host 'Installing ...'; \
 # https://docs.python.org/3/using/windows.html#installing-without-ui
