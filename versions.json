@@ -1,5 +1,10 @@
 {
   "3.10": {
+    "checksums": {
+      "source": {
+        "sha256": "aab0950817735172601879872d937c1e4928a57c409ae02369ec3d91dccebe79"
+      }
+    },
     "setuptools": {
       "version": "65.5.1"
     },
@@ -14,6 +19,11 @@
     "version": "3.10.15"
   },
   "3.11": {
+    "checksums": {
+      "source": {
+        "sha256": "07a4356e912900e61a15cb0949a06c4a05012e213ecd6b4e84d0f67aabbee372"
+      }
+    },
     "setuptools": {
       "version": "65.5.1"
     },
@@ -28,6 +38,14 @@
     "version": "3.11.10"
   },
   "3.12": {
+    "checksums": {
+      "source": {
+        "sha256": "24887b92e2afd4a2ac602419ad4b596372f67ac9b077190f459aba390faf5550"
+      },
+      "windows": {
+        "sha256": "1206721601a62c925d4e4a0dcfc371e88f2ddbe8c0c07962ebb2be9b5bde4570"
+      }
+    },
     "variants": [
       "bookworm",
       "slim-bookworm",
@@ -41,6 +59,14 @@
     "version": "3.12.7"
   },
   "3.13": {
+    "checksums": {
+      "source": {
+        "sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d"
+      },
+      "windows": {
+        "sha256": "78156ad0cf0ec4123bfb5333b40f078596ebf15f2d062a10144863680afbdefc"
+      }
+    },
     "variants": [
       "bookworm",
       "slim-bookworm",
@@ -54,6 +80,11 @@
     "version": "3.13.0"
   },
   "3.9": {
+    "checksums": {
+      "source": {
+        "sha256": "6b281279efd85294d2d6993e173983a57464c0133956fbbb5536ec9646beaf0c"
+      }
+    },
     "setuptools": {
       "version": "58.1.0"
     },
