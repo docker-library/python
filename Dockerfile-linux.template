@@ -19,7 +19,7 @@ FROM buildpack-deps:{{ env.variant }}
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
 
-{{ if [ "3.9", "3.10", "3.11", "3.12" ] | index(rcVersion) then ( -}}
+{{ if rcVersion | IN("3.9", "3.10", "3.11", "3.12") then ( -}}
 {{ # only set LANG on versions less than 3.13 -}}
 # cannot remove LANG even though https://bugs.python.org/issue19846 is fixed
 # last attempted removal of LANG broke many users:
@@ -174,7 +174,7 @@ RUN set -eux; \
 {{
 	# skip optimizations on alpine on riscv64 (except python 3.9)
 	# only 3.9 completes building on riscv64 with optimizations, 3.10-3.13 all hit the 3 hour limit
-	if (is_alpine | not) or ( [ "3.9" ] | index(rcVersion) ) then (
+	if (is_alpine | not) or rcVersion == "3.9" then (
 -}}
 		--enable-optimizations \
 {{ ) else ( -}}
@@ -184,7 +184,7 @@ RUN set -eux; \
 		--enable-shared \
 {{
 	# <3.10 does not have -fno-semantic-interposition enabled and --with-lto does nothing for performance
-	if [ "3.9" ] | index(rcVersion) then "" else (
+	if rcVersion == "3.9" then "" else (
 -}}
 		--with-lto \
 {{ ) end -}}
