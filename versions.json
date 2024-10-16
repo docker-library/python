@@ -79,6 +79,27 @@
     ],
     "version": "3.13.0"
   },
+  "3.14-rc": {
+    "checksums": {
+      "source": {
+        "sha256": "3e464b0cbb7535e2db34262fd19a0a393d0e62be0f43b1513ed98379b054ead4"
+      },
+      "windows": {
+        "sha256": "c02e8f6f118bcfd216cddeeb7243203202be7ee8004d1465140195fbdac92e55"
+      }
+    },
+    "variants": [
+      "bookworm",
+      "slim-bookworm",
+      "bullseye",
+      "slim-bullseye",
+      "alpine3.20",
+      "alpine3.19",
+      "windows/windowsservercore-ltsc2022",
+      "windows/windowsservercore-1809"
+    ],
+    "version": "3.14.0a1"
+  },
   "3.9": {
     "checksums": {
       "source": {
