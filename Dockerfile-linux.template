@@ -51,6 +51,14 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*
 {{ ) end -}}
 
+{{
+	def should_pgp:
+		# https://github.com/docker-library/python/issues/977
+		# https://peps.python.org/pep-0761/
+		# https://discuss.python.org/t/pep-761-deprecating-pgp-signatures-for-cpython-artifacts/67180
+		rcVersion | IN("3.9", "3.10", "3.11", "3.12", "3.13")
+-}}
+{{ if should_pgp then ( -}}
 ENV GPG_KEY {{
 	{
 		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
@@ -74,6 +82,7 @@ ENV GPG_KEY {{
 		# https://peps.python.org/pep-0719/#release-manager-and-crew
 	}[rcVersion]
 }}
+{{ ) else "" end -}}
 ENV PYTHON_VERSION {{ .version }}
 {{ if .checksums.source.sha256 then ( -}}
 ENV PYTHON_SHA256 {{ .checksums.source.sha256 }}
@@ -145,12 +154,14 @@ RUN set -eux; \
 {{ if .checksums.source.sha256 then ( -}}
 	echo "$PYTHON_SHA256 *python.tar.xz" | sha256sum -c -; \
 {{ ) else "" end -}}
+{{ if should_pgp then ( -}}
 	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
 	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
 	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY"; \
 	gpg --batch --verify python.tar.xz.asc python.tar.xz; \
 	gpgconf --kill all; \
 	rm -rf "$GNUPGHOME" python.tar.xz.asc; \
+{{ ) else "" end -}}
 	mkdir -p /usr/src/python; \
 	tar --extract --directory /usr/src/python --strip-components=1 --file python.tar.xz; \
 	rm python.tar.xz; \
