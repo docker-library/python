@@ -99,7 +99,6 @@ RUN set -eux; \
 		bluez-dev \
 		bzip2-dev \
 		dpkg-dev dpkg \
-		expat-dev \
 		findutils \
 		gcc \
 		gdbm-dev \
@@ -133,7 +132,6 @@ RUN set -eux; \
 		libbz2-dev \
 		libc6-dev \
 		libdb-dev \
-		libexpat1-dev \
 		libffi-dev \
 		libgdbm-dev \
 		liblzma-dev \
@@ -172,13 +170,11 @@ RUN set -eux; \
 		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
 {{
-	# skip optimizations on alpine on riscv64 (except python 3.9)
-	# only 3.9 completes building on riscv64 with optimizations, 3.10-3.13 all hit the 3 hour limit
-	if (is_alpine | not) or rcVersion == "3.9" then (
+	# https://github.com/docker-library/python/pull/980 (fixing PGO runs tests that fail, but shouldn't)
+	# https://github.com/python/cpython/issues/90548 (alpine failures; not likely to be fixed any time soon)
+	if is_alpine then "" else (
 -}}
 		--enable-optimizations \
-{{ ) else ( -}}
-		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--enable-optimizations') \
 {{ ) end -}}
 		--enable-option-checking=fatal \
 		--enable-shared \
@@ -188,7 +184,6 @@ RUN set -eux; \
 -}}
 		--with-lto \
 {{ ) end -}}
-		--with-system-expat \
 		--with-ensurepip \
 	; \
 	nproc="$(nproc)"; \
@@ -206,7 +201,6 @@ RUN set -eux; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
-		"PROFILE_TASK=${PROFILE_TASK:-}" \
 	; \
 # https://github.com/docker-library/python/issues/784
 # prevent accidental usage of a system installed libpython of the same version
@@ -214,7 +208,6 @@ RUN set -eux; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
-		"PROFILE_TASK=${PROFILE_TASK:-}" \
 		python \
 	; \
 	make install; \
