@@ -148,6 +148,12 @@ for version; do
 				;;
 		esac
 
+		if [ "$fullVersion" = '3.14.0a1' ]; then
+			# https://github.com/python/cpython/issues/125535 - 3.14.0a1 fails to build on i386
+			# https://github.com/python/cpython/pull/125244 (already fixed for the next release)
+			variantArches="$(sed <<<" $variantArches " -e 's/ i386 / /g')"
+		fi
+
 		sharedTags=()
 		for windowsShared in windowsservercore nanoserver; do
 			if [[ "$variant" == "$windowsShared"* ]]; then
