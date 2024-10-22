@@ -52,13 +52,54 @@ RUN set -eux; \
 {{ ) end -}}
 
 {{
+	def should_sigstore:
+		env.variant | startswith("alpine")
+	;
 	def should_pgp:
 		# https://github.com/docker-library/python/issues/977
 		# https://peps.python.org/pep-0761/
 		# https://discuss.python.org/t/pep-761-deprecating-pgp-signatures-for-cpython-artifacts/67180
 		rcVersion | IN("3.9", "3.10", "3.11", "3.12", "3.13")
 -}}
-{{ if should_pgp then ( -}}
+{{ if should_sigstore then ( -}}
+ENV CERTIFICATE_ISSUER {{
+       {
+               "3.9": "https://github.com/login/oauth",
+               "3.10": "https://accounts.google.com",
+               "3.11": "https://accounts.google.com",
+               "3.12": "https://accounts.google.com",
+               "3.13": "https://accounts.google.com",
+               "3.14": "https://github.com/login/oauth"
+       }[rcVersion]
+}}
+ENV CERTIFICATE_IDENTITY {{
+       {
+               # release manager: Łukasz Langa
+               "3.9": "lukasz@langa.pl",
+               # https://peps.python.org/pep-0596/#release-manager-and-crew
+
+               # release manager: Pablo Galindo Salgado
+               "3.10": "pablogsal@python.org",
+               # https://peps.python.org/pep-0619/#release-manager-and-crew
+
+               # release manager: Pablo Galindo Salgado
+               "3.11": "pablogsal@python.org",
+               # https://peps.python.org/pep-0664/#release-manager-and-crew
+
+               # release manager: Thomas Wouters
+               "3.12": "thomas@python.org",
+               # https://peps.python.org/pep-0693/#release-manager-and-crew
+
+               # release manager: Thomas Wouters
+               "3.13": "thomas@python.org",
+               # https://peps.python.org/pep-0719/#release-manager-and-crew
+
+               # release manager: Hugo van Kemenade
+               "3.14": "hugo@python.org"
+               # https://peps.python.org/pep-0745/#release-manager-and-crew
+       }[rcVersion]
+}}
+{{ ) elif should_pgp then ( -}}
 ENV GPG_KEY {{
 	{
 		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
@@ -91,8 +132,8 @@ ENV PYTHON_SHA256 {{ .checksums.source.sha256 }}
 RUN set -eux; \
 	\
 {{ if is_alpine then ( -}}
+	apk add --no-cache --virtual .cosign cosign --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community; \
 	apk add --no-cache --virtual .build-deps \
-		gnupg \
 		tar \
 		xz \
 		\
@@ -152,7 +193,11 @@ RUN set -eux; \
 {{ if .checksums.source.sha256 then ( -}}
 	echo "$PYTHON_SHA256 *python.tar.xz" | sha256sum -c -; \
 {{ ) else "" end -}}
-{{ if should_pgp then ( -}}
+{{ if should_sigstore then ( -}}
+	wget -O python.tar.xz.sigstore "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.sigstore"; \
+	cosign verify-blob python.tar.xz --bundle python.tar.xz.sigstore --new-bundle-format \
+		--certificate-identity ${CERTIFICATE_IDENTITY} --certificate-oidc-issuer ${CERTIFICATE_ISSUER}; \
+{{ ) elif should_pgp then ( -}}
 	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
 	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
 	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY"; \
@@ -237,6 +282,7 @@ RUN set -eux; \
 		| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
 		| xargs -rt apk add --no-network --virtual .python-rundeps \
 	; \
+	apk del --no-network .cosign; \
 	apk del --no-network .build-deps; \
 {{ ) else ( -}}
 	ldconfig; \

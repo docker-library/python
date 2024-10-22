@@ -40,36 +40,6 @@ check_file() {
 		return 0
 	fi
 
-	# TODO is this even necessary/useful?  the sigstore-based version above is *much* faster, supports all current versions (not just 3.12+ like this), *and* should be more reliable 🤔
-	local sbom
-	if sbom="$(
-		wget -qO- -o/dev/null "$url.spdx.json" \
-			| jq --arg filename "$filename" '
-				first(
-					.packages[]
-					| select(
-						.name == "CPython"
-						and .packageFileName == $filename
-					)
-				)
-				| .checksums
-				| map({
-					key: (.algorithm // empty | ascii_downcase),
-					value: (.checksumValue // empty),
-				})
-				| if length < 1 then
-					error("no checksums found for \($filename)")
-				else . end
-				| from_entries
-				| if has("sha256") then . else
-					error("missing sha256 for \($filename); have \(.)")
-				end
-			'
-	)" && [ -n "sbom" ]; then
-		checksums["$fullVersion"]="$(jq <<<"${checksums["$fullVersion"]:-null}" --arg type "$type" --argjson sums "$sbom" '.[$type] += $sums')"
-		return 0
-	fi
-
 	if ! wget -q -O /dev/null -o /dev/null --spider "$url"; then
 		return 1
 	fi
