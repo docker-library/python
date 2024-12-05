@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.19
+FROM alpine:3.21
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -21,9 +21,9 @@ RUN set -eux; \
 		tzdata \
 	;
 
-ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
-ENV PYTHON_VERSION 3.10.16
-ENV PYTHON_SHA256 bfb249609990220491a1b92850a07135ed0831e41738cf681d63cf01b2a8fbd1
+ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
+ENV PYTHON_VERSION 3.12.8
+ENV PYTHON_SHA256 c909157bb25ec114e5869124cc2a9c4a4d4c1e957ca4ff553f1edc692101154e
 
 RUN set -eux; \
 	\
@@ -118,14 +118,6 @@ RUN set -eux; \
 	\
 	export PYTHONDONTWRITEBYTECODE=1; \
 	python3 --version; \
-	\
-	pip3 install \
-		--disable-pip-version-check \
-		--no-cache-dir \
-		--no-compile \
-		'setuptools==65.5.1' \
-		wheel \
-	; \
 	pip3 --version
 
 # make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)
