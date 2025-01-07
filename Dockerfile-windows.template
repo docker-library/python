@@ -5,9 +5,9 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 # https://github.com/docker-library/python/pull/557
 ENV PYTHONIOENCODING UTF-8
 
-ENV PYTHON_VERSION {{ .version }}
+ARG PYTHON_VERSION {{ .version }}
 {{ if .checksums.windows.sha256 then ( -}}
-ENV PYTHON_SHA256 {{ .checksums.windows.sha256 }}
+ARG PYTHON_SHA256 {{ .checksums.windows.sha256 }}
 {{ ) else "" end -}}
 
 RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($env:PYTHON_VERSION -replace '[a-z]+[0-9]*$', ''), $env:PYTHON_VERSION); \
