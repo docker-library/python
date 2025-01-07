@@ -59,7 +59,7 @@ RUN set -eux; \
 		rcVersion | IN("3.9", "3.10", "3.11", "3.12", "3.13")
 -}}
 {{ if should_pgp then ( -}}
-ENV GPG_KEY {{
+ARG GPG_KEY {{
 	{
 		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
 		"3.9": "E3FF2839C048B25C084DEBE9B26995E310250568",
@@ -83,9 +83,9 @@ ENV GPG_KEY {{
 	}[rcVersion]
 }}
 {{ ) else "" end -}}
-ENV PYTHON_VERSION {{ .version }}
+ARG PYTHON_VERSION {{ .version }}
 {{ if .checksums.source.sha256 then ( -}}
-ENV PYTHON_SHA256 {{ .checksums.source.sha256 }}
+ARG PYTHON_SHA256 {{ .checksums.source.sha256 }}
 {{ ) else "" end -}}
 
 RUN set -eux; \
