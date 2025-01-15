@@ -198,6 +198,15 @@ RUN set -eux; \
 {{ if is_slim or is_alpine then ( -}}
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
 {{ ) else "" end -}}
+{{
+	# Enabling frame-pointers only makes sense for Python 3.12 and newer as those have perf profiler support
+	if rcVersion | IN("3.9", "3.10", "3.11") then "" else (
+-}}
+# https://docs.python.org/3.12/howto/perf_profiling.html
+# But don't enable frame-pointers on 32bit x86 due to performance drop.
+# https://github.com/docker-library/python/pull/1000#issuecomment-2597021615
+	test "$gnuArch" != 'i686-linux-gnu' && EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
+{{ ) end -}}
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
