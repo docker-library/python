@@ -136,22 +136,24 @@ for version; do
 				;;
 		esac
 
+		# https://github.com/docker-library/python/pull/931 (riscv64 builds on 3.11+ take way too long 😞)
 		case "$version" in
-			3.9) ;;
-			*)
-				if [ "$version" != '3.10' ]; then
-					# https://github.com/docker-library/python/pull/931
-					variantArches="$(sed <<<" $variantArches " -e 's/ riscv64 / /g')"
-				fi
-				# https://github.com/python/cpython/issues/93619 + https://peps.python.org/pep-0011/
-				variantArches="$(sed <<<" $variantArches " -e 's/ mips64le / /g')"
-				;;
+			3.9 | 3.10) ;;
+			*) variantArches="$(sed <<<" $variantArches " -e 's/ riscv64 / /g')" ;;
 		esac
 
-		if [ "$fullVersion" = '3.14.0a1' ]; then
-			# https://github.com/python/cpython/issues/125535 - 3.14.0a1 fails to build on i386
-			# https://github.com/python/cpython/pull/125244 (already fixed for the next release)
-			variantArches="$(sed <<<" $variantArches " -e 's/ i386 / /g')"
+		# https://github.com/python/cpython/issues/93619 (Linking error when building 3.11 beta on mips64le) + https://peps.python.org/pep-0011/ (mips is not even tier 3)
+		case "$version" in
+			3.9) ;;
+			*) variantArches="$(sed <<<" $variantArches " -e 's/ mips64le / /g')" ;;
+		esac
+
+		# https://github.com/docker-library/python/issues/1014 (ensurepip failing on s390x 3.14.0a6 Alpine images)
+		if [[ "$variant" == alpine* ]]; then
+			case "$version" in
+				3.9 | 3.10 | 3.11 | 3.12 | 3.13) ;;
+				*) variantArches="$(sed <<<" $variantArches " -e 's/ s390x / /g')" ;;
+			esac
 		fi
 
 		sharedTags=()
