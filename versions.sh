@@ -171,11 +171,6 @@ for version in "${versions[@]}"; do
 				echo >&2 "error: $version: setuptools version ($setuptoolsVersion) seems to be invalid?"
 				exit 1
 			fi
-
-			# https://github.com/docker-library/python/issues/781 (TODO remove this if 3.10 and 3.11 embed a newer setuptools and this section no longer applies)
-			if [ "$setuptoolsVersion" = '65.5.0' ]; then
-				setuptoolsVersion='65.5.1'
-			fi
 			;;
 
 		*)
