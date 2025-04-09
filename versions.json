@@ -110,7 +110,7 @@
       }
     },
     "setuptools": {
-      "version": "58.1.0"
+      "version": "70.1.0"
     },
     "variants": [
       "bookworm",

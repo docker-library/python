@@ -122,7 +122,7 @@ RUN set -eux; \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		--no-compile \
-		'setuptools==58.1.0' \
+		'setuptools==70.1.0' \
 		wheel \
 	; \
 	pip3 --version
