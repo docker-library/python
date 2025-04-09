@@ -54,17 +54,6 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($en
 	Remove-Item $env:TEMP/Python*.log -Force; \
 	\
 	$env:PYTHONDONTWRITEBYTECODE = '1'; \
-{{ if .setuptools then ( -}}
-	\
-	Write-Host ('Installing setuptools and wheel ...'); \
-	pip install \
-		--disable-pip-version-check \
-		--no-cache-dir \
-		--no-compile \
-		'setuptools=={{ .setuptools.version }}' \
-		wheel \
-	; \
-{{ ) else "" end -}}
 	\
 	Write-Host 'Verifying pip install ...'; \
 	pip --version; \
