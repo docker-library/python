@@ -57,6 +57,13 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($en
 	\
 	$env:PYTHONDONTWRITEBYTECODE = '1'; \
 	\
+	Write-Host 'Reinstalling pip to workaround a bug ...'; \
+	# https://github.com/python/cpython/issues/133626
+	# clean up broken pip install
+	Remove-Item -Recurse C:\Python\Lib\site-packages\pip*; \
+	# install pip as pip.exe
+	python -m ensurepip --default-pip -vvv; \
+	\
 	Write-Host 'Verifying pip install ...'; \
 	pip --version; \
 	\
