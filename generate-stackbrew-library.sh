@@ -136,12 +136,6 @@ for version; do
 				;;
 		esac
 
-		# https://github.com/docker-library/python/pull/931 (riscv64 builds on 3.11+ take way too long 😞)
-		case "$version" in
-			3.9 | 3.10) ;;
-			*) variantArches="$(sed <<<" $variantArches " -e 's/ riscv64 / /g')" ;;
-		esac
-
 		# https://github.com/python/cpython/issues/93619 (Linking error when building 3.11 beta on mips64le) + https://peps.python.org/pep-0011/ (mips is not even tier 3)
 		case "$version" in
 			3.9) ;;

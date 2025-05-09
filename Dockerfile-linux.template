@@ -180,9 +180,10 @@ RUN set -eux; \
 		--enable-shared \
 {{
 	# <3.10 does not have -fno-semantic-interposition enabled and --with-lto does nothing for performance
+	# skip LTO on alpine on riscv64: https://github.com/docker-library/python/pull/935, https://github.com/docker-library/python/pull/1038
 	if rcVersion == "3.9" then "" else (
 -}}
-		--with-lto \
+		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
 {{ ) end -}}
 		--with-ensurepip \
 	; \
