@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM buildpack-deps:bullseye
+FROM buildpack-deps:trixie
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -17,7 +17,7 @@ RUN set -eux; \
 		tk-dev \
 		uuid-dev \
 	; \
-	rm -rf /var/lib/apt/lists/*
+	apt-get dist-clean
 
 ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
 ENV PYTHON_VERSION 3.13.6
@@ -45,7 +45,7 @@ RUN set -eux; \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
-		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
+		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 		--with-ensurepip \
 	; \
 	nproc="$(nproc)"; \
