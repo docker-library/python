@@ -9,6 +9,11 @@ FROM debian:trixie-slim
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
 
+# ensure the GIL stays enabled-by-default (even though we supply "--disable-gil" so that the "freethreading" mode is supported by our binaries)
+# https://docs.python.org/3/using/cmdline.html#envvar-PYTHON_GIL
+ENV PYTHON_GIL 1
+# (we install a small wrapper script with the conventional "python3.14t" name to provide so-called "freethreading" behavior in a way that matches the current-as-of-2025 ecosystem conventions: https://docs.python.org/3.13/whatsnew/3.13.html#free-threaded-cpython)
+
 # runtime dependencies
 RUN set -eux; \
 	apt-get update; \
@@ -60,6 +65,7 @@ RUN set -eux; \
 	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
 	./configure \
 		--build="$gnuArch" \
+		--disable-gil \
 		--enable-loadable-sqlite-extensions \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
@@ -132,6 +138,21 @@ RUN set -eux; \
 	export PYTHONDONTWRITEBYTECODE=1; \
 	python3 --version; \
 	pip3 --version
+
+RUN set -eux; \
+# make conventional "python3.14t" style wrappers (https://docs.python.org/3.13/whatsnew/3.13.html#free-threaded-cpython)
+	for exe in /usr/local/bin/python3*; do \
+		bin="$(basename "$exe")"; \
+# ignore "python*-config"
+		[ "${bin%-config}" = "$bin" ] || continue; \
+# ignore existing "python*t" binaries (these are because we compile with --disable-gil)
+		[ "${bin%t}" = "$bin" ] || continue; \
+		printf '#!/usr/bin/env sh\nset -eu\nexport PYTHON_GIL=0\nexec "%s" "$@"\n' "$bin" > "${exe}t"; \
+		chmod +x "${exe}t"; \
+		"${exe}" -c 'import sys; assert(sys._is_gil_enabled())'; \
+		"${exe}t" -c 'import sys; assert(not sys._is_gil_enabled())'; \
+	done
+# TODO THIS IS NOT A TENABLE LONG-TERM SOLUTION AS OUR BUILDS ARE NO LONGER ABI-COMPATIBLE, DESPITE THE POSSIBILITY THAT THEY MIGHT BE THAT'S SEMI-IMPLIED IN "Importing C extensions that don’t use these mechanisms will cause the GIL to be enabled" (https://docs.python.org/3.13/whatsnew/3.13.html#free-threaded-cpython)
 
 # make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)
 RUN set -eux; \
