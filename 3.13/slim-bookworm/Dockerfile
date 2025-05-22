@@ -48,6 +48,10 @@ RUN set -eux; \
 		wget \
 		xz-utils \
 		zlib1g-dev \
+# hack hack hack: https://github.com/python/cpython/blob/3.13/Tools/jit/README.md
+		clang-18 \
+		llvm-18 \
+		python3 \
 	; \
 	\
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
@@ -72,6 +76,9 @@ RUN set -eux; \
 		--enable-shared \
 		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 		--with-ensurepip \
+# https://github.com/docker-library/python/issues/947
+		--disable-gil \
+		--enable-experimental-jit=yes \
 	; \
 	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
