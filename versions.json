@@ -9,10 +9,10 @@
       "version": "65.5.1"
     },
     "variants": [
+      "trixie",
+      "slim-trixie",
       "bookworm",
       "slim-bookworm",
-      "bullseye",
-      "slim-bullseye",
       "alpine3.21",
       "alpine3.20"
     ],
@@ -28,10 +28,10 @@
       "version": "65.5.1"
     },
     "variants": [
+      "trixie",
+      "slim-trixie",
       "bookworm",
       "slim-bookworm",
-      "bullseye",
-      "slim-bullseye",
       "alpine3.21",
       "alpine3.20"
     ],
@@ -47,10 +47,10 @@
       }
     },
     "variants": [
+      "trixie",
+      "slim-trixie",
       "bookworm",
       "slim-bookworm",
-      "bullseye",
-      "slim-bullseye",
       "alpine3.21",
       "alpine3.20",
       "windows/windowsservercore-ltsc2025",
@@ -69,10 +69,10 @@
       }
     },
     "variants": [
+      "trixie",
+      "slim-trixie",
       "bookworm",
       "slim-bookworm",
-      "bullseye",
-      "slim-bullseye",
       "alpine3.21",
       "alpine3.20",
       "windows/windowsservercore-ltsc2025",
@@ -91,10 +91,10 @@
       }
     },
     "variants": [
+      "trixie",
+      "slim-trixie",
       "bookworm",
       "slim-bookworm",
-      "bullseye",
-      "slim-bullseye",
       "alpine3.21",
       "alpine3.20",
       "windows/windowsservercore-ltsc2025",
@@ -113,10 +113,10 @@
       "version": "58.1.0"
     },
     "variants": [
+      "trixie",
+      "slim-trixie",
       "bookworm",
       "slim-bookworm",
-      "bullseye",
-      "slim-bullseye",
       "alpine3.21",
       "alpine3.20"
     ],
