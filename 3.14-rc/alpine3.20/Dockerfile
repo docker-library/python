@@ -66,6 +66,8 @@ RUN set -eux; \
 		--enable-shared \
 		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
 		--with-ensurepip \
+# https://github.com/docker-library/python/issues/947
+		--disable-gil \
 	; \
 	nproc="$(nproc)"; \
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
