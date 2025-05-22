@@ -186,6 +186,10 @@ RUN set -eux; \
 		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
 {{ ) end -}}
 		--with-ensurepip \
+{{ if IN(rcVersion; "3.9", "3.10", "3.11", "3.12") then "" else ( -}}
+# https://github.com/docker-library/python/issues/947
+		--disable-gil \
+{{ ) end -}}
 	; \
 	nproc="$(nproc)"; \
 {{ if is_alpine then ( -}}
