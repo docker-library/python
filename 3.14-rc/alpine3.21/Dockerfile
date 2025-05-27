@@ -49,6 +49,10 @@ RUN set -eux; \
 		util-linux-dev \
 		xz-dev \
 		zlib-dev \
+# hack hack hack: https://github.com/python/cpython/blob/3.13/Tools/jit/README.md
+		clang19 \
+		llvm19 \
+		python3 \
 	; \
 	\
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
@@ -64,8 +68,11 @@ RUN set -eux; \
 		--enable-loadable-sqlite-extensions \
 		--enable-option-checking=fatal \
 		--enable-shared \
-		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
+		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 		--with-ensurepip \
+# https://github.com/docker-library/python/issues/947
+		--disable-gil \
+		--enable-experimental-jit=yes \
 	; \
 	nproc="$(nproc)"; \
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
