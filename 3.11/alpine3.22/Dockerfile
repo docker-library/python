@@ -4,10 +4,15 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.20
+FROM alpine:3.22
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
+
+# cannot remove LANG even though https://bugs.python.org/issue19846 is fixed
+# last attempted removal of LANG broke many users:
+# https://github.com/docker-library/python/pull/570
+ENV LANG C.UTF-8
 
 # runtime dependencies
 RUN set -eux; \
@@ -16,8 +21,9 @@ RUN set -eux; \
 		tzdata \
 	;
 
-ENV PYTHON_VERSION 3.14.0b2
-ENV PYTHON_SHA256 7ac9e84844bbc0a5a8f1f79a37a68b3b8caf2a58b4aa5999c49227cb36e70ea6
+ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
+ENV PYTHON_VERSION 3.11.12
+ENV PYTHON_SHA256 849da87af4df137710c1796e276a955f7a85c9f971081067c8f565d15c352a09
 
 RUN set -eux; \
 	\
@@ -53,6 +59,12 @@ RUN set -eux; \
 	\
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
 	echo "$PYTHON_SHA256 *python.tar.xz" | sha256sum -c -; \
+	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
+	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
+	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY"; \
+	gpg --batch --verify python.tar.xz.asc python.tar.xz; \
+	gpgconf --kill all; \
+	rm -rf "$GNUPGHOME" python.tar.xz.asc; \
 	mkdir -p /usr/src/python; \
 	tar --extract --directory /usr/src/python --strip-components=1 --file python.tar.xz; \
 	rm python.tar.xz; \
@@ -72,24 +84,6 @@ RUN set -eux; \
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
 	EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000"; \
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
-		arch="$(apk --print-arch)"; \
-# https://docs.python.org/3.12/howto/perf_profiling.html
-# https://github.com/docker-library/python/pull/1000#issuecomment-2597021615
-		case "$arch" in \
-			x86_64|aarch64) \
-				# only add "-mno-omit-leaf" on arches that support it
-				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/x86-Options.html#index-momit-leaf-frame-pointer-2
-				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/AArch64-Options.html#index-momit-leaf-frame-pointer
-				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
-				;; \
-			x86) \
-				# don't enable frame-pointers on 32bit x86 due to performance drop.
-				;; \
-			*) \
-				# other arches don't support "-mno-omit-leaf"
-				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer"; \
-				;; \
-		esac; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
@@ -124,6 +118,15 @@ RUN set -eux; \
 	\
 	export PYTHONDONTWRITEBYTECODE=1; \
 	python3 --version; \
+	\
+	pip3 install \
+		--disable-pip-version-check \
+		--no-cache-dir \
+		--no-compile \
+		'setuptools==65.5.1' \
+		# https://github.com/docker-library/python/issues/1023
+		'wheel<0.46' \
+	; \
 	pip3 --version
 
 # make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)

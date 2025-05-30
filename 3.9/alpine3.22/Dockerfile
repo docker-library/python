@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.20
+FROM alpine:3.22
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -21,9 +21,9 @@ RUN set -eux; \
 		tzdata \
 	;
 
-ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
-ENV PYTHON_VERSION 3.10.17
-ENV PYTHON_SHA256 4c68050f049d1b4ac5aadd0df5f27941c0350d2a9e7ab0907ee5eb5225d9d6b0
+ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
+ENV PYTHON_VERSION 3.9.22
+ENV PYTHON_SHA256 8c136d199d3637a1fce98a16adc809c1d83c922d02d41f3614b34f8b6e7d38ec
 
 RUN set -eux; \
 	\
@@ -76,7 +76,6 @@ RUN set -eux; \
 		--enable-loadable-sqlite-extensions \
 		--enable-option-checking=fatal \
 		--enable-shared \
-		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
 		--with-ensurepip \
 	; \
 	nproc="$(nproc)"; \
@@ -123,7 +122,7 @@ RUN set -eux; \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		--no-compile \
-		'setuptools==65.5.1' \
+		'setuptools==58.1.0' \
 		# https://github.com/docker-library/python/issues/1023
 		'wheel<0.46' \
 	; \
