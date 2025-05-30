@@ -54,8 +54,7 @@
       "alpine3.21",
       "alpine3.20",
       "windows/windowsservercore-ltsc2025",
-      "windows/windowsservercore-ltsc2022",
-      "windows/windowsservercore-1809"
+      "windows/windowsservercore-ltsc2022"
     ],
     "version": "3.12.10"
   },
@@ -76,8 +75,7 @@
       "alpine3.21",
       "alpine3.20",
       "windows/windowsservercore-ltsc2025",
-      "windows/windowsservercore-ltsc2022",
-      "windows/windowsservercore-1809"
+      "windows/windowsservercore-ltsc2022"
     ],
     "version": "3.13.3"
   },
@@ -98,8 +96,7 @@
       "alpine3.21",
       "alpine3.20",
       "windows/windowsservercore-ltsc2025",
-      "windows/windowsservercore-ltsc2022",
-      "windows/windowsservercore-1809"
+      "windows/windowsservercore-ltsc2022"
     ],
     "version": "3.14.0b2"
   },
