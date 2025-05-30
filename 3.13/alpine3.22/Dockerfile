@@ -4,15 +4,10 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.20
+FROM alpine:3.22
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
-
-# cannot remove LANG even though https://bugs.python.org/issue19846 is fixed
-# last attempted removal of LANG broke many users:
-# https://github.com/docker-library/python/pull/570
-ENV LANG C.UTF-8
 
 # runtime dependencies
 RUN set -eux; \
@@ -21,9 +16,9 @@ RUN set -eux; \
 		tzdata \
 	;
 
-ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
-ENV PYTHON_VERSION 3.9.22
-ENV PYTHON_SHA256 8c136d199d3637a1fce98a16adc809c1d83c922d02d41f3614b34f8b6e7d38ec
+ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
+ENV PYTHON_VERSION 3.13.3
+ENV PYTHON_SHA256 40f868bcbdeb8149a3149580bb9bfd407b3321cd48f0be631af955ac92c0e041
 
 RUN set -eux; \
 	\
@@ -76,6 +71,7 @@ RUN set -eux; \
 		--enable-loadable-sqlite-extensions \
 		--enable-option-checking=fatal \
 		--enable-shared \
+		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
 		--with-ensurepip \
 	; \
 	nproc="$(nproc)"; \
@@ -83,6 +79,24 @@ RUN set -eux; \
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
 	EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000"; \
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
+		arch="$(apk --print-arch)"; \
+# https://docs.python.org/3.12/howto/perf_profiling.html
+# https://github.com/docker-library/python/pull/1000#issuecomment-2597021615
+		case "$arch" in \
+			x86_64|aarch64) \
+				# only add "-mno-omit-leaf" on arches that support it
+				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/x86-Options.html#index-momit-leaf-frame-pointer-2
+				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/AArch64-Options.html#index-momit-leaf-frame-pointer
+				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
+				;; \
+			x86) \
+				# don't enable frame-pointers on 32bit x86 due to performance drop.
+				;; \
+			*) \
+				# other arches don't support "-mno-omit-leaf"
+				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer"; \
+				;; \
+		esac; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
@@ -117,15 +131,6 @@ RUN set -eux; \
 	\
 	export PYTHONDONTWRITEBYTECODE=1; \
 	python3 --version; \
-	\
-	pip3 install \
-		--disable-pip-version-check \
-		--no-cache-dir \
-		--no-compile \
-		'setuptools==58.1.0' \
-		# https://github.com/docker-library/python/issues/1023
-		'wheel<0.46' \
-	; \
 	pip3 --version
 
 # make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)
