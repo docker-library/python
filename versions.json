@@ -40,10 +40,7 @@
   "3.12": {
     "checksums": {
       "source": {
-        "sha256": "07ab697474595e06f06647417d3c7fa97ded07afc1a7e4454c5639919b46eaea"
-      },
-      "windows": {
-        "sha256": "67b5635e80ea51072b87941312d00ec8927c4db9ba18938f7ad2d27b328b95fb"
+        "sha256": "c30bb24b7f1e9a19b11b55a546434f74e739bb4c271a3e3a80ff4380d49f7adb"
       }
     },
     "variants": [
@@ -52,11 +49,9 @@
       "bullseye",
       "slim-bullseye",
       "alpine3.22",
-      "alpine3.21",
-      "windows/windowsservercore-ltsc2025",
-      "windows/windowsservercore-ltsc2022"
+      "alpine3.21"
     ],
-    "version": "3.12.10"
+    "version": "3.12.11"
   },
   "3.13": {
     "checksums": {
