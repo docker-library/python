@@ -6,7 +6,7 @@
       }
     },
     "setuptools": {
-      "version": "65.5.1"
+      "version": "78.1.1"
     },
     "variants": [
       "bookworm",
@@ -25,7 +25,7 @@
       }
     },
     "setuptools": {
-      "version": "65.5.1"
+      "version": "78.1.1"
     },
     "variants": [
       "bookworm",

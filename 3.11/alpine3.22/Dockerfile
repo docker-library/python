@@ -123,7 +123,7 @@ RUN set -eux; \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		--no-compile \
-		'setuptools==65.5.1' \
+		'setuptools==78.1.1' \
 		# https://github.com/docker-library/python/issues/1023
 		'wheel<0.46' \
 	; \
