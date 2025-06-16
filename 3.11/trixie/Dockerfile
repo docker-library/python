@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM buildpack-deps:bullseye
+FROM buildpack-deps:trixie
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -22,11 +22,11 @@ RUN set -eux; \
 		tk-dev \
 		uuid-dev \
 	; \
-	rm -rf /var/lib/apt/lists/*
+	apt-get dist-clean
 
-ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
-ENV PYTHON_VERSION 3.12.11
-ENV PYTHON_SHA256 c30bb24b7f1e9a19b11b55a546434f74e739bb4c271a3e3a80ff4380d49f7adb
+ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
+ENV PYTHON_VERSION 3.11.13
+ENV PYTHON_SHA256 8fb5f9fbc7609fa822cb31549884575db7fd9657cbffb89510b5d7975963a83a
 
 RUN set -eux; \
 	\
@@ -50,30 +50,12 @@ RUN set -eux; \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
-		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
+		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 		--with-ensurepip \
 	; \
 	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
 	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
-		arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
-# https://docs.python.org/3.12/howto/perf_profiling.html
-# https://github.com/docker-library/python/pull/1000#issuecomment-2597021615
-		case "$arch" in \
-			amd64|arm64) \
-				# only add "-mno-omit-leaf" on arches that support it
-				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/x86-Options.html#index-momit-leaf-frame-pointer-2
-				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/AArch64-Options.html#index-momit-leaf-frame-pointer
-				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
-				;; \
-			i386) \
-				# don't enable frame-pointers on 32bit x86 due to performance drop.
-				;; \
-			*) \
-				# other arches don't support "-mno-omit-leaf"
-				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer"; \
-				;; \
-		esac; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
@@ -108,6 +90,15 @@ RUN set -eux; \
 	\
 	export PYTHONDONTWRITEBYTECODE=1; \
 	python3 --version; \
+	\
+	pip3 install \
+		--disable-pip-version-check \
+		--no-cache-dir \
+		--no-compile \
+		'setuptools==65.5.1' \
+		# https://github.com/docker-library/python/issues/1023
+		'wheel<0.46' \
+	; \
 	pip3 --version
 
 # make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)
