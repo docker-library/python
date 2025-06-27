@@ -7,6 +7,12 @@
 	;
 	def rcVersion:
 		env.version | rtrimstr("-rc")
+	;
+	def clean_apt:
+		# TODO once bookworm is EOL, remove this and just hard-code "apt-get dist-clean" instead
+		if env.variant | contains("bookworm") then
+			"rm -rf /var/lib/apt/lists/*"
+		else "apt-get dist-clean" end
 -}}
 {{ if is_alpine then ( -}}
 FROM alpine:{{ env.variant | ltrimstr("alpine") }}
@@ -48,7 +54,7 @@ RUN set -eux; \
 		uuid-dev \
 {{ ) end -}}
 	; \
-	rm -rf /var/lib/apt/lists/*
+	{{ clean_apt }}
 {{ ) end -}}
 
 {{
@@ -90,6 +96,8 @@ ENV PYTHON_SHA256 {{ .checksums.source.sha256 }}
 
 RUN set -eux; \
 	\
+{{ # https://github.com/python/cpython/blob/3.13/Tools/jit/README.md -}}
+{{ def llvmVersion: if rcVersion == "3.13" then "18" else "19" end -}}
 {{ if is_alpine then ( -}}
 	apk add --no-cache --virtual .build-deps \
 		gnupg \
@@ -145,6 +153,12 @@ RUN set -eux; \
 		wget \
 		xz-utils \
 		zlib1g-dev \
+{{ if IN(rcVersion; "3.9", "3.10", "3.11", "3.12") then "" else ( -}}
+# hack hack hack: https://github.com/python/cpython/blob/3.13/Tools/jit/README.md
+		clang-{{ llvmVersion }} \
+		llvm-{{ llvmVersion }} \
+		python3 \
+{{ ) end -}}
 	; \
 	\
 {{ ) else "" end -}}
@@ -180,12 +194,17 @@ RUN set -eux; \
 		--enable-shared \
 {{
 	# <3.10 does not have -fno-semantic-interposition enabled and --with-lto does nothing for performance
-	# skip LTO on alpine on riscv64: https://github.com/docker-library/python/pull/935, https://github.com/docker-library/python/pull/1038
+	# skip LTO on riscv64: https://github.com/docker-library/python/pull/935, https://github.com/docker-library/python/pull/1038
 	if rcVersion == "3.9" then "" else (
 -}}
-		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
+		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 {{ ) end -}}
 		--with-ensurepip \
+{{ if IN(rcVersion; "3.9", "3.10", "3.11", "3.12") or is_alpine then "" else ( -}}
+# https://github.com/docker-library/python/issues/947
+# https://docs.python.org/3.14/whatsnew/3.14.html#binary-releases-for-the-experimental-just-in-time-compiler
+		--enable-experimental-jit=yes-off \
+{{ ) end -}}
 	; \
 	nproc="$(nproc)"; \
 {{ if is_alpine then ( -}}
@@ -283,13 +302,14 @@ RUN set -eux; \
 	find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
 		| awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); printf "*%s\n", so }' \
 		| sort -u \
-		| xargs -r dpkg-query --search \
-		| cut -d: -f1 \
+		| xargs -rt dpkg-query --search \
+# https://manpages.debian.org/bookworm/dpkg/dpkg-query.1.en.html#S (we ignore diversions and it'll be really unusual for more than one package to provide any given .so file)
+		| awk 'sub(":$", "", $1) { print $1 }' \
 		| sort -u \
 		| xargs -r apt-mark manual \
 	; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-	rm -rf /var/lib/apt/lists/*; \
+	{{ clean_apt }}; \
 {{ ) else "" end -}}
 {{ ) end -}}
 	\
