@@ -19,8 +19,8 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-ENV PYTHON_VERSION 3.14.0b3
-ENV PYTHON_SHA256 c6f48bf51f01f50d87007a445dd7afe4a4c7a87ab482570be924c1ddfd0d3682
+ENV PYTHON_VERSION 3.14.0b4
+ENV PYTHON_SHA256 15e123e056abebba6de5e73cfa304459a8c82cafa85d4fc7fc6de80e6a3e1b39
 
 RUN set -eux; \
 	\
