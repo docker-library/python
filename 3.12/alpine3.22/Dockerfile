@@ -10,26 +10,27 @@ FROM alpine:3.22
 ENV PATH /usr/local/bin:$PATH
 
 # cannot remove LANG even though https://bugs.python.org/issue19846 is fixed
+# last attempted removal of LANG broke many users:
+# https://github.com/docker-library/python/pull/570
 ENV LANG C.UTF-8
 
 # runtime dependencies
 RUN set -eux; \
 	apk add --no-cache \
 		ca-certificates \
-		tzdata
+		tzdata \
+	;
 
 ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
 ENV PYTHON_VERSION 3.12.11
 ENV PYTHON_SHA256 c30bb24b7f1e9a19b11b55a546434f74e739bb4c271a3e3a80ff4380d49f7adb
-ENV SQLITE_VERSION 3.50.2
-ENV SQLITE_AUTOCONF_VERSION 3500200
 
 RUN set -eux; \
+	\
 	apk add --no-cache --virtual .build-deps \
 		gnupg \
 		tar \
 		xz \
-		wget \
 		\
 		bluez-dev \
 		bzip2-dev \
@@ -47,6 +48,7 @@ RUN set -eux; \
 		openssl-dev \
 		pax-utils \
 		readline-dev \
+		sqlite-dev \
 		tcl-dev \
 		tk \
 		tk-dev \
@@ -55,17 +57,6 @@ RUN set -eux; \
 		zlib-dev \
 	; \
 	\
-	# --- Install SQLite 3.50.2 from source ---
-	wget "https://www.sqlite.org/2025/sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}.tar.gz"; \
-	tar xzf "sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}.tar.gz"; \
-	cd "sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}"; \
-	./configure --prefix=/usr/local; \
-	make -j"$(nproc)"; \
-	make install; \
-	cd ..; \
-	rm -rf "sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}"*; \
-	\
-	# --- Install Python ---
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
 	echo "$PYTHON_SHA256 *python.tar.xz" | sha256sum -c -; \
 	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
@@ -89,24 +80,40 @@ RUN set -eux; \
 		--with-ensurepip \
 	; \
 	nproc="$(nproc)"; \
+# set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
+# https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
 	EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000"; \
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
-	arch="$(apk --print-arch)"; \
-	case "$arch" in \
-		x86_64|aarch64) \
-			EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
-			;; \
-		x86) ;; \
-		*) EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer"; \
-	esac; \
+		arch="$(apk --print-arch)"; \
+# https://docs.python.org/3.12/howto/perf_profiling.html
+# https://github.com/docker-library/python/pull/1000#issuecomment-2597021615
+		case "$arch" in \
+			x86_64|aarch64) \
+				# only add "-mno-omit-leaf" on arches that support it
+				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/x86-Options.html#index-momit-leaf-frame-pointer-2
+				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/AArch64-Options.html#index-momit-leaf-frame-pointer
+				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
+				;; \
+			x86) \
+				# don't enable frame-pointers on 32bit x86 due to performance drop.
+				;; \
+			*) \
+				# other arches don't support "-mno-omit-leaf"
+				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer"; \
+				;; \
+		esac; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
-		"LDFLAGS=${LDFLAGS:-}"; \
+		"LDFLAGS=${LDFLAGS:-}" \
+	; \
+# https://github.com/docker-library/python/issues/784
+# prevent accidental usage of a system installed libpython of the same version
 	rm python; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
-		python; \
+		python \
+	; \
 	make install; \
 	\
 	cd /; \
@@ -118,6 +125,7 @@ RUN set -eux; \
 			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
 		\) -exec rm -rf '{}' + \
 	; \
+	\
 	find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec scanelf --needed --nobanner --format '%n#p' '{}' ';' \
 		| tr ',' '\n' \
 		| sort -u \
@@ -125,11 +133,12 @@ RUN set -eux; \
 		| xargs -rt apk add --no-network --virtual .python-rundeps \
 	; \
 	apk del --no-network .build-deps; \
+	\
 	export PYTHONDONTWRITEBYTECODE=1; \
 	python3 --version; \
 	pip3 --version
 
-# make some useful symlinks that are expected to exist
+# make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)
 RUN set -eux; \
 	for src in idle3 pip3 pydoc3 python3 python3-config; do \
 		dst="$(echo "$src" | tr -d 3)"; \
