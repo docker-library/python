@@ -4,15 +4,10 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:bullseye-slim
+FROM debian:trixie-slim
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
-
-# cannot remove LANG even though https://bugs.python.org/issue19846 is fixed
-# last attempted removal of LANG broke many users:
-# https://github.com/docker-library/python/pull/570
-ENV LANG C.UTF-8
 
 # runtime dependencies
 RUN set -eux; \
@@ -22,11 +17,11 @@ RUN set -eux; \
 		netbase \
 		tzdata \
 	; \
-	rm -rf /var/lib/apt/lists/*
+	apt-get dist-clean
 
-ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
-ENV PYTHON_VERSION 3.10.18
-ENV PYTHON_SHA256 ae665bc678abd9ab6a6e1573d2481625a53719bc517e9a634ed2b9fefae3817f
+ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
+ENV PYTHON_VERSION 3.13.6
+ENV PYTHON_SHA256 17ba5508819d8736a14fbfc47d36e184946a877851b2e9c4b6c43acb44a3b104
 
 RUN set -eux; \
 	\
@@ -75,13 +70,31 @@ RUN set -eux; \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
-		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
+		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 		--with-ensurepip \
 	; \
 	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
 	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
+		arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
+# https://docs.python.org/3.12/howto/perf_profiling.html
+# https://github.com/docker-library/python/pull/1000#issuecomment-2597021615
+		case "$arch" in \
+			amd64|arm64) \
+				# only add "-mno-omit-leaf" on arches that support it
+				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/x86-Options.html#index-momit-leaf-frame-pointer-2
+				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/AArch64-Options.html#index-momit-leaf-frame-pointer
+				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
+				;; \
+			i386) \
+				# don't enable frame-pointers on 32bit x86 due to performance drop.
+				;; \
+			*) \
+				# other arches don't support "-mno-omit-leaf"
+				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer"; \
+				;; \
+		esac; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
@@ -113,25 +126,17 @@ RUN set -eux; \
 	find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
 		| awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); printf "*%s\n", so }' \
 		| sort -u \
-		| xargs -r dpkg-query --search \
-		| cut -d: -f1 \
+		| xargs -rt dpkg-query --search \
+# https://manpages.debian.org/bookworm/dpkg/dpkg-query.1.en.html#S (we ignore diversions and it'll be really unusual for more than one package to provide any given .so file)
+		| awk 'sub(":$", "", $1) { print $1 }' \
 		| sort -u \
 		| xargs -r apt-mark manual \
 	; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-	rm -rf /var/lib/apt/lists/*; \
+	apt-get dist-clean; \
 	\
 	export PYTHONDONTWRITEBYTECODE=1; \
 	python3 --version; \
-	\
-	pip3 install \
-		--disable-pip-version-check \
-		--no-cache-dir \
-		--no-compile \
-		'setuptools==65.5.1' \
-		# https://github.com/docker-library/python/issues/1023
-		'wheel<0.46' \
-	; \
 	pip3 --version
 
 # make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)

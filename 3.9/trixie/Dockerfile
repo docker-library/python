@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM buildpack-deps:bullseye
+FROM buildpack-deps:trixie
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -22,11 +22,11 @@ RUN set -eux; \
 		tk-dev \
 		uuid-dev \
 	; \
-	rm -rf /var/lib/apt/lists/*
+	apt-get dist-clean
 
-ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
-ENV PYTHON_VERSION 3.10.18
-ENV PYTHON_SHA256 ae665bc678abd9ab6a6e1573d2481625a53719bc517e9a634ed2b9fefae3817f
+ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
+ENV PYTHON_VERSION 3.9.23
+ENV PYTHON_SHA256 61a42919e13d539f7673cf11d1c404380e28e540510860b9d242196e165709c9
 
 RUN set -eux; \
 	\
@@ -50,7 +50,6 @@ RUN set -eux; \
 		--enable-optimizations \
 		--enable-option-checking=fatal \
 		--enable-shared \
-		$(test "$gnuArch" != 'riscv64-linux-musl' && echo '--with-lto') \
 		--with-ensurepip \
 	; \
 	nproc="$(nproc)"; \
@@ -95,7 +94,7 @@ RUN set -eux; \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		--no-compile \
-		'setuptools==65.5.1' \
+		'setuptools==58.1.0' \
 		# https://github.com/docker-library/python/issues/1023
 		'wheel<0.46' \
 	; \
