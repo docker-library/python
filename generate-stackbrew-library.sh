@@ -142,14 +142,6 @@ for version; do
 			*) variantArches="$(sed <<<" $variantArches " -e 's/ mips64le / /g')" ;;
 		esac
 
-		# https://github.com/docker-library/python/issues/1014 (ensurepip failing on s390x 3.14.0a6 Alpine images)
-		if [[ "$variant" == alpine* ]]; then
-			case "$version" in
-				3.9 | 3.10 | 3.11 | 3.12 | 3.13) ;;
-				*) variantArches="$(sed <<<" $variantArches " -e 's/ s390x / /g')" ;;
-			esac
-		fi
-
 		sharedTags=()
 		for windowsShared in windowsservercore nanoserver; do
 			if [[ "$variant" == "$windowsShared"* ]]; then
