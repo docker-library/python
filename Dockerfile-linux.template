@@ -96,63 +96,86 @@ ENV PYTHON_SHA256 {{ .checksums.source.sha256 }}
 
 RUN set -eux; \
 	\
+{{ def build_deps: [
+	if is_alpine then
+		"bluez-dev",
+		"bzip2-dev",
+		"dpkg-dev dpkg",
+		"findutils",
+		"gcc",
+		"gdbm-dev",
+		"gnupg",
+		"libc-dev",
+		"libffi-dev",
+		"libnsl-dev",
+		"libtirpc-dev",
+		"linux-headers",
+		"make",
+		"ncurses-dev",
+		"openssl-dev",
+		"pax-utils",
+		"readline-dev",
+		"sqlite-dev",
+		"tar",
+		"tcl-dev",
+		"tk",
+		"tk-dev",
+		"util-linux-dev",
+		"xz",
+		"xz-dev",
+		"zlib-dev",
+		if IN(env.version; "3.9", "3.10", "3.11", "3.12", "3.13") then empty else
+			"zstd-dev"
+		end,
+		empty
+	else
+		if is_slim then
+			"dpkg-dev",
+			"gcc",
+			"gnupg",
+			"libbluetooth-dev",
+			"libbz2-dev",
+			"libc6-dev",
+			"libdb-dev",
+			"libffi-dev",
+			"libgdbm-dev",
+			"liblzma-dev",
+			"libncursesw5-dev",
+			"libreadline-dev",
+			"libsqlite3-dev",
+			"libssl-dev",
+			"make",
+			"tk-dev",
+			"uuid-dev",
+			"wget",
+			"xz-utils",
+			"zlib1g-dev",
+			empty
+		else empty end,
+		if IN(env.version; "3.9", "3.10", "3.11", "3.12", "3.13") then empty else
+			"libzstd-dev"
+		end,
+		empty
+	end
+] -}}
+{{ build_deps | if length > 0 then sort | ( -}}
 {{ if is_alpine then ( -}}
 	apk add --no-cache --virtual .build-deps \
-		gnupg \
-		tar \
-		xz \
-		\
-		bluez-dev \
-		bzip2-dev \
-		dpkg-dev dpkg \
-		findutils \
-		gcc \
-		gdbm-dev \
-		libc-dev \
-		libffi-dev \
-		libnsl-dev \
-		libtirpc-dev \
-		linux-headers \
-		make \
-		ncurses-dev \
-		openssl-dev \
-		pax-utils \
-		readline-dev \
-		sqlite-dev \
-		tcl-dev \
-		tk \
-		tk-dev \
-		util-linux-dev \
-		xz-dev \
-		zlib-dev \
+{{ map( -}}
+		{{ . }} \
+{{ ) | add -}}
 	; \
 	\
-{{ ) elif is_slim then ( -}}
+{{ ) else ( -}}
 	savedAptMark="$(apt-mark showmanual)"; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
-		dpkg-dev \
-		gcc \
-		gnupg \
-		libbluetooth-dev \
-		libbz2-dev \
-		libc6-dev \
-		libdb-dev \
-		libffi-dev \
-		libgdbm-dev \
-		liblzma-dev \
-		libncursesw5-dev \
-		libreadline-dev \
-		libsqlite3-dev \
-		libssl-dev \
-		make \
-		tk-dev \
-		uuid-dev \
-		wget \
-		xz-utils \
-		zlib1g-dev \
+{{ map( -}}
+		{{ . }} \
+{{ ) | add -}}
 	; \
 	\
+{{ ) end -}}
 {{ ) else "" end -}}
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
 {{ if .checksums.source.sha256 then ( -}}
@@ -272,7 +295,7 @@ RUN set -eux; \
 		\) -exec rm -rf '{}' + \
 	; \
 	\
-{{ if is_alpine then ( -}}
+{{ if is_alpine and (build_deps | length > 0) then ( -}}
 	find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec scanelf --needed --nobanner --format '%n#p' '{}' ';' \
 		| tr ',' '\n' \
 		| sort -u \
@@ -282,7 +305,7 @@ RUN set -eux; \
 	apk del --no-network .build-deps; \
 {{ ) else ( -}}
 	ldconfig; \
-{{ if is_slim then ( -}}
+{{ if build_deps | length > 0 then ( -}}
 	\
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual $savedAptMark; \
