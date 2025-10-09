@@ -25,8 +25,8 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
-ENV PYTHON_VERSION 3.9.23
-ENV PYTHON_SHA256 61a42919e13d539f7673cf11d1c404380e28e540510860b9d242196e165709c9
+ENV PYTHON_VERSION 3.9.24
+ENV PYTHON_SHA256 668391afabd5083faafa4543753d190f82f33ce6ba22d6e9ac728b43644b278a
 
 RUN set -eux; \
 	\
@@ -128,7 +128,7 @@ RUN set -eux; \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		--no-compile \
-		'setuptools==58.1.0' \
+		'setuptools==79.0.1' \
 		# https://github.com/docker-library/python/issues/1023
 		'wheel<0.46' \
 	; \

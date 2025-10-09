@@ -98,11 +98,11 @@
   "3.9": {
     "checksums": {
       "source": {
-        "sha256": "61a42919e13d539f7673cf11d1c404380e28e540510860b9d242196e165709c9"
+        "sha256": "668391afabd5083faafa4543753d190f82f33ce6ba22d6e9ac728b43644b278a"
       }
     },
     "setuptools": {
-      "version": "58.1.0"
+      "version": "79.0.1"
     },
     "variants": [
       "trixie",
@@ -112,6 +112,6 @@
       "alpine3.22",
       "alpine3.21"
     ],
-    "version": "3.9.23"
+    "version": "3.9.24"
   }
 }
