@@ -2,11 +2,11 @@
   "3.10": {
     "checksums": {
       "source": {
-        "sha256": "ae665bc678abd9ab6a6e1573d2481625a53719bc517e9a634ed2b9fefae3817f"
+        "sha256": "c8f4a596572201d81dd7df91f70e177e19a70f1d489968b54b5fbbf29a97c076"
       }
     },
     "setuptools": {
-      "version": "65.5.1"
+      "version": "79.0.1"
     },
     "variants": [
       "trixie",
@@ -16,16 +16,16 @@
       "alpine3.22",
       "alpine3.21"
     ],
-    "version": "3.10.18"
+    "version": "3.10.19"
   },
   "3.11": {
     "checksums": {
       "source": {
-        "sha256": "8fb5f9fbc7609fa822cb31549884575db7fd9657cbffb89510b5d7975963a83a"
+        "sha256": "8d3ed8ec5c88c1c95f5e558612a725450d2452813ddad5e58fdb1a53b1209b78"
       }
     },
     "setuptools": {
-      "version": "65.5.1"
+      "version": "79.0.1"
     },
     "variants": [
       "trixie",
@@ -35,7 +35,7 @@
       "alpine3.22",
       "alpine3.21"
     ],
-    "version": "3.11.13"
+    "version": "3.11.14"
   },
   "3.12": {
     "checksums": {
