@@ -95,6 +95,27 @@
     ],
     "version": "3.14.0"
   },
+  "3.15-rc": {
+    "checksums": {
+      "source": {
+        "sha256": "3194939d488eeaeefdcf990d35542d9ad1ce788789c4e2305a2060eb7058e5a4"
+      },
+      "windows": {
+        "sha256": "376a4b54b3b6fd5b0614b5c0d5a5a3d75b89861102e2f3d6166b2bf5c6d925bb"
+      }
+    },
+    "variants": [
+      "trixie",
+      "slim-trixie",
+      "bookworm",
+      "slim-bookworm",
+      "alpine3.22",
+      "alpine3.21",
+      "windows/windowsservercore-ltsc2025",
+      "windows/windowsservercore-ltsc2022"
+    ],
+    "version": "3.15.0a1"
+  },
   "3.9": {
     "checksums": {
       "source": {
