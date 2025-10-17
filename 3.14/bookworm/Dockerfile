@@ -7,7 +7,7 @@
 FROM buildpack-deps:bookworm
 
 # ensure local python is preferred over distribution python
-ENV PATH /usr/local/bin:$PATH
+ENV PATH=/usr/local/bin:$PATH
 
 # runtime dependencies
 RUN set -eux; \
@@ -19,8 +19,8 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-ENV PYTHON_VERSION 3.14.0
-ENV PYTHON_SHA256 2299dae542d395ce3883aca00d3c910307cd68e0b2f7336098c8e7b7eee9f3e9
+ENV PYTHON_VERSION=3.14.0
+ENV PYTHON_SHA256=2299dae542d395ce3883aca00d3c910307cd68e0b2f7336098c8e7b7eee9f3e9
 
 RUN set -eux; \
 	\
