@@ -9,10 +9,10 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # https://github.com/docker-library/python/pull/557
-ENV PYTHONIOENCODING UTF-8
+ENV PYTHONIOENCODING=UTF-8
 
-ENV PYTHON_VERSION 3.14.0
-ENV PYTHON_SHA256 52ceb249f65009d936e6504f97cce42870c11358cb6e48825e893f54e11620aa
+ENV PYTHON_VERSION=3.14.0
+ENV PYTHON_SHA256=52ceb249f65009d936e6504f97cce42870c11358cb6e48825e893f54e11620aa
 
 RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($env:PYTHON_VERSION -replace '[a-z]+[0-9]*$', ''), $env:PYTHON_VERSION); \
 	Write-Host ('Downloading {0} ...' -f $url); \

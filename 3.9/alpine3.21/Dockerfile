@@ -7,12 +7,12 @@
 FROM alpine:3.21
 
 # ensure local python is preferred over distribution python
-ENV PATH /usr/local/bin:$PATH
+ENV PATH=/usr/local/bin:$PATH
 
 # cannot remove LANG even though https://bugs.python.org/issue19846 is fixed
 # last attempted removal of LANG broke many users:
 # https://github.com/docker-library/python/pull/570
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 
 # runtime dependencies
 RUN set -eux; \
@@ -21,9 +21,9 @@ RUN set -eux; \
 		tzdata \
 	;
 
-ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
-ENV PYTHON_VERSION 3.9.24
-ENV PYTHON_SHA256 668391afabd5083faafa4543753d190f82f33ce6ba22d6e9ac728b43644b278a
+ENV GPG_KEY=E3FF2839C048B25C084DEBE9B26995E310250568
+ENV PYTHON_VERSION=3.9.24
+ENV PYTHON_SHA256=668391afabd5083faafa4543753d190f82f33ce6ba22d6e9ac728b43644b278a
 
 RUN set -eux; \
 	\
