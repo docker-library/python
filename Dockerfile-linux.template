@@ -8,6 +8,14 @@
 	def rcVersion:
 		env.version | rtrimstr("-rc")
 	;
+	def llvmVersion:
+		if is_alpine then null else
+			{
+				"3.13": "18", # https://github.com/python/cpython/blob/3.13/Tools/jit/README.md
+				"3.14": "19", # https://github.com/python/cpython/blob/3.14/Tools/jit/README.md
+			}[rcVersion]
+		end
+	;
 	def clean_apt:
 		# TODO once bookworm is EOL, remove this and just hard-code "apt-get dist-clean" instead
 		if env.variant | contains("bookworm") then
@@ -155,6 +163,12 @@ RUN set -eux; \
 		if IN(env.version; "3.9", "3.10", "3.11", "3.12", "3.13") then empty else
 			"libzstd-dev"
 		end,
+		if llvmVersion then
+			"clang-\(llvmVersion)",
+			"llvm-\(llvmVersion)",
+			"python3", # "Python 3.11 or newer is required to build the JIT."
+			empty
+		else empty end,
 		empty
 	end
 ] -}}
@@ -215,6 +229,11 @@ RUN set -eux; \
 		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 {{ ) end -}}
 		--with-ensurepip \
+{{ if llvmVersion then ( -}}
+# https://github.com/docker-library/python/issues/1009
+# https://docs.python.org/3.14/whatsnew/3.14.html#binary-releases-for-the-experimental-just-in-time-compiler
+		--enable-experimental-jit=yes-off \
+{{ ) else "" end -}}
 	; \
 	nproc="$(nproc)"; \
 {{ if is_alpine then ( -}}
