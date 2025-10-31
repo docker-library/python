@@ -25,7 +25,7 @@ FROM buildpack-deps:{{ env.variant }}
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
 
-{{ if rcVersion | IN("3.9", "3.10", "3.11", "3.12") then ( -}}
+{{ if rcVersion | IN("3.10", "3.11", "3.12") then ( -}}
 {{ # only set LANG on versions less than 3.13 -}}
 # cannot remove LANG even though https://bugs.python.org/issue19846 is fixed
 # last attempted removal of LANG broke many users:
@@ -62,15 +62,11 @@ RUN set -eux; \
 		# https://github.com/docker-library/python/issues/977
 		# https://peps.python.org/pep-0761/
 		# https://discuss.python.org/t/pep-761-deprecating-pgp-signatures-for-cpython-artifacts/67180
-		rcVersion | IN("3.9", "3.10", "3.11", "3.12", "3.13")
+		rcVersion | IN("3.10", "3.11", "3.12", "3.13")
 -}}
 {{ if should_pgp then ( -}}
 ENV GPG_KEY {{
 	{
-		# gpg: key B26995E310250568: public key "\xc5\x81ukasz Langa (GPG langa.pl) <lukasz@langa.pl>" imported
-		"3.9": "E3FF2839C048B25C084DEBE9B26995E310250568",
-		# https://peps.python.org/pep-0596/#release-manager-and-crew
-
 		# gpg: key 64E628F8D684696D: public key "Pablo Galindo Salgado <pablogsal@gmail.com>" imported
 		"3.10": "A035C8C19219BA821ECEA86B64E628F8D684696D",
 		# https://peps.python.org/pep-0619/#release-manager-and-crew
@@ -124,7 +120,7 @@ RUN set -eux; \
 		"xz",
 		"xz-dev",
 		"zlib-dev",
-		if IN(env.version; "3.9", "3.10", "3.11", "3.12", "3.13") then empty else
+		if IN(env.version; "3.10", "3.11", "3.12", "3.13") then empty else
 			"zstd-dev"
 		end,
 		empty
@@ -152,7 +148,7 @@ RUN set -eux; \
 			"zlib1g-dev",
 			empty
 		else empty end,
-		if IN(env.version; "3.9", "3.10", "3.11", "3.12", "3.13") then empty else
+		if IN(env.version; "3.10", "3.11", "3.12", "3.13") then empty else
 			"libzstd-dev"
 		end,
 		empty
@@ -207,13 +203,8 @@ RUN set -eux; \
 {{ ) end -}}
 		--enable-option-checking=fatal \
 		--enable-shared \
-{{
-	# <3.10 does not have -fno-semantic-interposition enabled and --with-lto does nothing for performance
-	# skip LTO on riscv64: https://github.com/docker-library/python/pull/935, https://github.com/docker-library/python/pull/1038
-	if rcVersion == "3.9" then "" else (
--}}
+{{ # skip LTO on riscv64: https://github.com/docker-library/python/pull/935, https://github.com/docker-library/python/pull/1038 -}}
 		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
-{{ ) end -}}
 		--with-ensurepip \
 	; \
 	nproc="$(nproc)"; \
@@ -230,7 +221,7 @@ RUN set -eux; \
 {{ ) else "" end -}}
 {{
 	# Enabling frame-pointers only makes sense for Python 3.12 and newer as those have perf profiler support
-	if rcVersion | IN("3.9", "3.10", "3.11") then "" else (
+	if rcVersion | IN("3.10", "3.11") then "" else (
 -}}
 {{ if is_alpine then ( -}}
 		arch="$(apk --print-arch)"; \
