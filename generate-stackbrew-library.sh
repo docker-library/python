@@ -137,10 +137,7 @@ for version; do
 		esac
 
 		# https://github.com/python/cpython/issues/93619 (Linking error when building 3.11 beta on mips64le) + https://peps.python.org/pep-0011/ (mips is not even tier 3)
-		case "$version" in
-			3.9) ;;
-			*) variantArches="$(sed <<<" $variantArches " -e 's/ mips64le / /g')" ;;
-		esac
+		variantArches="$(sed <<<" $variantArches " -e 's/ mips64le / /g')"
 
 		sharedTags=()
 		for windowsShared in windowsservercore nanoserver; do

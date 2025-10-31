@@ -162,7 +162,7 @@ for version in "${versions[@]}"; do
 	# TODO remove setuptools version handling entirely once Python 3.11 is EOL
 	setuptoolsVersion="$(sed -nre 's/^_SETUPTOOLS_VERSION[[:space:]]*=[[:space:]]*"(.*?)".*/\1/p' <<<"$ensurepipVersions")"
 	case "$rcVersion" in
-		3.9 | 3.10 | 3.11)
+		3.10 | 3.11)
 			if [ -z "$setuptoolsVersion" ]; then
 				echo >&2 "error: $version: missing setuptools version"
 				exit 1
