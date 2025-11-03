@@ -115,24 +115,5 @@
       "windows/windowsservercore-ltsc2022"
     ],
     "version": "3.15.0a1"
-  },
-  "3.9": {
-    "checksums": {
-      "source": {
-        "sha256": "00e07d7c0f2f0cc002432d1ee84d2a40dae404a99303e3f97701c10966c91834"
-      }
-    },
-    "setuptools": {
-      "version": "79.0.1"
-    },
-    "variants": [
-      "trixie",
-      "slim-trixie",
-      "bookworm",
-      "slim-bookworm",
-      "alpine3.22",
-      "alpine3.21"
-    ],
-    "version": "3.9.25"
   }
 }
