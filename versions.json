@@ -56,10 +56,10 @@
   "3.13": {
     "checksums": {
       "source": {
-        "sha256": "ed5ef34cda36cfa2f3a340f07cac7e7814f91c7f3c411f6d3562323a866c5c66"
+        "sha256": "bc673c04375a1a3f0808c27ba8f0411ab811ad390a8740318ccb9c60fad8fd77"
       },
       "windows": {
-        "sha256": "200ddff856bbff949d2cc1be42e8807c07538abd6b6966d5113a094cf628c5c5"
+        "sha256": "e6e6dbaec482b22bf2651b80ee46bd450fd623a842c0f630a670d1948bbb0dad"
       }
     },
     "variants": [
@@ -72,7 +72,7 @@
       "windows/windowsservercore-ltsc2025",
       "windows/windowsservercore-ltsc2022"
     ],
-    "version": "3.13.9"
+    "version": "3.13.10"
   },
   "3.14": {
     "checksums": {
