@@ -13,8 +13,8 @@
       "slim-trixie",
       "bookworm",
       "slim-bookworm",
-      "alpine3.22",
-      "alpine3.21"
+      "alpine3.23",
+      "alpine3.22"
     ],
     "version": "3.10.19"
   },
@@ -32,8 +32,8 @@
       "slim-trixie",
       "bookworm",
       "slim-bookworm",
-      "alpine3.22",
-      "alpine3.21"
+      "alpine3.23",
+      "alpine3.22"
     ],
     "version": "3.11.14"
   },
@@ -48,8 +48,8 @@
       "slim-trixie",
       "bookworm",
       "slim-bookworm",
-      "alpine3.22",
-      "alpine3.21"
+      "alpine3.23",
+      "alpine3.22"
     ],
     "version": "3.12.12"
   },
@@ -67,8 +67,8 @@
       "slim-trixie",
       "bookworm",
       "slim-bookworm",
+      "alpine3.23",
       "alpine3.22",
-      "alpine3.21",
       "windows/windowsservercore-ltsc2025",
       "windows/windowsservercore-ltsc2022"
     ],
@@ -88,8 +88,8 @@
       "slim-trixie",
       "bookworm",
       "slim-bookworm",
+      "alpine3.23",
       "alpine3.22",
-      "alpine3.21",
       "windows/windowsservercore-ltsc2025",
       "windows/windowsservercore-ltsc2022"
     ],
@@ -109,8 +109,8 @@
       "slim-trixie",
       "bookworm",
       "slim-bookworm",
+      "alpine3.23",
       "alpine3.22",
-      "alpine3.21",
       "windows/windowsservercore-ltsc2025",
       "windows/windowsservercore-ltsc2022"
     ],
