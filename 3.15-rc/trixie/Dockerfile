@@ -20,6 +20,7 @@ RUN set -eux; \
 	apt-get dist-clean
 
 ENV PYTHON_VERSION 3.15.0a3
+ENV PYTHON_SHA256 6ab02cdac24505779877bb1d9189432d67e90ddf2a9b8b7b373ead54ac07b607
 
 RUN set -eux; \
 	\
@@ -30,6 +31,7 @@ RUN set -eux; \
 	; \
 	\
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
+	echo "$PYTHON_SHA256 *python.tar.xz" | sha256sum -c -; \
 	mkdir -p /usr/src/python; \
 	tar --extract --directory /usr/src/python --strip-components=1 --file python.tar.xz; \
 	rm python.tar.xz; \
