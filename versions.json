@@ -97,9 +97,6 @@
   },
   "3.15-rc": {
     "checksums": {
-      "source": {
-        "sha256": "6ab02cdac24505779877bb1d9189432d67e90ddf2a9b8b7b373ead54ac07b607"
-      },
       "windows": {
         "sha256": "05d0a8932ca359e349571b193858be1af72a3cff086bfe08cbe6d1e2140726c9"
       }
