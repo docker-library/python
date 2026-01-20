@@ -70,7 +70,7 @@ RUN set -eux; \
 	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
 	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
-	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
+	LDFLAGS="${LDFLAGS:-} -Wl,--strip-all"; \
 	arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
 # https://docs.python.org/3.12/howto/perf_profiling.html
 # https://github.com/docker-library/python/pull/1000#issuecomment-2597021615
@@ -98,7 +98,7 @@ RUN set -eux; \
 	rm python; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
-		"LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
+		"LDFLAGS=${LDFLAGS:-} -Wl,-rpath='\$\$ORIGIN/../lib'" \
 		python \
 	; \
 	make install; \
