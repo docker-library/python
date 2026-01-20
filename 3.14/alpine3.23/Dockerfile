@@ -72,24 +72,24 @@ RUN set -eux; \
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
 	EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000"; \
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
-		arch="$(apk --print-arch)"; \
+	arch="$(apk --print-arch)"; \
 # https://docs.python.org/3.12/howto/perf_profiling.html
 # https://github.com/docker-library/python/pull/1000#issuecomment-2597021615
-		case "$arch" in \
-			x86_64|aarch64) \
-				# only add "-mno-omit-leaf" on arches that support it
-				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/x86-Options.html#index-momit-leaf-frame-pointer-2
-				# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/AArch64-Options.html#index-momit-leaf-frame-pointer
-				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
-				;; \
-			x86) \
-				# don't enable frame-pointers on 32bit x86 due to performance drop.
-				;; \
-			*) \
-				# other arches don't support "-mno-omit-leaf"
-				EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer"; \
-				;; \
-		esac; \
+	case "$arch" in \
+		x86_64|aarch64) \
+			# only add "-mno-omit-leaf" on arches that support it
+			# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/x86-Options.html#index-momit-leaf-frame-pointer-2
+			# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/AArch64-Options.html#index-momit-leaf-frame-pointer
+			EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
+			;; \
+		x86) \
+			# don't enable frame-pointers on 32bit x86 due to performance drop.
+			;; \
+		*) \
+			# other arches don't support "-mno-omit-leaf"
+			EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer"; \
+			;; \
+	esac; \
 	make -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
