@@ -9,6 +9,8 @@
       "version": "79.0.1"
     },
     "variants": [
+      "forky",
+      "slim-forky",
       "trixie",
       "slim-trixie",
       "bookworm",
@@ -28,6 +30,8 @@
       "version": "79.0.1"
     },
     "variants": [
+      "forky",
+      "slim-forky",
       "trixie",
       "slim-trixie",
       "bookworm",
@@ -44,6 +48,8 @@
       }
     },
     "variants": [
+      "forky",
+      "slim-forky",
       "trixie",
       "slim-trixie",
       "bookworm",
@@ -63,6 +69,8 @@
       }
     },
     "variants": [
+      "forky",
+      "slim-forky",
       "trixie",
       "slim-trixie",
       "bookworm",
@@ -84,6 +92,8 @@
       }
     },
     "variants": [
+      "forky",
+      "slim-forky",
       "trixie",
       "slim-trixie",
       "bookworm",
@@ -105,6 +115,8 @@
       }
     },
     "variants": [
+      "forky",
+      "slim-forky",
       "trixie",
       "slim-trixie",
       "bookworm",
