@@ -195,8 +195,8 @@ for version in "${versions[@]}"; do
 					empty
 				| ., "slim-" + .), # https://github.com/docker-library/ruby/pull/142#issuecomment-320012893
 				(
+					"3.24",
 					"3.23",
-					"3.22",
 					empty
 				| "alpine" + .),
 				if env.hasWindows != "" then
