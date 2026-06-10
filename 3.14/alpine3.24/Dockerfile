@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.22
+FROM alpine:3.24
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -16,9 +16,8 @@ RUN set -eux; \
 		tzdata \
 	;
 
-ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
-ENV PYTHON_VERSION 3.13.13
-ENV PYTHON_SHA256 2ab91ff401783ccca64f75d10c882e957bdfd60e2bf5a72f8421793729b78a71
+ENV PYTHON_VERSION 3.14.6
+ENV PYTHON_SHA256 143b1dddefaec3bd2e21e3b839b34a2b7fb9842272883c576420d605e9f30c63
 
 RUN set -eux; \
 	\
@@ -49,16 +48,11 @@ RUN set -eux; \
 		xz \
 		xz-dev \
 		zlib-dev \
+		zstd-dev \
 	; \
 	\
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
 	echo "$PYTHON_SHA256 *python.tar.xz" | sha256sum -c -; \
-	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
-	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
-	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY"; \
-	gpg --batch --verify python.tar.xz.asc python.tar.xz; \
-	gpgconf --kill all; \
-	rm -rf "$GNUPGHOME" python.tar.xz.asc; \
 	mkdir -p /usr/src/python; \
 	tar --extract --directory /usr/src/python --strip-components=1 --file python.tar.xz; \
 	rm python.tar.xz; \
