@@ -139,6 +139,23 @@ for version; do
 		# https://github.com/python/cpython/issues/93619 (Linking error when building 3.11 beta on mips64le) + https://peps.python.org/pep-0011/ (mips is not even tier 3)
 		variantArches="$(sed <<<" $variantArches " -e 's/ mips64le / /g')"
 
+		if [[ "$variant" == alpine* ]]; then
+			# https://github.com/python/cpython/issues/143632
+			# /usr/include/sys/prctl.h:88:8: error: redefinition of 'struct prctl_mm_map'
+			case "$version" in
+				3.10 | 3.11 | 3.12 | 3.13 | 3.14) ;;
+				*)
+					variantArches="$(
+						sed <<<" $variantArches " \
+							-e 's/ arm32v6 / /g' \
+							-e 's/ arm32v7 / /g' \
+							-e 's/ i386 / /g' \
+							-e 's/ ppc64le / /g' \
+					)"
+					;;
+			esac
+		fi
+
 		sharedTags=()
 		for windowsShared in windowsservercore nanoserver; do
 			if [[ "$variant" == "$windowsShared"* ]]; then
