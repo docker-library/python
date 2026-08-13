@@ -2,7 +2,7 @@
   "3.10": {
     "checksums": {
       "source": {
-        "sha256": "de6517421601e39a9a3bc3e1bc4c7b2f239297423ee05e282598c83ec0647505"
+        "sha256": "a0da1e72132e950154eca0f6f47d5db828454700de20e5113667940d81e0db04"
       }
     },
     "setuptools": {
@@ -16,7 +16,7 @@
       "alpine3.24",
       "alpine3.23"
     ],
-    "version": "3.10.20"
+    "version": "3.10.21"
   },
   "3.11": {
     "checksums": {
