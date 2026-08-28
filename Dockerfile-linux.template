@@ -98,6 +98,7 @@ RUN set -eux; \
 		"bzip2-dev",
 		"dpkg-dev dpkg",
 		"findutils",
+		"g++",
 		"gcc",
 		"gdbm-dev",
 		"gnupg",
@@ -127,6 +128,7 @@ RUN set -eux; \
 	else
 		if is_slim then
 			"dpkg-dev",
+			"g++",
 			"gcc",
 			"gnupg",
 			"libbluetooth-dev",
