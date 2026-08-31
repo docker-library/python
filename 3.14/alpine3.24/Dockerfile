@@ -26,6 +26,7 @@ RUN set -eux; \
 		bzip2-dev \
 		dpkg-dev dpkg \
 		findutils \
+		g++ \
 		gcc \
 		gdbm-dev \
 		gnupg \

@@ -34,6 +34,7 @@ RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		dpkg-dev \
+		g++ \
 		gcc \
 		gnupg \
 		libbluetooth-dev \
