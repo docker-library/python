@@ -19,8 +19,8 @@ RUN set -eux; \
 	; \
 	apt-get dist-clean
 
-ENV PYTHON_VERSION 3.15.0rc1
-ENV PYTHON_SHA256 f84dad680ab2147417d2739355c2678f0f9acffe4ae8ef77895de1454b384b07
+ENV PYTHON_VERSION 3.15.0rc2
+ENV PYTHON_SHA256 8d93af5eaaaea5adfd41bd786a7ba3f03f2ad1ab57c6a65e0b963deab91d5ad7
 
 RUN set -eux; \
 	\
