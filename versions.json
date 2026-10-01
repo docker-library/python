@@ -40,7 +40,7 @@
   "3.12": {
     "checksums": {
       "source": {
-        "sha256": "5c8462af5790baf43a321a1559dbe0db06d1be4300fb85fb53c40060668e548a"
+        "sha256": "c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a"
       }
     },
     "variants": [
@@ -51,7 +51,7 @@
       "alpine3.24",
       "alpine3.23"
     ],
-    "version": "3.12.14"
+    "version": "3.12.15"
   },
   "3.13": {
     "checksums": {
