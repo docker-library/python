@@ -120,6 +120,11 @@ RUN set -eux; \
 		if IN(env.version; "3.11", "3.12", "3.13") then empty else
 			"zstd-dev"
 		end,
+		if IN(env.version; "3.11", "3.12", "3.13", "3.14") then empty else
+			# https://github.com/docker-library/python/issues/1136
+			# https://github.com/python/cpython/issues/115119
+			"mpdecimal-dev"
+		end,
 		empty
 	else
 		if is_slim then
@@ -148,6 +153,11 @@ RUN set -eux; \
 		else empty end,
 		if IN(env.version; "3.11", "3.12", "3.13") then empty else
 			"libzstd-dev"
+		end,
+		if IN(env.version; "3.11", "3.12", "3.13", "3.14") then empty else
+			# https://github.com/docker-library/python/issues/1136
+			# https://github.com/python/cpython/issues/115119
+			"libmpdec-dev"
 		end,
 		empty
 	end
