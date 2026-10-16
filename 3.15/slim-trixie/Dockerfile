@@ -38,6 +38,7 @@ RUN set -eux; \
 		libffi-dev \
 		libgdbm-dev \
 		liblzma-dev \
+		libmpdec-dev \
 		libncursesw5-dev \
 		libreadline-dev \
 		libsqlite3-dev \

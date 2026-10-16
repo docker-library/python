@@ -36,6 +36,7 @@ RUN set -eux; \
 		libtirpc-dev \
 		linux-headers \
 		make \
+		mpdecimal-dev \
 		ncurses-dev \
 		openssl-dev \
 		pax-utils \
