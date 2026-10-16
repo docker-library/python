@@ -106,8 +106,6 @@
     "variants": [
       "trixie",
       "slim-trixie",
-      "bookworm",
-      "slim-bookworm",
       "alpine3.24",
       "alpine3.23"
     ],

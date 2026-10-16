@@ -27,7 +27,6 @@ RUN set -eux; \
 	savedAptMark="$(apt-mark showmanual)"; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
-		libmpdec-dev \
 		libzstd-dev \
 	; \
 	\
@@ -47,6 +46,8 @@ RUN set -eux; \
 		--enable-shared \
 		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 		--with-ensurepip \
+# https://github.com/docker-library/python/pull/1137#issuecomment-6180817683
+		--without-system-libmpdec \
 	; \
 	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \

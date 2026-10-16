@@ -191,7 +191,10 @@ for version in "${versions[@]}"; do
 			variants: [
 				(
 					"trixie",
-					"bookworm",
+					if IN(env.rcVersion; "3.11", "3.12", "3.13", "3.14", "3.15") then
+						# https://github.com/docker-library/python/pull/1137#issuecomment-6180817683
+						"bookworm"
+					else empty end,
 					empty
 				| ., "slim-" + .), # https://github.com/docker-library/ruby/pull/142#issuecomment-320012893
 				(

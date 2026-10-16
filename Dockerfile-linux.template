@@ -154,7 +154,7 @@ RUN set -eux; \
 		if IN(env.version; "3.11", "3.12", "3.13") then empty else
 			"libzstd-dev"
 		end,
-		if IN(env.version; "3.11", "3.12", "3.13", "3.14") then empty else
+		if IN(env.version; "3.11", "3.12", "3.13", "3.14") then empty elif env.variant | contains("bookworm") then empty else
 			# https://github.com/docker-library/python/issues/1136
 			# https://github.com/python/cpython/issues/115119
 			"libmpdec-dev"
@@ -214,6 +214,10 @@ RUN set -eux; \
 {{ # skip LTO on riscv64: https://github.com/docker-library/python/pull/935, https://github.com/docker-library/python/pull/1038 -}}
 		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 		--with-ensurepip \
+{{ if env.version == "3.15" and (env.variant | contains("bookworm")) then ( -}}
+# https://github.com/docker-library/python/pull/1137#issuecomment-6180817683
+		--without-system-libmpdec \
+{{ ) else "" end -}}
 	; \
 	nproc="$(nproc)"; \
 {{ if is_alpine then ( -}}
