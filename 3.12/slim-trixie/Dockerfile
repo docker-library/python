@@ -53,6 +53,7 @@ RUN set -eux; \
 		libsqlite3-dev \
 		libssl-dev \
 		make \
+		patch \
 		tk-dev \
 		uuid-dev \
 		wget \
@@ -118,6 +119,23 @@ RUN set -eux; \
 		python \
 	; \
 	make install; \
+	\
+# https://github.com/docker-library/python/issues/1142
+# pip's vendored "certifi" bundle trusts a compromised CA, and upstream is not updating the pip bundled with this version, so patch pip (and the "ensurepip" wheel, for new venvs) to use the system CA bundle instead (like Debian does)
+	wget -O pip.patch 'https://salsa.debian.org/python-team/packages/python-pip/-/raw/6f4f079131dcc2902600cee89aa54ef099d32345/debian/patches/certifi-debian-ca-certificates.patch'; \
+	echo 'ddb4b85f9468bd9778afed0abd91a7b9af4ec6028c5efbcc236a9f6711cbaa40 *pip.patch' | sha256sum --strict --check -; \
+	pipWhl="$(echo /usr/local/lib/python3.12/ensurepip/_bundled/pip-*.whl)"; \
+	[ -s "$pipWhl" ]; \
+	pipDir="$(mktemp -d)"; \
+	python3 -m zipfile --extract "$pipWhl" "$pipDir"; \
+	patch --directory "$pipDir" --strip 2 --input "$PWD/pip.patch"; \
+	python3 -c 'import shutil, sys; shutil.make_archive(*sys.argv[1:])' "$PWD/pip-patched" zip "$pipDir"; \
+	mv -v pip-patched.zip "$pipWhl"; \
+	rm -rf "$pipDir"; \
+	patch --directory /usr/local/lib/python3.12/site-packages --strip 2 --input "$PWD/pip.patch"; \
+	for pipPath in "$pipWhl" /usr/local/lib/python3.12/site-packages; do \
+		python3 -c 'import sys; sys.path.insert(0, sys.argv[1]); from pip._vendor import certifi; assert certifi.where() == "/etc/ssl/certs/ca-certificates.crt"' "$pipPath"; \
+	done; \
 	\
 	cd /; \
 	rm -rf /usr/src/python; \
