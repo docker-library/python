@@ -1,4 +1,7 @@
 {{
+	def rcVersion:
+		env.version | rtrimstr("-rc")
+	;
 	def extension:
 		.checksums.windows.url | split(".")[-1]
 	;
@@ -8,9 +11,14 @@
 FROM mcr.microsoft.com/windows/{{ env.windowsVariant }}:{{ env.windowsRelease }}
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+{{ if rcVersion | IN("3.11", "3.12", "3.13", "3.14", "3.15") then ( -}}
 
+{{ # only set PYTHONIOENCODING on versions less than 3.16 -}}
 # https://github.com/docker-library/python/pull/557
 ENV PYTHONIOENCODING UTF-8
+{{ # reproducer: docker run --rm python:{{ env.version }}-windowsservercore-{{ env.windowsRelease }} python -c 'print(chr(0x4e2d))' -}}
+{{ # https://github.com/docker-library/python/pull/1144#pullrequestreview-5634536246 -}}
+{{ ) else "" end -}}
 {{
 	# installer sets path for older python, but needs to be set for the zip download
 	if is_windows_zip then (
