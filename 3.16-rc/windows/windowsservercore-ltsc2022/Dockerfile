@@ -8,9 +8,6 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# https://github.com/docker-library/python/pull/557
-ENV PYTHONIOENCODING UTF-8
-
 # PATH isn't actually set in the Docker image, so we have to set it from within the container
 RUN $newPath = ('C:\Python;C:\Python\Scripts;{0}' -f $env:PATH); \
 	Write-Host ('Updating PATH: {0}' -f $newPath); \
