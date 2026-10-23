@@ -14,7 +14,7 @@ ENV PYTHONIOENCODING UTF-8
 ENV PYTHON_VERSION 3.13.17
 ENV PYTHON_SHA256 5da012101ba2e17113a9a1cd901e9ce1441086f2b7ecb5de06ec94163899a190
 
-RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($env:PYTHON_VERSION -replace '[a-z]+[0-9]*$', ''), $env:PYTHON_VERSION); \
+RUN $url = 'https://www.python.org/ftp/python/3.13.17/python-3.13.17-amd64.exe'; \
 	Write-Host ('Downloading {0} ...' -f $url); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
 	Invoke-WebRequest -Uri $url -OutFile 'python.exe'; \
@@ -48,12 +48,12 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($en
 # the installer updated PATH, so we should refresh our local value
 	$env:PATH = [Environment]::GetEnvironmentVariable('PATH', [EnvironmentVariableTarget]::Machine); \
 	\
-	Write-Host 'Verifying install ...'; \
-	Write-Host '  python --version'; python --version; \
-	\
 	Write-Host 'Removing ...'; \
 	Remove-Item python.exe -Force; \
 	Remove-Item $env:TEMP/Python*.log -Force; \
+	\
+	Write-Host 'Verifying install ("python --version") ...'; \
+	python --version; \
 	\
 	$env:PYTHONDONTWRITEBYTECODE = '1'; \
 	\

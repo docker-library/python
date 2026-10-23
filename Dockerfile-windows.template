@@ -1,28 +1,54 @@
+{{
+	def extension:
+		.checksums.windows.url | split(".")[-1]
+	;
+	def is_windows_zip:
+		extension == "zip"
+-}}
 FROM mcr.microsoft.com/windows/{{ env.windowsVariant }}:{{ env.windowsRelease }}
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # https://github.com/docker-library/python/pull/557
 ENV PYTHONIOENCODING UTF-8
+{{
+	# installer sets path for older python, but needs to be set for the zip download
+	if is_windows_zip then (
+-}}
+
+# PATH isn't actually set in the Docker image, so we have to set it from within the container
+RUN $newPath = ('C:\Python;C:\Python\Scripts;{0}' -f $env:PATH); \
+	Write-Host ('Updating PATH: {0}' -f $newPath); \
+	[Environment]::SetEnvironmentVariable('PATH', $newPath, [EnvironmentVariableTarget]::Machine); \
+	Write-Host 'Complete.'
+# doing this first to share cache across versions more aggressively
+{{ ) else "" end -}}
 
 ENV PYTHON_VERSION {{ .version }}
 {{ if .checksums.windows.sha256 then ( -}}
 ENV PYTHON_SHA256 {{ .checksums.windows.sha256 }}
 {{ ) else "" end -}}
 
-RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($env:PYTHON_VERSION -replace '[a-z]+[0-9]*$', ''), $env:PYTHON_VERSION); \
+RUN $url = '{{ .checksums.windows.url | gsub("'"; "''") }}'; \
 	Write-Host ('Downloading {0} ...' -f $url); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-	Invoke-WebRequest -Uri $url -OutFile 'python.exe'; \
+	Invoke-WebRequest -Uri $url -OutFile 'python.{{ extension }}'; \
 {{ if .checksums.windows.sha256 then ( -}}
 	\
 	Write-Host ('Verifying sha256 ({0}) ...' -f $env:PYTHON_SHA256); \
-	if ((Get-FileHash python.exe -Algorithm sha256).Hash -ne $env:PYTHON_SHA256) { \
+	if ((Get-FileHash python.{{ extension }} -Algorithm sha256).Hash -ne $env:PYTHON_SHA256) { \
 		Write-Host 'FAILED!'; \
 		exit 1; \
 	}; \
 {{ ) else "" end -}}
 	\
+{{ if is_windows_zip then ( -}}
+	Write-Host 'Expanding ...'; \
+	Expand-Archive python.zip -DestinationPath C:\Python\; \
+	\
+	Write-Host 'Removing ...'; \
+	Remove-Item python.zip -Force; \
+{{ ) else ( -}}
 	Write-Host 'Installing ...'; \
 # https://docs.python.org/3/using/windows.html#installing-without-ui
 	$exitCode = (Start-Process python.exe -Wait -NoNewWindow -PassThru \
@@ -46,15 +72,25 @@ RUN $url = ('https://www.python.org/ftp/python/{0}/python-{1}-amd64.exe' -f ($en
 # the installer updated PATH, so we should refresh our local value
 	$env:PATH = [Environment]::GetEnvironmentVariable('PATH', [EnvironmentVariableTarget]::Machine); \
 	\
-	Write-Host 'Verifying install ...'; \
-	Write-Host '  python --version'; python --version; \
-	\
 	Write-Host 'Removing ...'; \
 	Remove-Item python.exe -Force; \
 	Remove-Item $env:TEMP/Python*.log -Force; \
+{{ ) end -}}
+	\
+	Write-Host 'Verifying install ("python --version") ...'; \
+	python --version; \
 	\
 	$env:PYTHONDONTWRITEBYTECODE = '1'; \
 	\
+{{ if is_windows_zip then ( -}}
+	Write-Host 'Re-Installing pip ...'; \
+	# remove zip-provided pip so that we can reinstall and get the exe in c:\Python\Scripts
+	Remove-Item -Recurse C:\Python\Lib\site-packages\pip; \
+	Remove-Item -Recurse C:\Python\Lib\site-packages\pip-*; \
+	# install pip again
+	python -m ensurepip --default-pip; \
+	\
+{{ ) else "" end -}}
 	Write-Host 'Verifying pip install ...'; \
 	pip --version; \
 	\

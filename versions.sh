@@ -21,7 +21,16 @@ check_file() {
 
 	local filename="Python-$fullVersion.tar.xz"
 	if [ "$type" = 'windows' ]; then
-		filename="python-$fullVersion-amd64.exe"
+		# > phase out the traditional installer by Python 3.16
+		# https://peps.python.org/pep-0773/#replacing-other-installers
+		case "${fullVersion}" in
+			3.11.*|3.12.*|3.13.*|3.14.*|3.15.*)
+				filename="python-$fullVersion-amd64.exe"
+				;;
+			*)
+				filename="python-$fullVersion-amd64.zip"
+				;;
+		esac
 	fi
 	local url="https://www.python.org/ftp/python/$dirVersion/$filename"
 
@@ -36,11 +45,11 @@ check_file() {
 			'
 	)" && [ -n "$sigstore" ]; then
 		sigstore="$(base64 -d <<<"$sigstore" | hexdump -ve '/1 "%02x"')"
-		checksums["$fullVersion"]="$(jq <<<"${checksums["$fullVersion"]:-null}" --arg type "$type" --arg sha256 "$sigstore" '.[$type].sha256 = $sha256')"
+		checksums["$fullVersion"]="$(jq <<<"${checksums["$fullVersion"]:-null}" --arg type "$type" --arg sha256 "$sigstore" --arg url "$url" '.[$type].sha256 = $sha256 | if $type == "windows" then .[$type].url = $url else . end')"
 		return 0
 	fi
 
-	# TODO is this even necessary/useful?  the sigstore-based version above is *much* faster, supports all current versions (not just 3.12+ like this), *and* should be more reliable 🤔
+	# while the sigstore-based version above is *much* faster and supports all current versions (not just 3.12+ like this), the zips for 3.16+ don't have a '.sigstore' file
 	local sbom
 	if sbom="$(
 		wget -qO- -o/dev/null "$url.spdx.json" \
@@ -66,7 +75,7 @@ check_file() {
 				end
 			'
 	)" && [ -n "sbom" ]; then
-		checksums["$fullVersion"]="$(jq <<<"${checksums["$fullVersion"]:-null}" --arg type "$type" --argjson sums "$sbom" '.[$type] += $sums')"
+		checksums["$fullVersion"]="$(jq <<<"${checksums["$fullVersion"]:-null}" --arg type "$type" --argjson sums "$sbom" --arg url "$url" '.[$type] += $sums | if $type == "windows" then .[$type].url = $url else . end')"
 		return 0
 	fi
 
