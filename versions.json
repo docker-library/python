@@ -37,11 +37,7 @@
   "3.13": {
     "checksums": {
       "source": {
-        "sha256": "6020bd10aff3bf4821be16f088ebb1591beb7b811dcd8fab1da8f7c22a7b27e7"
-      },
-      "windows": {
-        "sha256": "5da012101ba2e17113a9a1cd901e9ce1441086f2b7ecb5de06ec94163899a190",
-        "url": "https://www.python.org/ftp/python/3.13.17/python-3.13.17-amd64.exe"
+        "sha256": "abb0102e6d4ae027509bcb82327d9dd85515b44a3ba8ad538cfc5e9847029f68"
       }
     },
     "variants": [
@@ -50,11 +46,9 @@
       "bookworm",
       "slim-bookworm",
       "alpine3.24",
-      "alpine3.23",
-      "windows/windowsservercore-ltsc2025",
-      "windows/windowsservercore-ltsc2022"
+      "alpine3.23"
     ],
-    "version": "3.13.17"
+    "version": "3.13.18"
   },
   "3.14": {
     "checksums": {
