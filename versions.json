@@ -75,11 +75,11 @@
   "3.15": {
     "checksums": {
       "source": {
-        "sha256": "673ae7232d84c894729882c8257d300ef2d26523911bfd3917ec8ce7f526f99b"
+        "sha256": "8b5536d280142ecf6cdfe15d12a21ba1c65e300bbf7b28a8d0cdb849575797de"
       },
       "windows": {
-        "sha256": "8b23839c6b2f3076fdff44c78d219a5393c7205f666cd95bd0c9a562bf8ea5db",
-        "url": "https://www.python.org/ftp/python/3.15.1/python-3.15.1-amd64.exe"
+        "sha256": "06e225a228191b0f4d1dcf6905fbb21bf9f6970d13a2ec63137ab9bee76f15aa",
+        "url": "https://www.python.org/ftp/python/3.15.2/python-3.15.2-amd64.exe"
       }
     },
     "variants": [
@@ -92,7 +92,7 @@
       "windows/windowsservercore-ltsc2025",
       "windows/windowsservercore-ltsc2022"
     ],
-    "version": "3.15.1"
+    "version": "3.15.2"
   },
   "3.16-rc": {
     "checksums": {
