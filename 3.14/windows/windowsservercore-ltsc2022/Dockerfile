@@ -11,10 +11,10 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 # https://github.com/docker-library/python/pull/557
 ENV PYTHONIOENCODING UTF-8
 
-ENV PYTHON_VERSION 3.14.9
-ENV PYTHON_SHA256 a247a0b612244a803f507b39fb7121e3602e4160d59c3b99d98e735289c53394
+ENV PYTHON_VERSION 3.14.10
+ENV PYTHON_SHA256 92480239264744fe0386a1bd8275786fefa126e3129e56a68e22b52c73329965
 
-RUN $url = 'https://www.python.org/ftp/python/3.14.9/python-3.14.9-amd64.exe'; \
+RUN $url = 'https://www.python.org/ftp/python/3.14.10/python-3.14.10-amd64.exe'; \
 	Write-Host ('Downloading {0} ...' -f $url); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
 	Invoke-WebRequest -Uri $url -OutFile 'python.exe'; \
