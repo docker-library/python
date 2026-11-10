@@ -15,10 +15,10 @@ RUN $newPath = ('C:\Python;C:\Python\Scripts;{0}' -f $env:PATH); \
 	Write-Host 'Complete.'
 # doing this first to share cache across versions more aggressively
 
-ENV PYTHON_VERSION 3.16.0a1
-ENV PYTHON_SHA256 d70c353262f6a2ccd50cd5aa9273e22bc217a75d9ce1855b07b83fc2e6296454
+ENV PYTHON_VERSION 3.16.0a2
+ENV PYTHON_SHA256 e604493562d97593a3456cc4c7e8483448176bf0d4e49d7d74d388dd433f28c7
 
-RUN $url = 'https://www.python.org/ftp/python/3.16.0/python-3.16.0a1-amd64.zip'; \
+RUN $url = 'https://www.python.org/ftp/python/3.16.0/python-3.16.0a2-amd64.zip'; \
 	Write-Host ('Downloading {0} ...' -f $url); \
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
 	Invoke-WebRequest -Uri $url -OutFile 'python.zip'; \
